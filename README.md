@@ -20,4 +20,4 @@ Open-source packages and examples from the MathWorks Research Office. Each proje
 
 ## License
 
-[BSD 3-Clause](LICENSE)
+Licensed under the MathWorks BSD-3-Clause License. See [LICENSE](LICENSE).
