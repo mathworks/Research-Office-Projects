@@ -1,7 +1,5 @@
 # Increase Video Frame Rate Using Optical Flow
 
-[![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=mathworks/Optical-Flow-Frame-Interpolation)
-
 This example shows how to increase a video's frame rate using optical flow frame interpolation. A video is subsampled to simulate a jerky low-frame-rate input, then new intermediate frames are interpolated using RAFT optical flow to restore smooth motion.
 
 MATLAB&reg; is required along with Computer Vision Toolbox&trade;.
