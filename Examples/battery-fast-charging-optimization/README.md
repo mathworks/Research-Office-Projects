@@ -4,7 +4,7 @@ Compare charging strategies for a lithium-ion battery using the Single Particle 
 
 ### Interactive App
 
-![App Demo](images/app_demo.mp4)
+![App Demo](images/app_demo.gif)
 
 ## Requirements
 
