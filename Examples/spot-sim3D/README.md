@@ -2,6 +2,13 @@
 
 Interactive simulation of a Boston Dynamics Spot-inspired quadruped robot with real-time keyboard control and Unreal Engine&reg; 3D visualization. Built entirely in Simulink&reg; using Model-Based Design.
 
+| | |
+|:---:|:---:|
+| ![Forward](spot-forward.gif) | ![Forward-Left](spot-forward-left.gif) |
+| Forward | Forward-Left |
+| ![Backward](spot-backward.gif) | ![Sidestep](spot-sidestep.gif) |
+| Backward | Sidestep |
+
 ## Setup
 
 ### 1. Required Toolboxes
