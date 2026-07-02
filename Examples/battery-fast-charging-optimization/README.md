@@ -8,11 +8,11 @@ Compare charging strategies for a lithium-ion battery using the Single Particle 
 
 ## Requirements
 
-- MATLAB R2025a or later
-- Simulink
-- Simscape
-- Simscape Battery
-- Stateflow
+- MATLAB&reg; R2025a or later
+- Simulink&reg;
+- Simscape&trade;
+- Simscape Battery&trade;
+- Stateflow&reg;
 - Global Optimization Toolbox (for `surrogateopt`)
 
 ## Overview
