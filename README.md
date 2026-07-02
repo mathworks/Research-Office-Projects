@@ -2,6 +2,8 @@
 
 Open-source packages and examples from the MathWorks Research Office. Each project explores emerging workflows — from event-driven camera simulation to physics-based battery optimization — and ships as a self-contained, ready-to-run package.
 
+[![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=mathworks/Research-Office-Projects)
+
 ## Structure
 
 **Packages/** extend MATLAB&reg; and Simulink&reg; with new capabilities — each is self-contained and can be added to your path and used immediately. For example, the [Event Camera Simulator](Packages/event-camera-simulator/) package lets you generate realistic asynchronous event streams from any intensity frame sequence — useful for testing DVS algorithms without physical hardware.
