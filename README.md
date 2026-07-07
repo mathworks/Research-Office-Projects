@@ -19,6 +19,7 @@ Projects from the MathWorks Advanced Research & Technology Office. Each project 
 | Example | [battery-fast-charging-optimization](Examples/battery-fast-charging-optimization/) | Compare CC-CV, multi-stage, and fmincon-optimized charging strategies for a lithium-ion battery (SPM) with interactive app |
 | Example | [shape-from-shading-asteroids](Examples/shape-from-shading-asteroids/) | Enhance stereo depth maps of asteroid Bennu using Shape from Shading |
 | Example | [spot-sim3D](Examples/spot-sim3D/) | Keyboard-controlled quadruped walking with Simscape&trade; Multibody&trade; and Unreal Engine&reg; 3D visualization |
+| Example | [finding-pi-with-marbles](Examples/finding-pi-with-marbles/) | Estimate &pi; using a simple marble bag game discovered with Claude Code and the MATLAB MCP server |
 
 ## License
 
