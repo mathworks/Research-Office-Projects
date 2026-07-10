@@ -18,9 +18,9 @@ The pipeline takes a monochrome floor plan image and produces a 3D extruded mode
 
 ## Requirements
 
-- MATLAB R2023b or newer
-- Image Processing Toolbox
-- (Optional) Simulink 3D Animation toolbox for Sim3D export
+- MATLAB® R2023b or newer
+- Image Processing Toolbox™
+- (Optional) Simulink 3D Animation™ toolbox for Sim3D export
 
 ## Quick start
 
@@ -36,7 +36,7 @@ Or run the live script `FloorPlanTo3D.m` for a step-by-step walkthrough with plo
 
 ## Sim3D export
 
-If you have the Simulink 3D Animation toolbox, you can push the extracted geometry into a Sim3D world as box primitives:
+If you have the Simulink 3D Animation™ toolbox, you can push the extracted geometry into a Sim3D world as box primitives:
 
 ```matlab
 geometry = extractFloorPlanGeometry("test_floorplan.png");
