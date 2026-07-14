@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Office Projects — MathWorks</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #f9fafb;
+            --text: #1a1a1a;
+            --text-muted: #57606a;
+            --card-bg: #fff;
+            --card-border: #d0d7de;
+            --accent: #0076a8;
+            --accent-light: #e5f3f8;
+            --header-bg: #0076a8;
+            --toggle-bg: rgba(255, 255, 255, 0.2);
+            --tool-bg: #f0f4f8;
+            --tool-border: #d0d7de;
+        }
+
+        [data-theme="dark"] {
+            --bg: #0d1117;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --card-bg: #161b22;
+            --card-border: #30363d;
+            --accent: #58a6ff;
+            --accent-light: #1c3a5c;
+            --header-bg: #003d57;
+            --toggle-bg: rgba(255, 255, 255, 0.15);
+            --tool-bg: #1c2128;
+            --tool-border: #30363d;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 2rem;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2.5rem 1rem;
+            background: var(--header-bg);
+            border-radius: 8px;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at center, rgba(255,255,255,0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+
+        header p {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 1.1rem;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--toggle-bg);
+            border: none;
+            border-radius: 20px;
+            padding: 0.4rem 0.75rem;
+            cursor: pointer;
+            font-size: 1.1rem;
+            color: #fff;
+            transition: background 0.2s;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.35);
+        }
+
+        .open-matlab-btn {
+            display: inline-block;
+            margin-top: 0.75rem;
+            padding: 0.5rem 1.2rem;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 6px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: background 0.2s;
+        }
+
+        .open-matlab-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .intro-box {
+            max-width: 1200px;
+            margin: 0 auto 2rem;
+            padding: 1.25rem 1.5rem;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            transition: background 0.3s, border-color 0.3s;
+        }
+
+        .intro-box a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .intro-box a:hover {
+            text-decoration: underline;
+        }
+
+        .section-heading {
+            max-width: 1200px;
+            margin: 2.5rem auto 1.25rem;
+            font-size: 1.6rem;
+            color: var(--text);
+            border-bottom: 2px solid var(--card-border);
+            padding-bottom: 0.5rem;
+        }
+
+        .projects {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s, box-shadow 0.2s, background 0.3s, border-color 0.3s;
+            opacity: 0;
+            animation: fadeInUp 0.4s ease forwards;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        [data-theme="dark"] .card:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card-image {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            overflow: hidden;
+            background: #1a1a1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .card-body {
+            padding: 1.25rem 1.5rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-title a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .card-title a:hover {
+            text-decoration: underline;
+        }
+
+        .card-summary {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+            flex: 1;
+        }
+
+        .card-tools {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-top: auto;
+        }
+
+        .tool-tag {
+            background: var(--tool-bg);
+            border: 1px solid var(--tool-border);
+            color: var(--text-muted);
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .card-topics {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .topic {
+            background: var(--accent-light);
+            color: var(--accent);
+            padding: 0.12rem 0.55rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 4rem;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        footer {
+            max-width: 1200px;
+            margin: 3rem auto 0;
+            padding: 1.5rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--card-border);
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            .projects {
+                grid-template-columns: 1fr;
+            }
+
+            body {
+                padding: 1rem;
+            }
+
+            header h1 {
+                font-size: 1.75rem;
+            }
+
+            .card-image {
+                aspect-ratio: 4 / 3;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">&#9790;</button>
+        <h1>Research Office Projects</h1>
+        <p>From the MathWorks Advanced Research &amp; Technology Office</p>
+        <a class="open-matlab-btn" href="https://matlab.mathworks.com/open/github/v1?repo=mathworks/Research-Office-Projects" target="_blank" rel="noopener">
+            Open in MATLAB Online
+        </a>
+    </header>
+
+    <div class="intro-box">
+        Projects from the MathWorks Advanced Research &amp; Technology Office. Each project explores emerging workflows
+        &mdash; from event-driven camera simulation to physics-based battery optimization &mdash; and ships as a
+        self-contained, ready-to-run package. Built with the help of generative AI and the
+        <a href="https://www.mathworks.com/products/matlab-agentic-toolkit.html" target="_blank" rel="noopener">MATLAB Agentic Toolkit</a> and
+        <a href="https://github.com/matlab/simulink-agentic-toolkit" target="_blank" rel="noopener">Simulink Agentic Toolkit</a>.
+        <a href="https://github.com/mathworks/Research-Office-Projects" target="_blank" rel="noopener">Browse the repository on GitHub</a>.
+    </div>
+
+    <h2 class="section-heading" id="packages-heading">Packages</h2>
+    <div class="projects" id="packages">
+        <div class="loading">Loading projects...</div>
+    </div>
+
+    <h2 class="section-heading" id="examples-heading">Examples</h2>
+    <div class="projects" id="examples">
+        <div class="loading">Loading projects...</div>
+    </div>
+
+    <footer>
+        Built by the <a href="https://github.com/mathworks" target="_blank" rel="noopener">MathWorks</a> Advanced Research &amp; Technology Office.
+        Licensed under the <a href="https://github.com/mathworks/Research-Office-Projects/blob/main/LICENSE" target="_blank" rel="noopener">BSD-3-Clause License</a>.
+    </footer>
+
+    <script>
+        const toggle = document.getElementById("themeToggle");
+        const storedTheme = localStorage.getItem("theme");
+        if (storedTheme) {
+            document.documentElement.setAttribute("data-theme", storedTheme);
+            toggle.textContent = storedTheme === "dark" ? "☀" : "☾";
+        }
+        toggle.addEventListener("click", () => {
+            const current = document.documentElement.getAttribute("data-theme");
+            const next = current === "dark" ? "light" : "dark";
+            if (next === "light") {
+                document.documentElement.removeAttribute("data-theme");
+            } else {
+                document.documentElement.setAttribute("data-theme", next);
+            }
+            localStorage.setItem("theme", next);
+            toggle.textContent = next === "dark" ? "☀" : "☾";
+        });
+
+        const REPO_BASE = "https://github.com/mathworks/Research-Office-Projects/tree/main/";
+
+        function renderCard(project, index) {
+            const card = document.createElement("div");
+            card.className = "card";
+            card.style.animationDelay = `${index * 0.08}s`;
+
+            const link = REPO_BASE + project.folder;
+
+            const topics = project.topics && project.topics.length
+                ? `<div class="card-topics">${project.topics.map(t => `<span class="topic">${t}</span>`).join("")}</div>`
+                : "";
+
+            const tools = project.tools && project.tools.length
+                ? `<div class="card-tools">${project.tools.map(t => `<span class="tool-tag">${t}</span>`).join("")}</div>`
+                : "";
+
+            card.innerHTML = `
+                <div class="card-image">
+                    <img src="${project.image}" alt="${project.name}" loading="lazy">
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title"><a href="${link}" target="_blank" rel="noopener">${project.name}</a></h3>
+                    ${topics}
+                    <p class="card-summary">${project.summary}</p>
+                    ${tools}
+                </div>
+            `;
+
+            return card;
+        }
+
+        async function main() {
+            const packagesContainer = document.getElementById("packages");
+            const examplesContainer = document.getElementById("examples");
+
+            try {
+                const response = await fetch("projects.json");
+                if (!response.ok) throw new Error("Failed to load projects data.");
+                const projects = await response.json();
+
+                const packages = projects.filter(p => p.type === "package");
+                const examples = projects.filter(p => p.type === "example");
+
+                packagesContainer.innerHTML = "";
+                examplesContainer.innerHTML = "";
+
+                if (packages.length === 0) {
+                    packagesContainer.innerHTML = '<p class="loading">No packages found.</p>';
+                } else {
+                    packages.forEach((project, index) => {
+                        packagesContainer.appendChild(renderCard(project, index));
+                    });
+                }
+
+                if (examples.length === 0) {
+                    examplesContainer.innerHTML = '<p class="loading">No examples found.</p>';
+                } else {
+                    examples.forEach((project, index) => {
+                        examplesContainer.appendChild(renderCard(project, index + packages.length));
+                    });
+                }
+            } catch (error) {
+                packagesContainer.innerHTML = `<p class="loading">${error.message}</p>`;
+                examplesContainer.innerHTML = "";
+            }
+        }
+
+        main();
+    </script>
+</body>
+</html>
