@@ -2,7 +2,7 @@
 
 ![TCSPC Histogram](hero.png)
 
-A modular, optimized, physically accurate simulator for **Single-Photon Avalanche Diode (SPAD)** based **direct Time-of-Flight (dToF)** imaging systems in MATLAB.
+A modular, optimized, physically accurate simulator for **Single-Photon Avalanche Diode (SPAD)** based **direct Time-of-Flight (dToF)** imaging systems in MATLAB&reg;.
 
 ## Overview
 
