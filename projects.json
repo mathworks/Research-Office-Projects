@@ -61,5 +61,14 @@
     "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Examples/finding-pi-with-marbles/flowchart.png",
     "tools": ["MATLAB R2024b+", "Symbolic Math Toolbox"],
     "topics": ["mathematics", "pi", "monte-carlo", "probability"]
+  },
+  {
+    "name": "MATSUBA — Physically-Based Rendering",
+    "folder": "Packages/matsuba",
+    "type": "package",
+    "summary": "Brings Mitsuba 3 into MATLAB with an idiomatic API. Build scenes, set physically-based materials, position cameras, and render photorealistic images — all from pure MATLAB code. Supports differentiable rendering for inverse optimization, transient light transport for LiDAR/ToF simulation, interactive viewer overlay, and CAD-to-render pipelines (STL/OBJ). Python interop handled automatically via mpyreq.",
+    "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Packages/matsuba/matlab/examples/getting_started.png",
+    "tools": ["MATLAB R2019b+", "Python 3.12 (auto-installed)"],
+    "topics": ["rendering", "physically-based", "mitsuba", "differentiable-rendering", "computer-vision"]
   }
 ]
