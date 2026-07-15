@@ -6,7 +6,7 @@
     "summary": "ESIM-based event camera (DVS) simulator that converts intensity frame sequences into asynchronous events by detecting threshold crossings in log-intensity space. Includes configurable noise model, refractory period, pixel bandwidth, and real-time 3-panel visualization. Ships with Simulink block library and UAV city flyover demo.",
     "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Packages/event-camera-simulator/images/eventcamera_demo.gif",
     "tools": ["MATLAB R2023a+", "Simulink (optional)", "Simulink 3D Animation (optional)"],
-    "topics": ["event-camera", "dvs", "simulink", "computer-vision", "sensor-simulation"]
+    "topics": ["event-camera", "dvs", "computer-vision", "sensor-simulation"]
   },
   {
     "name": "Floor Plan to 3D",
@@ -15,7 +15,7 @@
     "summary": "Converts monochrome architectural floor plan images into 3D extruded wall geometry with automatic detection of doors (arc symbols), windows (hatching), and passages. Uses morphological cleaning, skeleton distance transform for scale estimation, and Douglas-Peucker polygon simplification. Optional Sim3D export for virtual world integration.",
     "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Packages/floor-plan-to-3D/FloorPlanTo3D.gif",
     "tools": ["MATLAB R2023b+", "Image Processing Toolbox", "Simulink 3D Animation (optional)"],
-    "topics": ["floor-plan", "3d-modeling", "image-processing", "architecture", "sim3d"]
+    "topics": ["floor-plan", "3d-modeling", "image-processing", "architecture"]
   },
   {
     "name": "Video Framerate Upsampling",
@@ -24,7 +24,7 @@
     "summary": "Increases video frame rate using optical flow frame interpolation. Computes bidirectional flow between consecutive frames (RAFT or Farneback), forward-splats pixels with exponential importance weighting, blends with occlusion-aware temporal weighting, and fills holes with local median filtering. Supports GPU acceleration.",
     "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Packages/video-framerate-upsampling/comparison.gif",
     "tools": ["MATLAB R2024b+", "Computer Vision Toolbox", "RAFT Optical Flow Model (support package)"],
-    "topics": ["optical-flow", "video-processing", "frame-interpolation", "raft", "computer-vision"]
+    "topics": ["optical-flow", "video-processing", "frame-interpolation", "computer-vision"]
   },
   {
     "name": "Battery Fast Charging Optimization",
@@ -33,7 +33,7 @@
     "summary": "Compares CC-CV, multi-stage, and surrogate-optimized charging strategies for a lithium-ion battery using the physics-based Single Particle Model (SPM). The optimized profile achieves ~58% faster charging while respecting voltage, temperature, and lithium plating constraints. Includes an interactive app with live animation, playback controls, and direct optimization from the UI.",
     "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Examples/battery-fast-charging-optimization/images/app_demo.gif",
     "tools": ["MATLAB R2025a+", "Simulink", "Simscape", "Simscape Battery", "Stateflow", "Global Optimization Toolbox"],
-    "topics": ["battery", "optimization", "simscape", "simulink", "electric-vehicle", "model-based-design"]
+    "topics": ["battery", "optimization", "electric-vehicle", "model-based-design"]
   },
   {
     "name": "Shape from Shading — Asteroids",
@@ -42,7 +42,7 @@
     "summary": "Enhances stereo depth maps of asteroid Bennu by adding high-frequency surface detail using Shape from Shading (SfS). A screened Poisson solver corrects depth gradients to match observed shading, revealing craters and ridges that stereo alone cannot resolve.",
     "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Examples/shape-from-shading-asteroids/output.png",
     "tools": ["MATLAB R2024b+", "Computer Vision Toolbox"],
-    "topics": ["shape-from-shading", "computer-vision", "3d-reconstruction", "depth-estimation", "space"]
+    "topics": ["shape-from-shading", "3d-reconstruction", "depth-estimation", "space"]
   },
   {
     "name": "Spot Quadruped Sim3D",
@@ -51,7 +51,7 @@
     "summary": "Interactive keyboard-controlled simulation of a 12-DOF quadruped robot with trotting gait. The entire system — plant dynamics, Stateflow gait planner, analytical inverse kinematics, gravity compensation, PD joint control, and Unreal Engine 3D visualization — lives in one Simulink model. Walk, turn, and sidestep in real time.",
     "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Examples/spot-sim3D/spot-forward.gif",
     "tools": ["MATLAB R2024b+", "Simulink", "Simscape", "Simscape Multibody", "Stateflow", "Robotics System Toolbox", "Simulink 3D Animation"],
-    "topics": ["robotics", "quadruped", "simscape", "simulink", "unreal-engine", "model-based-design"]
+    "topics": ["robotics", "quadruped", "unreal-engine", "model-based-design"]
   },
   {
     "name": "Finding Pi with Marbles",
@@ -60,6 +60,6 @@
     "summary": "Estimates π using a marble bag game: start with 1 red and 1 blue marble, draw until red appears, score each game, and average converges to π/4. A new physical random process discovered using Claude Code connected to MATLAB via the MCP server. Includes Monte Carlo simulation, symbolic proof, and convergence analysis.",
     "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Examples/finding-pi-with-marbles/flowchart.png",
     "tools": ["MATLAB R2024b+", "Symbolic Math Toolbox"],
-    "topics": ["mathematics", "pi", "monte-carlo", "symbolic-math", "claude-code"]
+    "topics": ["mathematics", "pi", "monte-carlo", "probability"]
   }
 ]

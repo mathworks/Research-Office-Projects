@@ -12,48 +12,51 @@
         }
 
         :root {
-            --bg: #f9fafb;
-            --text: #1a1a1a;
-            --text-muted: #57606a;
-            --card-bg: #fff;
-            --card-border: #d0d7de;
+            --bg: #ffffff;
+            --text: #222222;
+            --text-muted: #555555;
+            --card-bg: #ffffff;
+            --card-border: #dcdcdc;
             --accent: #0076a8;
-            --accent-light: #e5f3f8;
+            --accent-orange: #d35400;
+            --accent-light: #f4f4f4;
             --header-bg: #0076a8;
-            --toggle-bg: rgba(255, 255, 255, 0.2);
-            --tool-bg: #f0f4f8;
-            --tool-border: #d0d7de;
+            --toggle-bg: rgba(255, 255, 255, 0.15);
+            --tool-bg: #f4f4f4;
+            --tool-border: #dcdcdc;
         }
 
         [data-theme="dark"] {
-            --bg: #0d1117;
-            --text: #e6edf3;
-            --text-muted: #8b949e;
-            --card-bg: #161b22;
-            --card-border: #30363d;
-            --accent: #58a6ff;
-            --accent-light: #1c3a5c;
-            --header-bg: #003d57;
+            --bg: #1a1a2e;
+            --text: #e8e8e8;
+            --text-muted: #a8a8a8;
+            --card-bg: #222244;
+            --card-border: #3a3a5c;
+            --accent: #4db8d9;
+            --accent-orange: #e87a3a;
+            --accent-light: #2a2a48;
+            --header-bg: #001a3a;
             --toggle-bg: rgba(255, 255, 255, 0.15);
-            --tool-bg: #1c2128;
-            --tool-border: #30363d;
+            --tool-bg: #252540;
+            --tool-border: #3a3a5c;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             background: var(--bg);
             color: var(--text);
-            line-height: 1.6;
-            padding: 2rem;
+            line-height: 1.5;
+            padding: 0;
             transition: background 0.3s, color 0.3s;
+            font-size: 15px;
         }
 
         header {
             text-align: center;
-            margin-bottom: 3rem;
-            padding: 2.5rem 1rem;
+            margin-bottom: 0;
+            padding: 3.5rem 2rem;
             background: var(--header-bg);
-            border-radius: 8px;
+            border-radius: 0;
             color: #fff;
             position: relative;
             overflow: hidden;
@@ -62,23 +65,27 @@
         header::before {
             content: "";
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(ellipse at center, rgba(255,255,255,0.08) 0%, transparent 70%);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 50%);
             pointer-events: none;
         }
 
         header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 2.75rem;
+            margin-bottom: 0.4rem;
             color: #fff;
+            font-weight: 300;
+            letter-spacing: 0;
         }
 
         header p {
             color: rgba(255, 255, 255, 0.85);
-            font-size: 1.1rem;
+            font-size: 1.05rem;
+            font-weight: 400;
         }
 
         .theme-toggle {
@@ -99,34 +106,19 @@
             background: rgba(255, 255, 255, 0.35);
         }
 
-        .open-matlab-btn {
-            display: inline-block;
-            margin-top: 0.75rem;
-            padding: 0.5rem 1.2rem;
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            border-radius: 6px;
-            color: #fff;
-            text-decoration: none;
-            font-size: 0.95rem;
-            transition: background 0.2s;
-        }
-
-        .open-matlab-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
 
         .intro-box {
-            max-width: 1200px;
-            margin: 0 auto 2rem;
-            padding: 1.25rem 1.5rem;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 8px;
+            max-width: 100%;
+            margin: 0;
+            padding: 2rem 4rem;
+            background: var(--accent-light);
+            border: none;
+            border-bottom: 1px solid var(--card-border);
+            border-radius: 0;
             color: var(--text-muted);
             font-size: 0.95rem;
             line-height: 1.7;
-            transition: background 0.3s, border-color 0.3s;
+            transition: background 0.3s;
         }
 
         .intro-box a {
@@ -139,42 +131,45 @@
         }
 
         .section-heading {
-            max-width: 1200px;
-            margin: 2.5rem auto 1.25rem;
-            font-size: 1.6rem;
+            max-width: 100%;
+            margin: 2.5rem 0 1.25rem;
+            padding: 0 4rem 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
             color: var(--text);
-            border-bottom: 2px solid var(--card-border);
-            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--card-border);
         }
 
         .projects {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
+            gap: 1.5rem;
+            max-width: 100%;
+            margin: 0;
+            padding: 0 4rem;
         }
 
         .card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            border-radius: 8px;
+            border-radius: 4px;
             padding: 0;
             display: flex;
             flex-direction: column;
-            transition: transform 0.2s, box-shadow 0.2s, background 0.3s, border-color 0.3s;
+            transition: transform 0.15s, box-shadow 0.15s, background 0.3s, border-color 0.3s;
             opacity: 0;
             animation: fadeInUp 0.4s ease forwards;
             overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
         }
 
         .card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
         }
 
         [data-theme="dark"] .card:hover {
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
         }
 
         @keyframes fadeInUp {
@@ -192,14 +187,14 @@
             width: 100%;
             aspect-ratio: 16 / 9;
             overflow: hidden;
-            background: #f0f4f8;
+            background: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
         [data-theme="dark"] .card-image {
-            background: #21262d;
+            background: #1e1e1e;
         }
 
         .card-image img {
@@ -213,28 +208,32 @@
             display: flex;
             flex-direction: column;
             flex: 1;
+            background: #f2f2f2;
+        }
+
+        [data-theme="dark"] .card-body {
+            background: #2a2a2a;
         }
 
         .card-title {
-            font-size: 1.3rem;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
             margin-bottom: 0.5rem;
-        }
-
-        .card-title a {
-            color: var(--accent);
-            text-decoration: none;
-        }
-
-        .card-title a:hover {
-            text-decoration: underline;
+            color: var(--accent-orange);
         }
 
         .card-summary {
-            color: var(--text-muted);
-            font-size: 0.9rem;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            color: #222222;
+            font-size: 0.88rem;
             margin-bottom: 1rem;
-            line-height: 1.6;
+            line-height: 1.55;
             flex: 1;
+        }
+
+        [data-theme="dark"] .card-summary {
+            color: #cccccc;
         }
 
         .card-tools {
@@ -245,12 +244,12 @@
         }
 
         .tool-tag {
-            background: var(--tool-bg);
-            border: 1px solid var(--tool-border);
-            color: var(--text-muted);
+            background: #0076a8;
+            border: none;
+            color: #ffffff;
             padding: 0.2rem 0.6rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
+            border-radius: 3px;
+            font-size: 0.72rem;
             font-weight: 500;
             white-space: nowrap;
         }
@@ -263,11 +262,11 @@
         }
 
         .topic {
-            background: var(--accent-light);
-            color: var(--accent);
-            padding: 0.12rem 0.55rem;
-            border-radius: 12px;
-            font-size: 0.75rem;
+            background: var(--accent-orange);
+            color: #ffffff;
+            padding: 0.2rem 0.6rem;
+            border-radius: 3px;
+            font-size: 0.72rem;
             font-weight: 500;
         }
 
@@ -279,35 +278,49 @@
         }
 
         footer {
-            max-width: 1200px;
-            margin: 3rem auto 0;
-            padding: 1.5rem;
+            max-width: 100%;
+            margin: 3rem 0 0;
+            padding: 2rem 4rem;
             text-align: center;
-            color: var(--text-muted);
+            color: #ffffff;
+            background: #002855;
             font-size: 0.85rem;
-            border-top: 1px solid var(--card-border);
+        }
+
+        [data-theme="dark"] footer {
+            background: #001a3a;
         }
 
         footer a {
-            color: var(--accent);
+            color: #8ecae6;
             text-decoration: none;
         }
 
         footer a:hover {
             text-decoration: underline;
+            color: #ffffff;
         }
 
         @media (max-width: 600px) {
             .projects {
                 grid-template-columns: 1fr;
-            }
-
-            body {
-                padding: 1rem;
+                padding: 0 1rem;
             }
 
             header h1 {
-                font-size: 1.75rem;
+                font-size: 1.5rem;
+            }
+
+            .section-heading {
+                padding: 0 1rem 0.5rem;
+            }
+
+            .intro-box {
+                padding: 1.5rem 1rem;
+            }
+
+            footer {
+                padding: 1.5rem 1rem;
             }
 
             .card-image {
@@ -321,9 +334,6 @@
         <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">&#9790;</button>
         <h1>Research Office Projects</h1>
         <p>From the MathWorks Advanced Research &amp; Technology Office</p>
-        <a class="open-matlab-btn" href="https://matlab.mathworks.com/open/github/v1?repo=mathworks/Research-Office-Projects" target="_blank" rel="noopener">
-            Open in MATLAB Online
-        </a>
     </header>
 
     <div class="intro-box">
@@ -342,6 +352,11 @@
             research-grade problems end-to-end. Each entry is self-contained with its own documentation and parameters,
             so you can clone and run immediately. New projects are added regularly as new gaps are identified.
             <a href="https://github.com/mathworks/Research-Office-Projects" target="_blank" rel="noopener">Browse the full repository on GitHub</a>.
+        </p>
+        <p style="margin-top: 1rem;">
+            <a href="https://matlab.mathworks.com/open/github/v1?repo=mathworks/Research-Office-Projects" target="_blank" rel="noopener">
+                <img src="https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg" alt="Open in MATLAB Online" style="height: 1.5rem;">
+            </a>
         </p>
     </div>
 
@@ -401,12 +416,15 @@
                     <img src="${project.image}" alt="${project.name}" loading="lazy">
                 </div>
                 <div class="card-body">
-                    <h3 class="card-title"><a href="${link}" target="_blank" rel="noopener">${project.name}</a></h3>
-                    ${topics}
+                    <h3 class="card-title">${project.name}</h3>
                     <p class="card-summary">${project.summary}</p>
+                    ${topics}
                     ${tools}
                 </div>
             `;
+
+            card.style.cursor = "pointer";
+            card.addEventListener("click", () => window.open(link, "_blank"));
 
             return card;
         }
