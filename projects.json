@@ -70,5 +70,14 @@
     "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Packages/matsuba/matlab/examples/cornell_box_aov.png",
     "tools": ["MATLAB R2019b+", "Python 3.12 (auto-installed)"],
     "topics": ["rendering", "physically-based", "mitsuba", "differentiable-rendering", "computer-vision"]
+  },
+  {
+    "name": "Solar Panel Planner",
+    "folder": "Examples/solar-power-app",
+    "type": "example",
+    "summary": "Interactive rooftop solar panel planning app. Enter any address to load satellite imagery, draw panel rectangles on the roof, optimize tilt angles, and estimate annual energy yield. Models sun position, clear-sky irradiance, temperature derating, and regional clearness index. Includes live daily power curves, monthly energy charts, and PDF report export.",
+    "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Examples/solar-power-app/hero.gif",
+    "tools": ["MATLAB R2023a+", "Mapping Toolbox", "MATLAB Report Generator (optional)"],
+    "topics": ["solar-energy", "app-building", "geospatial", "optimization"]
   }
 ]
