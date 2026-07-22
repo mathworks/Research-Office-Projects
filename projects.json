@@ -88,5 +88,15 @@
     "products": ["MATLAB", "Mapping Toolbox", "MATLAB Report Generator (optional)"],
     "topics": ["solar-energy", "app-building", "geospatial", "optimization"],
     "categories": ["Optimization & Control"]
+  },
+  {
+    "name": "FRET to Simulink Translator",
+    "folder": "Packages/fret-to-simulink",
+    "type": "Package",
+    "summary": "Translates NASA FRET temporal-logic requirements into Simulink verification artifacts — Requirements Table blocks for formal analysis with Simulink Design Verifier, and Test Assessment blocks for simulation-based runtime verification. Validated on 122 requirements across three case studies with 100% compilation success.",
+    "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Packages/fret-to-simulink/images/schematic.jpg",
+    "products": ["MATLAB", "Simulink", "Requirements Toolbox", "Simulink Test", "Simulink Design Verifier (optional)"],
+    "topics": ["formal-verification", "requirements", "fret", "test-assessment", "model-based-design"],
+    "categories": ["Verification & Validation"]
   }
 ]
