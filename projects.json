@@ -2,82 +2,91 @@
   {
     "name": "Event Camera Simulator",
     "folder": "Packages/event-camera-simulator",
-    "type": "package",
-    "summary": "ESIM-based event camera (DVS) simulator that converts intensity frame sequences into asynchronous events by detecting threshold crossings in log-intensity space. Includes configurable noise model, refractory period, pixel bandwidth, and real-time 3-panel visualization. Ships with Simulink block library and UAV city flyover demo.",
+    "type": "Package",
+    "summary": "Event camera (dynamic vision sensor) simulator that converts intensity frame sequences into asynchronous events by detecting threshold crossings in log-intensity space. Includes configurable noise model, refractory period, pixel bandwidth, and real-time 3-panel visualization. Ships with Simulink blocks and a UAV city flyover demo.",
     "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Packages/event-camera-simulator/images/eventcamera_demo.gif",
-    "tools": ["MATLAB R2023a+", "Simulink (optional)", "Simulink 3D Animation (optional)"],
-    "topics": ["event-camera", "dvs", "computer-vision", "sensor-simulation"]
+    "products": ["MATLAB", "Simulink (optional)", "Simulink 3D Animation (optional)"],
+    "topics": ["event-camera", "dvs", "computer-vision", "sensor-simulation"],
+    "categories": ["Computer Vision", "3D & Simulation"]
   },
   {
     "name": "Floor Plan to 3D",
     "folder": "Packages/floor-plan-to-3D",
-    "type": "package",
-    "summary": "Converts monochrome architectural floor plan images into 3D extruded wall geometry with automatic detection of doors (arc symbols), windows (hatching), and passages. Uses morphological cleaning, skeleton distance transform for scale estimation, and Douglas-Peucker polygon simplification. Optional Sim3D export for virtual world integration.",
+    "type": "Package",
+    "summary": "Converts architectural floor plan images into 3D extruded wall geometry, with automatic detection of doors, windows, and passages. Uses morphological cleaning, skeleton distance transform for scale estimation, and Douglas-Peucker polygon simplification. Optional Simulink 3D Animation export for virtual world integration.",
     "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Packages/floor-plan-to-3D/FloorPlanTo3D.gif",
-    "tools": ["MATLAB R2023b+", "Image Processing Toolbox", "Simulink 3D Animation (optional)"],
-    "topics": ["floor-plan", "3d-modeling", "image-processing", "architecture"]
+    "products": ["MATLAB", "Image Processing Toolbox", "Simulink 3D Animation (optional)"],
+    "topics": ["floor-plan", "3d-modeling", "image-processing", "architecture"],
+    "categories": ["Computer Vision", "3D & Simulation"]
   },
   {
     "name": "Video Framerate Upsampling",
     "folder": "Packages/video-framerate-upsampling",
-    "type": "package",
-    "summary": "Increases video frame rate using optical flow frame interpolation. Computes bidirectional flow between consecutive frames (RAFT or Farneback), forward-splats pixels with exponential importance weighting, blends with occlusion-aware temporal weighting, and fills holes with local median filtering. Supports GPU acceleration.",
+    "type": "Package",
+    "summary": "Increases video frame rate using optical flow-based frame interpolation. Computes bidirectional flow between consecutive frames (RAFT or Farneback), forward-splats pixels with exponential importance weighting, blends with occlusion-aware temporal weighting, and fills holes with local median filtering. Supports GPU acceleration.",
     "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Packages/video-framerate-upsampling/comparison.gif",
-    "tools": ["MATLAB R2024b+", "Computer Vision Toolbox", "RAFT Optical Flow Model (support package)"],
-    "topics": ["optical-flow", "video-processing", "frame-interpolation", "computer-vision"]
+    "products": ["MATLAB", "Computer Vision Toolbox", "RAFT Optical Flow Model"],
+    "topics": ["optical-flow", "video-processing", "frame-interpolation", "computer-vision"],
+    "categories": ["Computer Vision"]
   },
   {
     "name": "Battery Fast Charging Optimization",
     "folder": "Examples/battery-fast-charging-optimization",
-    "type": "example",
-    "summary": "Compares CC-CV, multi-stage, and surrogate-optimized charging strategies for a lithium-ion battery using the physics-based Single Particle Model (SPM). The optimized profile achieves ~58% faster charging while respecting voltage, temperature, and lithium plating constraints. Includes an interactive app with live animation, playback controls, and direct optimization from the UI.",
+    "type": "Example",
+    "summary": "Compares Constant-Current Constant-Voltage (CC-CV), multi-stage, and surrogate-optimized charging strategies for a lithium-ion battery using the physics-based Single Particle Model (SPM). The optimized profile achieves ~58% faster charging while respecting voltage, temperature, and lithium plating constraints. Includes an interactive app with live animation, playback controls, and direct optimization from the UI.",
     "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Examples/battery-fast-charging-optimization/images/app_demo.gif",
-    "tools": ["MATLAB R2025a+", "Simulink", "Simscape", "Simscape Battery", "Stateflow", "Global Optimization Toolbox"],
-    "topics": ["battery", "optimization", "electric-vehicle", "model-based-design"]
+    "products": ["MATLAB", "Simulink", "Simscape", "Simscape Battery", "Stateflow", "Global Optimization Toolbox"],
+    "topics": ["battery", "optimization", "electric-vehicle", "model-based-design"],
+    "categories": ["Optimization & Control"]
   },
   {
-    "name": "Shape from Shading — Asteroids",
+    "name": "Shape from Shading for Asteroids",
     "folder": "Examples/shape-from-shading-asteroids",
-    "type": "example",
+    "type": "Example",
     "summary": "Enhances stereo depth maps of asteroid Bennu by adding high-frequency surface detail using Shape from Shading (SfS). A screened Poisson solver corrects depth gradients to match observed shading, revealing craters and ridges that stereo alone cannot resolve.",
     "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Examples/shape-from-shading-asteroids/output.png",
-    "tools": ["MATLAB R2024b+", "Computer Vision Toolbox"],
-    "topics": ["shape-from-shading", "3d-reconstruction", "depth-estimation", "space"]
+    "products": ["MATLAB", "Computer Vision Toolbox"],
+    "topics": ["shape-from-shading", "3d-reconstruction", "depth-estimation", "space"],
+    "categories": ["Computer Vision", "3D & Simulation"]
   },
   {
     "name": "Spot Quadruped Sim3D",
     "folder": "Examples/spot-sim3D",
-    "type": "example",
+    "type": "Example",
     "summary": "Interactive keyboard-controlled simulation of a 12-DOF quadruped robot with trotting gait. The entire system — plant dynamics, Stateflow gait planner, analytical inverse kinematics, gravity compensation, PD joint control, and Unreal Engine 3D visualization — lives in one Simulink model. Walk, turn, and sidestep in real time.",
     "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Examples/spot-sim3D/spot-forward.gif",
-    "tools": ["MATLAB R2024b+", "Simulink", "Simscape", "Simscape Multibody", "Stateflow", "Robotics System Toolbox", "Simulink 3D Animation"],
-    "topics": ["robotics", "quadruped", "unreal-engine", "model-based-design"]
+    "products": ["MATLAB", "Simulink", "Simscape", "Simscape Multibody", "Stateflow", "Robotics System Toolbox", "Simulink 3D Animation"],
+    "topics": ["robotics", "quadruped", "unreal-engine", "model-based-design"],
+    "categories": ["Robotics", "3D & Simulation", "Optimization & Control"]
   },
   {
-    "name": "Finding Pi with Marbles",
+    "name": "Finding π with Marbles",
     "folder": "Examples/finding-pi-with-marbles",
-    "type": "example",
-    "summary": "Estimates π using a marble bag game: start with 1 red and 1 blue marble, draw until red appears, score each game, and average converges to π/4. A new physical random process discovered using Claude Code connected to MATLAB via the MCP server. Includes Monte Carlo simulation, symbolic proof, and convergence analysis.",
+    "type": "Example",
+    "summary": "Estimates π using a marble bag game: start with 1 red and 1 blue marble, draw until red appears, score each game, and watch the average converge to π/4. A new physical random process analyzed using Claude Code connected to MATLAB via the MCP server. Includes Monte Carlo simulation, symbolic proof, and convergence analysis.",
     "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Examples/finding-pi-with-marbles/flowchart.png",
-    "tools": ["MATLAB R2024b+", "Symbolic Math Toolbox"],
-    "topics": ["mathematics", "pi", "monte-carlo", "probability"]
+    "products": ["MATLAB", "Symbolic Math Toolbox"],
+    "topics": ["mathematics", "pi", "monte-carlo", "probability"],
+    "categories": ["Mathematics"]
   },
   {
-    "name": "MATSUBA — Physically-Based Rendering",
+    "name": "MATSUBA: Physically-Based Rendering",
     "folder": "Packages/matsuba",
-    "type": "package",
-    "summary": "Brings Mitsuba 3 into MATLAB with an idiomatic API. Build scenes, set physically-based materials, position cameras, and render photorealistic images — all from pure MATLAB code. Supports differentiable rendering for inverse optimization, transient light transport for LiDAR/ToF simulation, interactive viewer overlay, and CAD-to-render pipelines (STL/OBJ). Python interop handled automatically via mpyreq.",
+    "type": "Package",
+    "summary": "Brings the physically-based renderer, Mitsuba 3, into MATLAB. Builds 3D scenes, sets physically-based materials, positions cameras, and renders photorealistic images, all from within MATLAB. Supports differentiable rendering for inverse optimization, transient light transport for LiDAR simulation, and CAD-to-render pipelines. Python interoperability is handled automatically via mpyreq.",
     "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Packages/matsuba/matlab/examples/cornell_box_aov.png",
-    "tools": ["MATLAB R2019b+", "Python 3.12 (auto-installed)"],
-    "topics": ["rendering", "physically-based", "mitsuba", "differentiable-rendering", "computer-vision"]
+    "products": ["MATLAB"],
+    "topics": ["rendering", "physically-based", "mitsuba", "differentiable-rendering", "computer-vision"],
+    "categories": ["Computer Vision", "3D & Simulation"]
   },
   {
     "name": "Solar Panel Planner",
     "folder": "Examples/solar-power-app",
-    "type": "example",
-    "summary": "Interactive rooftop solar panel planning app. Enter any address to load satellite imagery, draw panel rectangles on the roof, optimize tilt angles, and estimate annual energy yield. Models sun position, clear-sky irradiance, temperature derating, and regional clearness index. Includes live daily power curves, monthly energy charts, and PDF report export.",
+    "type": "Example",
+    "summary": "Interactive rooftop solar panel planning app. Allows you to enter any address to load satellite imagery, draw panel rectangles on the roof, optimize tilt angles, and estimate annual energy yield. Models sun position, clear-sky irradiance, temperature derating, and regional clearness index. Plots daily power curves, monthly energy charts, and can export a PDF report.",
     "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Examples/solar-power-app/hero.gif",
-    "tools": ["MATLAB R2023a+", "Mapping Toolbox", "MATLAB Report Generator (optional)"],
-    "topics": ["solar-energy", "app-building", "geospatial", "optimization"]
+    "products": ["MATLAB", "Mapping Toolbox", "MATLAB Report Generator (optional)"],
+    "topics": ["solar-energy", "app-building", "geospatial", "optimization"],
+    "categories": ["Optimization & Control"]
   }
 ]

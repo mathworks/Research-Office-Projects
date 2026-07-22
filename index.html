@@ -5,25 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Research Office Projects — MathWorks</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         :root {
-            --bg: #ffffff;
+            --bg: #f5f7fa;
             --text: #222222;
-            --text-muted: #555555;
+            --text-muted: #5a6270;
             --card-bg: #ffffff;
-            --card-border: #dcdcdc;
+            --card-border: #dde1e6;
             --accent: #0076a8;
+            --accent-dark: #005a82;
             --accent-orange: #d35400;
             --accent-light: #f4f4f4;
-            --header-bg: #0076a8;
+            --header-bg: #005a82;
             --toggle-bg: rgba(255, 255, 255, 0.15);
-            --tool-bg: #f4f4f4;
-            --tool-border: #dcdcdc;
+            --sidebar-bg: #ffffff;
+            --tag-topic: #e0f2fe;
+            --tag-topic-text: #0369a1;
+            --tag-tool: #ede9fe;
+            --tag-tool-text: #6d28d9;
+            --tag-type: #d1fae5;
+            --tag-type-text: #065f46;
+            --radius: 8px;
+            --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+            --shadow-lg: 0 4px 12px rgba(0,0,0,.1);
         }
 
         [data-theme="dark"] {
@@ -33,12 +38,20 @@
             --card-bg: #222244;
             --card-border: #3a3a5c;
             --accent: #4db8d9;
+            --accent-dark: #3a9ab8;
             --accent-orange: #e87a3a;
             --accent-light: #2a2a48;
             --header-bg: #001a3a;
             --toggle-bg: rgba(255, 255, 255, 0.15);
-            --tool-bg: #252540;
-            --tool-border: #3a3a5c;
+            --sidebar-bg: #222244;
+            --tag-topic: #1e3a5f;
+            --tag-topic-text: #7dd3fc;
+            --tag-tool: #2d1b69;
+            --tag-tool-text: #c4b5fd;
+            --tag-type: #064e3b;
+            --tag-type-text: #6ee7b7;
+            --shadow: 0 1px 3px rgba(0,0,0,.3);
+            --shadow-lg: 0 4px 12px rgba(0,0,0,.4);
         }
 
         body {
@@ -46,17 +59,14 @@
             background: var(--bg);
             color: var(--text);
             line-height: 1.5;
-            padding: 0;
             transition: background 0.3s, color 0.3s;
             font-size: 15px;
         }
 
         header {
             text-align: center;
-            margin-bottom: 0;
             padding: 3.5rem 2rem;
             background: var(--header-bg);
-            border-radius: 0;
             color: #fff;
             position: relative;
             overflow: hidden;
@@ -65,10 +75,7 @@
         header::before {
             content: "";
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 50%);
             pointer-events: none;
         }
@@ -79,7 +86,6 @@
             margin-bottom: 0.4rem;
             color: #fff;
             font-weight: 300;
-            letter-spacing: 0;
         }
 
         header p {
@@ -106,15 +112,12 @@
             background: rgba(255, 255, 255, 0.35);
         }
 
-
         .intro-box {
-            max-width: 100%;
-            margin: 0;
-            padding: 2rem 4rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 32px;
             background: var(--accent-light);
-            border: none;
             border-bottom: 1px solid var(--card-border);
-            border-radius: 0;
             color: var(--text-muted);
             font-size: 0.95rem;
             line-height: 1.7;
@@ -130,156 +133,342 @@
             text-decoration: underline;
         }
 
-        .section-heading {
-            max-width: 100%;
-            margin: 2.5rem 0 1.25rem;
-            padding: 0 4rem 0.75rem;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text);
-            border-bottom: 1px solid var(--card-border);
+        /* Toolbar */
+        .toolbar {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 16px 32px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
         }
 
-        .projects {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
-            gap: 1.5rem;
-            max-width: 100%;
-            margin: 0;
-            padding: 0 4rem;
+        .search-box {
+            flex: 1;
+            min-width: 260px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 9px 14px 9px 36px;
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius);
+            font-size: .9rem;
+            outline: none;
+            background: var(--card-bg);
+            color: var(--text);
+            transition: border .2s;
+        }
+
+        .search-box input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0,118,168,.12);
+        }
+
+        .search-box svg {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .result-count {
+            font-size: .88rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        /* Active filters bar */
+        .active-filters {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 6px 32px 10px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .active-filters.visible { display: flex; }
+
+        .active-filters-label {
+            font-size: .8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        .af-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: .76rem;
+            background: var(--accent);
+            color: #fff;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background .15s;
+        }
+
+        .af-chip:hover { background: var(--accent-dark); }
+        .af-chip .af-x { font-weight: 700; font-size: .82rem; line-height: 1; }
+
+        .btn-clear {
+            padding: 6px 14px;
+            background: var(--accent-orange);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius);
+            font-size: .8rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background .2s;
+        }
+
+        .btn-clear:hover { background: #b34700; }
+
+        /* Main layout */
+        .main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 16px 32px 40px;
+            display: flex;
+            gap: 24px;
+            align-items: flex-start;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            min-width: 250px;
+            position: sticky;
+            top: 12px;
+            max-height: calc(100vh - 24px);
+            overflow-y: auto;
+            background: var(--sidebar-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius);
+            padding: 4px 0;
+            box-shadow: var(--shadow);
+        }
+
+        .sidebar::-webkit-scrollbar { width: 5px; }
+        .sidebar::-webkit-scrollbar-thumb { background: #c4c9d0; border-radius: 4px; }
+
+        .filter-section { border-bottom: 1px solid var(--card-border); }
+        .filter-section:last-child { border-bottom: none; }
+
+        .filter-header {
+            padding: 10px 14px;
+            font-size: .82rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .4px;
+            color: var(--accent);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+
+        .filter-header::after {
+            content: "\25BE";
+            font-size: .7rem;
+            transition: transform .2s;
+        }
+
+        .filter-section.collapsed .filter-header::after { transform: rotate(-90deg); }
+
+        .filter-options { padding: 0 14px 8px; }
+        .filter-section.collapsed .filter-options { display: none; }
+
+        .filter-options label {
+            display: flex;
+            align-items: flex-start;
+            gap: 6px;
+            padding: 3px 0;
+            font-size: .83rem;
+            color: var(--text);
+            cursor: pointer;
+            line-height: 1.35;
+        }
+
+        .filter-options input[type="checkbox"] {
+            margin-top: 2px;
+            accent-color: var(--accent);
+            flex-shrink: 0;
+        }
+
+        .filter-options .count {
+            color: var(--text-muted);
+            font-size: .78rem;
+            margin-left: auto;
+            white-space: nowrap;
+        }
+
+        /* Cards */
+        .cards {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
         }
 
         .card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            border-radius: 4px;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.15s, box-shadow 0.15s, background 0.3s, border-color 0.3s;
-            opacity: 0;
-            animation: fadeInUp 0.4s ease forwards;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
             overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: row;
+            transition: box-shadow .2s, transform .15s;
+            cursor: pointer;
         }
 
         .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-1px);
         }
 
-        [data-theme="dark"] .card:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(16px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .card-image {
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            overflow: hidden;
-            background: #ffffff;
+        .card-thumb-wrap {
+            width: 320px;
+            min-width: 320px;
+            max-height: 280px;
             display: flex;
             align-items: center;
             justify-content: center;
+            background: #ffffff;
+            padding: 6px;
+            overflow: hidden;
         }
 
-        [data-theme="dark"] .card-image {
+        [data-theme="dark"] .card-thumb-wrap {
             background: #1e1e1e;
         }
 
-        .card-image img {
+        .card-thumb {
             width: 100%;
             height: 100%;
             object-fit: contain;
+            display: block;
         }
 
         .card-body {
-            padding: 1.25rem 1.5rem 1.5rem;
+            padding: 14px 18px;
+            flex: 1;
             display: flex;
             flex-direction: column;
-            flex: 1;
-            background: #f2f2f2;
+            min-width: 0;
         }
 
-        [data-theme="dark"] .card-body {
-            background: #2a2a2a;
+        .card-header {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            margin-bottom: 6px;
+            flex-wrap: wrap;
         }
 
         .card-title {
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             font-weight: 700;
-            margin-bottom: 0.5rem;
             color: var(--accent-orange);
+            text-decoration: none;
+            line-height: 1.3;
+        }
+
+        .card-title:hover { text-decoration: underline; }
+
+        .card-type-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: .74rem;
+            font-weight: 700;
+            color: #fff;
+            background: var(--accent);
+            text-transform: capitalize;
         }
 
         .card-summary {
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            color: #222222;
-            font-size: 0.88rem;
-            margin-bottom: 1rem;
-            line-height: 1.55;
+            font-size: .87rem;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            line-height: 1.5;
             flex: 1;
         }
 
-        [data-theme="dark"] .card-summary {
-            color: #cccccc;
-        }
-
-        .card-tools {
+        .card-tags-area {
             display: flex;
-            flex-wrap: wrap;
-            gap: 0.4rem;
+            flex-direction: column;
+            gap: 8px;
             margin-top: auto;
         }
 
-        .tool-tag {
-            background: #0076a8;
-            border: none;
-            color: #ffffff;
-            padding: 0.2rem 0.6rem;
-            border-radius: 3px;
-            font-size: 0.72rem;
-            font-weight: 500;
+        .card-row {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .card-label {
+            font-size: .73rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: .3px;
             white-space: nowrap;
         }
 
-        .card-topics {
+        .tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.35rem;
-            margin-bottom: 0.75rem;
+            gap: 4px;
         }
 
-        .topic {
-            background: var(--accent-orange);
-            color: #ffffff;
-            padding: 0.2rem 0.6rem;
-            border-radius: 3px;
-            font-size: 0.72rem;
-            font-weight: 500;
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: .74rem;
+            line-height: 1.45;
+            white-space: nowrap;
         }
 
-        .loading {
+        .tag-topic { background: var(--tag-topic); color: var(--tag-topic-text); }
+        .tag-tool { background: var(--tag-tool); color: var(--tag-tool-text); }
+        .tag-tool-optional { background: transparent; color: var(--tag-tool-text); border: 1px solid var(--tag-tool-text); opacity: 0.7; }
+        .tag-type { background: var(--tag-type); color: var(--tag-type-text); }
+
+        /* No results */
+        .no-results {
             text-align: center;
-            padding: 4rem;
+            padding: 60px 20px;
             color: var(--text-muted);
-            font-size: 1.1rem;
+        }
+
+        .no-results h3 { font-size: 1.1rem; margin-bottom: 6px; }
+
+        .status-msg {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-muted);
+            font-size: 1rem;
         }
 
         footer {
             max-width: 100%;
-            margin: 3rem 0 0;
+            margin: 0;
             padding: 2rem 4rem;
             text-align: center;
             color: #ffffff;
@@ -287,9 +476,7 @@
             font-size: 0.85rem;
         }
 
-        [data-theme="dark"] footer {
-            background: #001a3a;
-        }
+        [data-theme="dark"] footer { background: #001a3a; }
 
         footer a {
             color: #8ecae6;
@@ -301,31 +488,18 @@
             color: #ffffff;
         }
 
-        @media (max-width: 600px) {
-            .projects {
-                grid-template-columns: 1fr;
-                padding: 0 1rem;
-            }
+        @media (max-width: 900px) {
+            .main { flex-direction: column; padding: 16px; }
+            .sidebar { width: 100%; min-width: 0; position: static; max-height: none; }
+            .toolbar, .active-filters { padding-left: 16px; padding-right: 16px; }
+            .intro-box { padding: 1.5rem 1rem; }
+            footer { padding: 1.5rem 1rem; }
+        }
 
-            header h1 {
-                font-size: 1.5rem;
-            }
-
-            .section-heading {
-                padding: 0 1rem 0.5rem;
-            }
-
-            .intro-box {
-                padding: 1.5rem 1rem;
-            }
-
-            footer {
-                padding: 1.5rem 1rem;
-            }
-
-            .card-image {
-                aspect-ratio: 4 / 3;
-            }
+        @media (max-width: 700px) {
+            .card { flex-direction: column; }
+            .card-thumb-wrap { width: 100%; min-width: 0; max-height: 200px; }
+            header h1 { font-size: 1.5rem; }
         }
     </style>
 </head>
@@ -334,40 +508,50 @@
         <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">&#9790;</button>
         <h1>Research Office Projects</h1>
         <p>From the MathWorks Advanced Research &amp; Technology Office</p>
+        <div style="margin-top: 1rem; display: inline-flex; align-items: center; gap: 1rem;">
+            <a href="https://matlab.mathworks.com/open/github/v1?repo=mathworks/Research-Office-Projects" target="_blank" rel="noopener" style="display: inline-flex; align-items: center;">
+                <img src="https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg" alt="Open in MATLAB Online" style="height: 1.5rem; vertical-align: middle;">
+            </a>
+            <a href="https://github.com/mathworks/Research-Office-Projects" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 6px; color: #fff; text-decoration: none; font-size: 0.85rem; opacity: 0.85;">
+                <svg height="18" width="18" viewBox="0 0 16 16" fill="currentColor" style="vertical-align: middle;"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+                GitHub
+            </a>
+        </div>
     </header>
 
     <div class="intro-box">
         <p>
-            This repository is a rapid-publication channel for the MathWorks Advanced Research &amp; Technology Office.
-            Its purpose is to quickly expose gap capabilities, prototype missing workflows, and demonstrate advanced
-            uses of MathWorks tools that go beyond what ships in standard product examples. Every project here was
-            developed using agentic workflows &mdash; AI-driven iteration loops powered by the
-            <a href="https://www.mathworks.com/products/matlab-agentic-toolkit.html" target="_blank" rel="noopener">MATLAB Agentic Toolkit</a> and the
-            <a href="https://github.com/matlab/simulink-agentic-toolkit" target="_blank" rel="noopener">Simulink Agentic Toolkit</a> &mdash;
-            enabling a single engineer to go from concept to fully documented, ready-to-run package in days rather than weeks.
+            The Research Office Projects page is a rapid-publication channel from the MathWorks Advanced Research &amp; Technology Office.
+            It provides early previews of new algorithms, experimental capabilities, and work that extends beyond the functionality and examples shipping with MATLAB&reg; and Simulink&reg;.
+            The projects span a growing range of domains, including physics-based optimization, computer vision,
+            robotics, and sensor simulation, where MATLAB and Simulink can address complex research problems.
         </p>
         <p style="margin-top: 0.6rem;">
-            The projects span a growing range of domains &mdash; from physics-based optimization and computer vision
-            to robotics, sensor simulation, and beyond &mdash; showcasing how MATLAB&reg; and Simulink&reg; can tackle
-            research-grade problems end-to-end. Each entry is self-contained with its own documentation and parameters,
-            so you can clone and run immediately. New projects are added regularly as new gaps are identified.
-            <a href="https://github.com/mathworks/Research-Office-Projects" target="_blank" rel="noopener">Browse the full repository on GitHub</a>.
-        </p>
-        <p style="margin-top: 1rem;">
-            <a href="https://matlab.mathworks.com/open/github/v1?repo=mathworks/Research-Office-Projects" target="_blank" rel="noopener">
-                <img src="https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg" alt="Open in MATLAB Online" style="height: 1.5rem;">
-            </a>
+            Each project featured here has been developed with the help of agentic AI workflows, using
+            <a href="https://www.mathworks.com/products/matlab-mcp-server.html" target="_blank" rel="noopener">MATLAB MCP Server</a>,
+            <a href="https://www.mathworks.com/products/matlab-agentic-toolkit.html" target="_blank" rel="noopener">MATLAB Agentic Toolkit</a>, and
+            <a href="https://www.mathworks.com/products/simulink-agentic-toolkit.html" target="_blank" rel="noopener">Simulink Agentic Toolkit</a>.
         </p>
     </div>
 
-    <h2 class="section-heading" id="packages-heading">Packages</h2>
-    <div class="projects" id="packages">
-        <div class="loading">Loading projects...</div>
+    <div class="toolbar">
+        <div class="search-box">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="searchInput" placeholder="Search by name, topic, tool...">
+        </div>
+        <span class="result-count" id="resultCount"></span>
+    </div>
+    <div class="active-filters" id="activeFilters">
+        <span class="active-filters-label">Filtered by:</span>
+        <span id="activeChips"></span>
+        <button class="btn-clear" id="clearBtn">Clear All</button>
     </div>
 
-    <h2 class="section-heading" id="examples-heading">Examples</h2>
-    <div class="projects" id="examples">
-        <div class="loading">Loading projects...</div>
+    <div class="main">
+        <aside class="sidebar" id="sidebar"></aside>
+        <section class="cards" id="cardsContainer">
+            <div class="status-msg" id="statusMsg">Loading projects&hellip;</div>
+        </section>
     </div>
 
     <footer>
@@ -376,6 +560,30 @@
     </footer>
 
     <script>
+    (function () {
+        "use strict";
+
+        const REPO_BASE = "https://github.com/mathworks/Research-Office-Projects/tree/main/";
+
+        const FILTER_DEFS = [
+            { key: "type", label: "Type", tagClass: "tag-type", isScalar: true },
+            { key: "categories", label: "Categories", tagClass: "tag-topic" },
+            { key: "products", label: "Products", tagClass: "tag-tool" },
+        ];
+
+        let allProjects = [];
+        let filterState = {};
+
+        const $sidebar = document.getElementById("sidebar");
+        const $cards = document.getElementById("cardsContainer");
+        const $search = document.getElementById("searchInput");
+        const $count = document.getElementById("resultCount");
+        const $clear = document.getElementById("clearBtn");
+        const $status = document.getElementById("statusMsg");
+        const $activeFilters = document.getElementById("activeFilters");
+        const $activeChips = document.getElementById("activeChips");
+
+        // Theme toggle
         const toggle = document.getElementById("themeToggle");
         const storedTheme = localStorage.getItem("theme");
         if (storedTheme) {
@@ -394,78 +602,212 @@
             toggle.textContent = next === "dark" ? "☀" : "☾";
         });
 
-        const REPO_BASE = "https://github.com/mathworks/Research-Office-Projects/tree/main/";
+        fetch("projects.json")
+            .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+            .then(data => { allProjects = data; boot(); })
+            .catch(err => { $status.textContent = "Failed to load projects.json — " + err.message; });
 
-        function renderCard(project, index) {
-            const card = document.createElement("div");
-            card.className = "card";
-            card.style.animationDelay = `${index * 0.08}s`;
+        function boot() {
+            $status.remove();
+            buildSidebar();
+            applyFilters();
+            $search.addEventListener("input", applyFilters);
+            $clear.addEventListener("click", clearAll);
+        }
 
-            const link = REPO_BASE + project.folder;
+        function buildSidebar() {
+            let html = "";
+            FILTER_DEFS.forEach(def => {
+                const vals = collectValues(def.key, def.isScalar);
+                if (!vals.length) return;
+                filterState[def.key] = new Set();
+                html += `<div class="filter-section" data-key="${def.key}">`;
+                html += `<div class="filter-header">${def.label}</div>`;
+                html += `<div class="filter-options">`;
+                vals.forEach(v => {
+                    const id = `f_${def.key}_${v.replace(/\W/g, "_")}`;
+                    html += `<label><input type="checkbox" data-key="${def.key}" value="${escAttr(v)}" id="${id}"> ${esc(v)} <span class="count" data-ckey="${def.key}" data-cval="${escAttr(v)}"></span></label>`;
+                });
+                html += `</div></div>`;
+            });
+            $sidebar.innerHTML = html;
+            $sidebar.querySelectorAll(".filter-header").forEach(h => {
+                h.addEventListener("click", () => h.parentElement.classList.toggle("collapsed"));
+            });
+            $sidebar.querySelectorAll('input[type="checkbox"][data-key]').forEach(cb => {
+                cb.addEventListener("change", () => {
+                    const s = filterState[cb.dataset.key];
+                    cb.checked ? s.add(cb.value) : s.delete(cb.value);
+                    applyFilters();
+                });
+            });
+        }
 
-            const topics = project.topics && project.topics.length
-                ? `<div class="card-topics">${project.topics.map(t => `<span class="topic">${t}</span>`).join("")}</div>`
+        function normalizeProductForFilter(t) {
+            if (/^MATLAB\b/i.test(t)) return "MATLAB";
+            if (/^Simulink\b/i.test(t)) return "Simulink";
+            return t;
+        }
+
+        function collectValues(key, isScalar) {
+            const set = new Set();
+            allProjects.forEach(p => {
+                if (isScalar) { if (p[key]) set.add(p[key]); }
+                else {
+                    (p[key] || []).forEach(v => {
+                        set.add(key === "products" ? normalizeProductForFilter(v) : v);
+                    });
+                }
+            });
+            const sorted = [...set].sort((a, b) => a.localeCompare(b));
+            if (key === "products") {
+                const pinned = ["MATLAB", "Simulink"];
+                const top = pinned.filter(x => sorted.includes(x));
+                const rest = sorted.filter(x => !pinned.includes(x));
+                return [...top, ...rest];
+            }
+            return sorted;
+        }
+
+        function applyFilters() {
+            const q = $search.value.trim().toLowerCase();
+            const filtered = allProjects.filter(p => {
+                if (q && !matchesSearch(p, q)) return false;
+                for (const def of FILTER_DEFS) {
+                    const sel = filterState[def.key];
+                    if (!sel || sel.size === 0) continue;
+                    if (def.isScalar) {
+                        if (!sel.has(p[def.key])) return false;
+                    } else {
+                        const arr = p[def.key] || [];
+                        const normalized = def.key === "products" ? arr.map(normalizeProductForFilter) : arr;
+                        if (!normalized.some(v => sel.has(v))) return false;
+                    }
+                }
+                return true;
+            });
+            renderCards(filtered);
+            updateCounts(filtered);
+            renderActiveFilters();
+            $count.textContent = `Showing ${filtered.length} of ${allProjects.length} projects`;
+        }
+
+        function matchesSearch(p, q) {
+            const fields = [
+                p.name,
+                p.summary,
+                p.type,
+                ...(p.categories || []),
+                ...(p.products || []),
+            ];
+            return fields.some(f => f && f.toLowerCase().includes(q));
+        }
+
+        function updateCounts(filtered) {
+            $sidebar.querySelectorAll(".count").forEach(span => {
+                const key = span.dataset.ckey;
+                const val = span.dataset.cval;
+                const def = FILTER_DEFS.find(d => d.key === key);
+                let n = 0;
+                filtered.forEach(p => {
+                    if (def.isScalar) { if (p[key] === val) n++; }
+                    else {
+                        const arr = key === "products" ? (p[key] || []).map(normalizeProductForFilter) : (p[key] || []);
+                        if (arr.includes(val)) n++;
+                    }
+                });
+                span.textContent = n;
+            });
+        }
+
+        function renderActiveFilters() {
+            let chips = [];
+            const q = $search.value.trim();
+            if (q) {
+                chips.push(`<span class="af-chip" data-action="search">Search: "${esc(q)}" <span class="af-x">✕</span></span>`);
+            }
+            FILTER_DEFS.forEach(def => {
+                const sel = filterState[def.key];
+                if (!sel) return;
+                sel.forEach(v => {
+                    chips.push(`<span class="af-chip" data-action="filter" data-key="${def.key}" data-val="${escAttr(v)}">${esc(v)} <span class="af-x">✕</span></span>`);
+                });
+            });
+            $activeChips.innerHTML = chips.join("");
+            $activeFilters.classList.toggle("visible", chips.length > 0);
+            $activeChips.querySelectorAll(".af-chip").forEach(chip => {
+                chip.addEventListener("click", () => {
+                    const action = chip.dataset.action;
+                    if (action === "search") {
+                        $search.value = "";
+                    } else if (action === "filter") {
+                        const key = chip.dataset.key;
+                        const val = chip.dataset.val;
+                        filterState[key].delete(val);
+                        const cb = $sidebar.querySelector(`input[data-key="${key}"][value="${CSS.escape(val)}"]`);
+                        if (cb) cb.checked = false;
+                    }
+                    applyFilters();
+                });
+            });
+        }
+
+        function renderCards(projects) {
+            if (!projects.length) {
+                $cards.innerHTML = `<div class="no-results"><h3>No projects match your filters</h3><p>Try broadening your search or clearing filters.</p></div>`;
+                return;
+            }
+            $cards.innerHTML = projects.map(cardHTML).join("");
+            $cards.querySelectorAll(".card").forEach((card, i) => {
+                card.addEventListener("click", (e) => {
+                    if (e.target.tagName === "A") return;
+                    window.open(REPO_BASE + projects[i].folder, "_blank");
+                });
+            });
+        }
+
+        function cardHTML(p) {
+            const categoriesHTML = p.categories && p.categories.length
+                ? `<div class="card-row"><span class="card-label">Categories:</span><div class="tags">${p.categories.map(v => `<span class="tag tag-topic">${esc(v)}</span>`).join("")}</div></div>`
+                : "";
+            const productsHTML = p.products && p.products.length
+                ? `<div class="card-row"><span class="card-label">Products:</span><div class="tags">${p.products.map(v => {
+                    const isOptional = /\(optional\)/i.test(v);
+                    const label = v.replace(/\s*\(optional\)/i, "");
+                    const cls = isOptional ? "tag tag-tool-optional" : "tag tag-tool";
+                    const tooltip = isOptional ? "Optional dependency" : "Required";
+                    return `<span class="${cls}" title="${tooltip}">${esc(label)}</span>`;
+                }).join("")}</div></div>`
                 : "";
 
-            const tools = project.tools && project.tools.length
-                ? `<div class="card-tools">${project.tools.map(t => `<span class="tool-tag">${t}</span>`).join("")}</div>`
-                : "";
-
-            card.innerHTML = `
-                <div class="card-image">
-                    <img src="${project.image}" alt="${project.name}" loading="lazy">
+            return `<article class="card">
+                <div class="card-thumb-wrap">
+                    <img class="card-thumb" src="${escAttr(p.image)}" alt="${escAttr(p.name)}" loading="lazy">
                 </div>
                 <div class="card-body">
-                    <h3 class="card-title">${project.name}</h3>
-                    <p class="card-summary">${project.summary}</p>
-                    ${topics}
-                    ${tools}
+                    <div class="card-header">
+                        <a class="card-title" href="${escAttr(REPO_BASE + p.folder)}" target="_blank" rel="noopener">${esc(p.name)}</a>
+                        <span class="card-type-badge">${esc(p.type)}</span>
+                    </div>
+                    <p class="card-summary">${esc(p.summary)}</p>
+                    <div class="card-tags-area">
+                        ${categoriesHTML}
+                        ${productsHTML}
+                    </div>
                 </div>
-            `;
-
-            card.style.cursor = "pointer";
-            card.addEventListener("click", () => window.open(link, "_blank"));
-
-            return card;
+            </article>`;
         }
 
-        async function main() {
-            const packagesContainer = document.getElementById("packages");
-            const examplesContainer = document.getElementById("examples");
-
-            try {
-                const response = await fetch("projects.json");
-                if (!response.ok) throw new Error("Failed to load projects data.");
-                const projects = await response.json();
-
-                const packages = projects.filter(p => p.type === "package");
-                const examples = projects.filter(p => p.type === "example");
-
-                packagesContainer.innerHTML = "";
-                examplesContainer.innerHTML = "";
-
-                if (packages.length === 0) {
-                    packagesContainer.innerHTML = '<p class="loading">No packages found.</p>';
-                } else {
-                    packages.forEach((project, index) => {
-                        packagesContainer.appendChild(renderCard(project, index));
-                    });
-                }
-
-                if (examples.length === 0) {
-                    examplesContainer.innerHTML = '<p class="loading">No examples found.</p>';
-                } else {
-                    examples.forEach((project, index) => {
-                        examplesContainer.appendChild(renderCard(project, index + packages.length));
-                    });
-                }
-            } catch (error) {
-                packagesContainer.innerHTML = `<p class="loading">${error.message}</p>`;
-                examplesContainer.innerHTML = "";
-            }
+        function clearAll() {
+            $search.value = "";
+            Object.values(filterState).forEach(s => s.clear());
+            $sidebar.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+            applyFilters();
         }
 
-        main();
+        function esc(s) { const d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
+        function escAttr(s) { return s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+    })();
     </script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-# MATSUBA - Physically-Based Rendering for MATLAB&reg;
+# MATSUBA: Physically-Based Rendering for MATLAB&reg;
 
 MATSUBA brings [Mitsuba 3](https://mitsuba.readthedocs.io/) into MATLAB&reg; with an idiomatic API. Write pure MATLAB code to build scenes, set materials, position cameras, and render photorealistic images. All Python&trade; interop is handled behind the scenes.
 
