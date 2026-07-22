@@ -19,8 +19,8 @@ classdef SolarPanelApp < handle
         IsPanning logical = false
         PanStart = []
 
-        Latitude double = 42.3010
-        Longitude double = -71.3744
+        Latitude double = 42.3677
+        Longitude double = -71.0711
         Panels = {}     % ROI rectangle handles
         PanelTilts = [] % per-panel tilt angles (degrees)
         SunEdges = {}   % line handles showing sun-facing edge
@@ -35,6 +35,7 @@ classdef SolarPanelApp < handle
 
     methods
         function app = SolarPanelApp()
+            addpath(fullfile(fileparts(mfilename('fullpath')), 'helpers'));
             app.buildUI();
             app.loadMap();
         end
@@ -61,7 +62,7 @@ classdef SolarPanelApp < handle
             topBar.BackgroundColor = [0.14 0.14 0.16];
 
             app.AddressField = uieditfield(topBar, 'text', ...
-                'Value', '1 Lakeside Campus Drive, Natick, MA', ...
+                'Value', 'Museum of Science, 1 Science Pk, Boston, MA 02114', ...
                 'Placeholder', 'Enter address...');
             app.LoadButton = uibutton(topBar, 'Text', 'Load', ...
                 'ButtonPushedFcn', @(~,~) app.safeCall(@app.loadAddress), ...
