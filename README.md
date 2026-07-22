@@ -18,6 +18,7 @@ Projects from the MathWorks Advanced Research & Technology Office. Each project 
 | Package | [video-framerate-upsampling](Packages/video-framerate-upsampling/) | Increases video frame rate using optical flow (RAFT/Farneback) frame interpolation |
 | Package | [floor-plan-to-3D](Packages/floor-plan-to-3D/) | Convert architectural floor plan images into 3D wall geometry with automatic door, window, and passage detection |
 | Package | [matsuba](Packages/matsuba/) | Physically-based rendering for MATLAB via Mitsuba 3 — photorealistic images, differentiable rendering, and transient light transport |
+| Package | [fret-to-simulink](Packages/fret-to-simulink/) | Translate NASA FRET temporal-logic requirements into Simulink Requirements Table and Test Assessment blocks for formal and runtime verification |
 | Example | [battery-fast-charging-optimization](Examples/battery-fast-charging-optimization/) | Compare CC-CV, multi-stage, and fmincon-optimized charging strategies for a lithium-ion battery (SPM) with interactive app |
 | Example | [shape-from-shading-asteroids](Examples/shape-from-shading-asteroids/) | Enhance stereo depth maps of asteroid Bennu using Shape from Shading |
 | Example | [spot-sim3D](Examples/spot-sim3D/) | Keyboard-controlled quadruped walking with Simscape&trade; Multibody&trade; and Unreal Engine&reg; 3D visualization |
