@@ -1,0 +1,29 @@
+# Python
+.venv/
+.mpyreq/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+
+# MATLAB
+*.asv
+*.mex*
+slprj/
+*.mlapp.autosave
+
+# Debug renders
+debug_*.png
+
+# Downloaded gallery scenes
+scenes/
+
+# Claude Code
+.claude/
+.agents/
+.mcp.json
+CLAUDE.md
+
+# OS
+Thumbs.db
+.DS_Store

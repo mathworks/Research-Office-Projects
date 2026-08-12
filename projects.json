@@ -1,0 +1,102 @@
+[
+  {
+    "name": "Event Camera Simulator",
+    "folder": "Packages/event-camera-simulator",
+    "type": "Package",
+    "summary": "Event camera (dynamic vision sensor) simulator that converts intensity frame sequences into asynchronous events by detecting threshold crossings in log-intensity space. Includes configurable noise model, refractory period, pixel bandwidth, and real-time 3-panel visualization. Ships with Simulink blocks and a UAV city flyover demo.",
+    "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Packages/event-camera-simulator/images/eventcamera_demo.gif",
+    "products": ["MATLAB", "Simulink (optional)", "Simulink 3D Animation (optional)"],
+    "topics": ["event-camera", "dvs", "computer-vision", "sensor-simulation"],
+    "categories": ["Computer Vision", "3D & Simulation"]
+  },
+  {
+    "name": "Floor Plan to 3D",
+    "folder": "Packages/floor-plan-to-3D",
+    "type": "Package",
+    "summary": "Converts architectural floor plan images into 3D extruded wall geometry, with automatic detection of doors, windows, and passages. Uses morphological cleaning, skeleton distance transform for scale estimation, and Douglas-Peucker polygon simplification. Optional Simulink 3D Animation export for virtual world integration.",
+    "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Packages/floor-plan-to-3D/FloorPlanTo3D.gif",
+    "products": ["MATLAB", "Image Processing Toolbox", "Simulink 3D Animation (optional)"],
+    "topics": ["floor-plan", "3d-modeling", "image-processing", "architecture"],
+    "categories": ["Computer Vision", "3D & Simulation"]
+  },
+  {
+    "name": "Video Framerate Upsampling",
+    "folder": "Packages/video-framerate-upsampling",
+    "type": "Package",
+    "summary": "Increases video frame rate using optical flow-based frame interpolation. Computes bidirectional flow between consecutive frames (RAFT or Farneback), forward-splats pixels with exponential importance weighting, blends with occlusion-aware temporal weighting, and fills holes with local median filtering. Supports GPU acceleration.",
+    "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Packages/video-framerate-upsampling/comparison.gif",
+    "products": ["MATLAB", "Computer Vision Toolbox", "RAFT Optical Flow Model"],
+    "topics": ["optical-flow", "video-processing", "frame-interpolation", "computer-vision"],
+    "categories": ["Computer Vision"]
+  },
+  {
+    "name": "Battery Fast Charging Optimization",
+    "folder": "Examples/battery-fast-charging-optimization",
+    "type": "Example",
+    "summary": "Compares Constant-Current Constant-Voltage (CC-CV), multi-stage, and surrogate-optimized charging strategies for a lithium-ion battery using the physics-based Single Particle Model (SPM). The optimized profile achieves ~58% faster charging while respecting voltage, temperature, and lithium plating constraints. Includes an interactive app with live animation, playback controls, and direct optimization from the UI.",
+    "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Examples/battery-fast-charging-optimization/images/app_demo.gif",
+    "products": ["MATLAB", "Simulink", "Simscape", "Simscape Battery", "Stateflow", "Global Optimization Toolbox"],
+    "topics": ["battery", "optimization", "electric-vehicle", "model-based-design"],
+    "categories": ["Optimization & Control"]
+  },
+  {
+    "name": "Shape from Shading for Asteroids",
+    "folder": "Examples/shape-from-shading-asteroids",
+    "type": "Example",
+    "summary": "Enhances stereo depth maps of asteroid Bennu by adding high-frequency surface detail using Shape from Shading (SfS). A screened Poisson solver corrects depth gradients to match observed shading, revealing craters and ridges that stereo alone cannot resolve.",
+    "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Examples/shape-from-shading-asteroids/output.png",
+    "products": ["MATLAB", "Computer Vision Toolbox"],
+    "topics": ["shape-from-shading", "3d-reconstruction", "depth-estimation", "space"],
+    "categories": ["Computer Vision", "3D & Simulation"]
+  },
+  {
+    "name": "Spot Quadruped Sim3D",
+    "folder": "Examples/spot-sim3D",
+    "type": "Example",
+    "summary": "Interactive keyboard-controlled simulation of a 12-DOF quadruped robot with trotting gait. Plant dynamics, Stateflow gait planning, analytical inverse kinematics, gravity compensation, PD joint control, and Unreal Engine 3D visualization run in one Simulink model. Walk, turn, and sidestep in real time.",
+    "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Examples/spot-sim3D/spot-forward.gif",
+    "products": ["MATLAB", "Simulink", "Simscape", "Simscape Multibody", "Stateflow", "Robotics System Toolbox", "Simulink 3D Animation"],
+    "topics": ["robotics", "quadruped", "unreal-engine", "model-based-design"],
+    "categories": ["Robotics", "3D & Simulation", "Optimization & Control"]
+  },
+  {
+    "name": "Finding π with Marbles",
+    "folder": "Examples/finding-pi-with-marbles",
+    "type": "Example",
+    "summary": "Estimates π using a marble bag game: start with 1 red and 1 blue marble, draw until red appears, score each game, and watch the average converge to π/4. The example was developed in a Claude Code and MATLAB MCP workflow and includes Monte Carlo simulation, symbolic proof, and convergence analysis.",
+    "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Examples/finding-pi-with-marbles/flowchart.png",
+    "products": ["MATLAB", "Symbolic Math Toolbox"],
+    "topics": ["mathematics", "pi", "monte-carlo", "probability"],
+    "categories": ["Mathematics"]
+  },
+  {
+    "name": "MATSUBA: Physically-Based Rendering",
+    "folder": "Packages/matsuba",
+    "type": "Package",
+    "summary": "Brings the physically-based renderer, Mitsuba 3, into MATLAB. Builds 3D scenes, sets physically-based materials, positions cameras, and renders photorealistic images, all from within MATLAB. Supports differentiable rendering for inverse optimization, transient light transport for LiDAR simulation, and CAD-to-render pipelines. Python interoperability is handled automatically via mpyreq.",
+    "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Packages/matsuba/matlab/examples/cornell_box_aov.png",
+    "products": ["MATLAB"],
+    "topics": ["rendering", "physically-based", "mitsuba", "differentiable-rendering", "computer-vision"],
+    "categories": ["Computer Vision", "3D & Simulation"]
+  },
+  {
+    "name": "Solar Panel Planner",
+    "folder": "Examples/solar-power-app",
+    "type": "Example",
+    "summary": "Interactive rooftop solar panel planning app. Allows you to enter any address to load satellite imagery, draw panel rectangles on the roof, optimize tilt angles, and estimate annual energy yield. Models sun position, clear-sky irradiance, temperature derating, and regional clearness index. Plots daily power curves, monthly energy charts, and can export a PDF report.",
+    "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Examples/solar-power-app/hero.gif",
+    "products": ["MATLAB", "Mapping Toolbox", "MATLAB Report Generator (optional)"],
+    "topics": ["solar-energy", "app-building", "geospatial", "optimization"],
+    "categories": ["Optimization & Control"]
+  },
+  {
+    "name": "FRET to Simulink Translator",
+    "folder": "Packages/fret-to-simulink",
+    "type": "Package",
+    "summary": "Translates NASA FRET temporal-logic requirements into Simulink verification artifacts: Requirements Table blocks for formal analysis with Simulink Design Verifier, and Test Assessment blocks for simulation-based runtime verification. Validated on 122 requirements across three case studies with 100% compilation success.",
+    "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Packages/fret-to-simulink/images/schematic.jpg",
+    "products": ["MATLAB", "Simulink", "Requirements Toolbox", "Simulink Test", "Simulink Design Verifier (optional)"],
+    "topics": ["formal-verification", "requirements", "fret", "test-assessment", "model-based-design"],
+    "categories": ["Verification & Validation"]
+  }
+]

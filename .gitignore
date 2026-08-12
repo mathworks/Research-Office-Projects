@@ -1,0 +1,25 @@
+# Local AI/tooling state
+.claude/
+.codex/
+.agents/
+.mcp.json
+CLAUDE.md
+
+# MATLAB temporary files
+*.asv
+*.m~
+*.autosave
+*.mlapp.autosave
+
+# MATLAB/Simulink generated artifacts
+slprj/
+*.slxc
+*.slx.r20*
+codegen/
+*.mex*
+
+# Python generated artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
