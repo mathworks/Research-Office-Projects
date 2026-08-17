@@ -1,0 +1,187 @@
+{
+  "builder": "simscapeBuilder",
+  "version": "1.0",
+  "description": "Builds Simscape physical network models (electrical, mechanical, thermal, hydraulic). Uses connection-label wiring for topology.",
+  "call_signature": "[mdl, meta, info] = simscapeBuilder(spec, modelName, 'Solver', 'ode23t')",
+
+  "fields": [
+    {
+      "path": "domain",
+      "type": "char",
+      "required": true,
+      "description": "Primary physical domain: 'electrical', 'rotational', 'translational', 'thermal', 'hydraulic'. Used for reference block inference."
+    },
+    {
+      "path": "components",
+      "type": "struct_array",
+      "required": true,
+      "description": "Physical elements. Each has .name, .library, .parameters, and either .nodes (legacy 2-terminal) or .ports (multi-port)."
+    },
+    {
+      "path": "components(i).name",
+      "type": "char",
+      "required": true,
+      "description": "Block instance name (e.g., 'R1', 'Motor1'). Valid MATLAB identifier."
+    },
+    {
+      "path": "components(i).library",
+      "type": "char",
+      "required": true,
+      "description": "Full Simscape library path. E.g., 'fl_lib/Electrical/Electrical Elements/Resistor'"
+    },
+    {
+      "path": "components(i).parameters",
+      "type": "struct",
+      "required": false,
+      "description": "Parameter name-value pairs. Names are CASE-SENSITIVE (often lowercase in Simscape). E.g., struct('R','100') for Resistor."
+    },
+    {
+      "path": "components(i).nodes",
+      "type": "cell_of_char",
+      "required": false,
+      "description": "Legacy 2-terminal: {'+_node', '-_node'}. Maps to LConn1=+, RConn1=-. Use .ports for multi-port blocks."
+    },
+    {
+      "path": "components(i).ports",
+      "type": "struct",
+      "required": false,
+      "description": "Explicit port-to-node mapping for multi-port blocks. E.g., struct('LConn1','node_a','RConn1','node_b','RConn2','node_c')"
+    },
+    {
+      "path": "sources",
+      "type": "struct_array",
+      "required": false,
+      "description": "Source blocks (voltage/current/force/speed sources). Same fields as components, plus optional .input for controlled sources."
+    },
+    {
+      "path": "sources(i).input",
+      "type": "char",
+      "required": false,
+      "description": "Simulink signal name for controlled source input. If non-empty, creates SL-PS converter + Inport."
+    },
+    {
+      "path": "sensors",
+      "type": "struct_array",
+      "required": false,
+      "description": "Sensor blocks. Same fields as components, plus .output and optional .ps_ports."
+    },
+    {
+      "path": "sensors(i).output",
+      "type": "char_or_cell",
+      "required": true,
+      "description": "Output signal name(s). String for single output, cell array for multi-output sensors."
+    },
+    {
+      "path": "sensors(i).ps_ports",
+      "type": "cell_of_char",
+      "required": false,
+      "description": "Which port IDs are Physical Signal outputs (e.g., {'RConn2','RConn3'}). Default: {'RConn1'} for legacy format."
+    },
+    {
+      "path": "references",
+      "type": "struct_array",
+      "required": false,
+      "description": "Reference/ground blocks for multi-domain models. Each: .domain, .node, .library (optional, inferred from domain)."
+    },
+    {
+      "path": "ground_node",
+      "type": "char",
+      "required": false,
+      "description": "Legacy single-domain: node name for the reference (default: 'gnd'). Use .references for multi-domain."
+    },
+    {
+      "path": "description",
+      "type": "char",
+      "required": false,
+      "description": "Model description annotation."
+    },
+    {
+      "path": "source_equations",
+      "type": "cell_of_char",
+      "required": false,
+      "description": "Original equations from paper (for traceability)."
+    }
+  ],
+
+  "examples": [
+    {
+      "name": "rlc_circuit",
+      "description": "Series RLC circuit with DC voltage source and capacitor voltage measurement",
+      "spec": {
+        "domain": "electrical",
+        "components": [
+          {"name": "R1", "library": "fl_lib/Electrical/Electrical Elements/Resistor", "parameters": {"R": "100"}, "nodes": ["n1", "n2"]},
+          {"name": "L1", "library": "fl_lib/Electrical/Electrical Elements/Inductor", "parameters": {"L": "0.01"}, "nodes": ["n2", "n3"]},
+          {"name": "C1", "library": "fl_lib/Electrical/Electrical Elements/Capacitor", "parameters": {"C": "1e-6"}, "nodes": ["n3", "gnd"]}
+        ],
+        "sources": [
+          {"name": "Vs", "library": "fl_lib/Electrical/Electrical Sources/DC Voltage Source", "parameters": {"v0": "12"}, "nodes": ["n1", "gnd"], "input": ""}
+        ],
+        "sensors": [
+          {"name": "Vc_sensor", "library": "fl_lib/Electrical/Electrical Sensors/Voltage Sensor", "nodes": ["n3", "gnd"], "output": "Vc"}
+        ],
+        "ground_node": "gnd"
+      }
+    },
+    {
+      "name": "dc_motor_multi_domain",
+      "description": "DC motor (electrical + rotational) with multi-domain references",
+      "spec": {
+        "domain": "electrical",
+        "components": [
+          {"name": "Ra", "library": "fl_lib/Electrical/Electrical Elements/Resistor", "parameters": {"R": "2.5"}, "nodes": ["n1", "n2"]},
+          {"name": "La", "library": "fl_lib/Electrical/Electrical Elements/Inductor", "parameters": {"L": "0.001"}, "nodes": ["n2", "n3"]},
+          {"name": "EMF", "library": "fl_lib/Electrical/Electrical Elements/Rotational Electromechanical Converter", "ports": {"LConn1": "n3", "LConn2": "elec_gnd", "RConn1": "shaft_a", "RConn2": "mech_gnd"}, "parameters": {"K": "0.1"}},
+          {"name": "J", "library": "fl_lib/Mechanical/Rotational Elements/Inertia", "ports": {"LConn1": "shaft_a"}, "parameters": {"J": "0.01"}},
+          {"name": "B", "library": "fl_lib/Mechanical/Rotational Elements/Rotational Damper", "nodes": ["shaft_a", "mech_gnd"], "parameters": {"D": "0.001"}}
+        ],
+        "sources": [
+          {"name": "Vs", "library": "fl_lib/Electrical/Electrical Sources/DC Voltage Source", "parameters": {"v0": "24"}, "nodes": ["n1", "elec_gnd"], "input": ""}
+        ],
+        "sensors": [
+          {"name": "Speed", "library": "fl_lib/Mechanical/Mechanical Sensors/Ideal Rotational Motion Sensor", "ports": {"LConn1": "shaft_a", "LConn2": "mech_gnd"}, "ps_ports": ["RConn1", "RConn2"], "output": ["speed", "angle"]}
+        ],
+        "references": [
+          {"domain": "electrical", "node": "elec_gnd"},
+          {"domain": "rotational", "node": "mech_gnd"}
+        ]
+      }
+    }
+  ],
+
+  "tests": [
+    {
+      "name": "missing_domain_rejected",
+      "spec": {"components": [{"name": "R1", "library": "fl_lib/Electrical/Electrical Elements/Resistor", "nodes": ["a","b"]}]},
+      "expect_valid": false,
+      "expect_issue_contains": "domain"
+    },
+    {
+      "name": "missing_components_rejected",
+      "spec": {"domain": "electrical"},
+      "expect_valid": false,
+      "expect_issue_contains": "components"
+    },
+    {
+      "name": "component_missing_name_rejected",
+      "spec": {"domain": "electrical", "components": [{"library": "fl_lib/Electrical/Electrical Elements/Resistor", "nodes": ["a","b"]}]},
+      "expect_valid": false,
+      "expect_issue_contains": "name"
+    },
+    {
+      "name": "component_missing_library_rejected",
+      "spec": {"domain": "electrical", "components": [{"name": "R1", "nodes": ["a","b"]}]},
+      "expect_valid": false,
+      "expect_issue_contains": "library"
+    },
+    {
+      "name": "minimal_valid",
+      "spec": {
+        "domain": "electrical",
+        "components": [{"name": "R1", "library": "fl_lib/Electrical/Electrical Elements/Resistor", "parameters": {"R": "10"}, "nodes": ["a", "b"]}],
+        "ground_node": "b"
+      },
+      "expect_valid": true
+    }
+  ]
+}

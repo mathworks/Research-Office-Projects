@@ -1,0 +1,8 @@
+exclude:
+  - Packages/xtosim/phases
+  - Packages/xtosim/design
+  - Packages/xtosim/SKILL.md
+  - Packages/xtosim/builders.md
+  - Packages/xtosim/bus.md
+  - Packages/xtosim/rules.md
+  - Packages/xtosim/spec_format.md

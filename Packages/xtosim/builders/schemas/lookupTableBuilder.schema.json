@@ -1,0 +1,137 @@
+{
+  "builder": "lookupTableBuilder",
+  "version": "1.0",
+  "description": "Creates 1-D, 2-D, or n-D Lookup Table blocks from empirical data (curves, maps, measured data).",
+  "call_signature": "[blkPath, meta, info] = lookupTableBuilder(spec, mdl)",
+
+  "fields": [
+    {
+      "path": "name",
+      "type": "char",
+      "required": true,
+      "description": "Block name (e.g., 'EngineTorqueMap', 'TireLateralForce'). Valid MATLAB identifier."
+    },
+    {
+      "path": "type",
+      "type": "char",
+      "required": false,
+      "description": "'1D', '2D', or 'nD'. Auto-detected from breakpoints length if omitted."
+    },
+    {
+      "path": "breakpoints",
+      "type": "cell",
+      "required": true,
+      "description": "Cell array of breakpoint vectors. 1D: {bp1}. 2D: {bp1, bp2}. Each element is a numeric vector."
+    },
+    {
+      "path": "tableData",
+      "type": "numeric",
+      "required": true,
+      "description": "Output values array. 1D: vector (length=numel(bp1)). 2D: matrix [numel(bp1) x numel(bp2)]. Must match breakpoint dimensions."
+    },
+    {
+      "path": "inputNames",
+      "type": "cell_of_char",
+      "required": true,
+      "description": "Input signal names. One per breakpoint dimension. E.g., {'slip_angle'} or {'speed_rpm','throttle'}."
+    },
+    {
+      "path": "outputName",
+      "type": "char",
+      "required": true,
+      "description": "Output signal name (e.g., 'lateral_force', 'torque_Nm')."
+    },
+    {
+      "path": "outputUnit",
+      "type": "char",
+      "required": false,
+      "description": "Output unit string (e.g., 'N', 'N-m')."
+    },
+    {
+      "path": "inputUnits",
+      "type": "cell_of_char",
+      "required": false,
+      "description": "Input unit strings. One per breakpoint dimension."
+    },
+    {
+      "path": "interpMethod",
+      "type": "char",
+      "required": false,
+      "description": "'Linear' (default), 'Nearest', or 'Cubic spline'."
+    },
+    {
+      "path": "extrapMethod",
+      "type": "char",
+      "required": false,
+      "description": "'Clip' (default) or 'Linear'."
+    },
+    {
+      "path": "description",
+      "type": "char",
+      "required": false,
+      "description": "Block annotation."
+    },
+    {
+      "path": "subsystem",
+      "type": "char",
+      "required": false,
+      "description": "Target subsystem path."
+    }
+  ],
+
+  "examples": [
+    {
+      "name": "tire_lateral_force_1d",
+      "description": "1-D tire lateral force vs slip angle",
+      "spec": {
+        "name": "TireLateralForce",
+        "breakpoints": [[-15,-10,-5,0,5,10,15]],
+        "tableData": [-4000,-3200,-1800,0,1800,3200,4000],
+        "inputNames": ["slip_angle_deg"],
+        "outputName": "Fy",
+        "outputUnit": "N"
+      }
+    },
+    {
+      "name": "engine_torque_map_2d",
+      "description": "2-D engine torque map (RPM x throttle)",
+      "spec": {
+        "name": "EngineTorqueMap",
+        "type": "2D",
+        "breakpoints": [[1000,2000,3000,4000,5000,6000], [0,0.25,0.5,0.75,1.0]],
+        "tableData": [[0,20,50,80,100,90],[0,40,100,160,200,180],[0,60,150,240,300,270],[0,70,175,280,350,315],[0,80,200,320,400,360]],
+        "inputNames": ["engine_rpm", "throttle"],
+        "outputName": "torque_Nm",
+        "outputUnit": "N-m",
+        "interpMethod": "Linear",
+        "extrapMethod": "Clip"
+      }
+    }
+  ],
+
+  "tests": [
+    {
+      "name": "missing_name_rejected",
+      "spec": {"breakpoints": [[0,1,2]], "tableData": [0,1,4], "inputNames": ["x"], "outputName": "y"},
+      "expect_valid": false,
+      "expect_issue_contains": "name"
+    },
+    {
+      "name": "missing_breakpoints_rejected",
+      "spec": {"name": "T1", "tableData": [0,1,2], "inputNames": ["x"], "outputName": "y"},
+      "expect_valid": false,
+      "expect_issue_contains": "breakpoints"
+    },
+    {
+      "name": "missing_tableData_rejected",
+      "spec": {"name": "T1", "breakpoints": [[0,1,2]], "inputNames": ["x"], "outputName": "y"},
+      "expect_valid": false,
+      "expect_issue_contains": "tableData"
+    },
+    {
+      "name": "minimal_valid_1d",
+      "spec": {"name": "LUT1", "breakpoints": [[0,1,2,3]], "tableData": [0,1,4,9], "inputNames": ["x"], "outputName": "y"},
+      "expect_valid": true
+    }
+  ]
+}

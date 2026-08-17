@@ -1,0 +1,193 @@
+{
+  "builder": "simeventsBuilder",
+  "version": "1.0",
+  "description": "Builds SimEvents discrete-event simulation models. Entity flow networks: generators, queues, servers, switches, gates, terminators. Optional hybrid DES-continuous dynamics.",
+  "call_signature": "[mdl, meta, info] = simeventsBuilder(spec, modelName)",
+
+  "fields": [
+    {
+      "path": "blocks",
+      "type": "struct_array",
+      "required": true,
+      "description": "DES blocks. Each has .name, .type, optional .parameters and .actions."
+    },
+    {
+      "path": "blocks(i).name",
+      "type": "char",
+      "required": true,
+      "description": "Block instance name. Valid MATLAB identifier."
+    },
+    {
+      "path": "blocks(i).type",
+      "type": "char",
+      "required": true,
+      "description": "Block type: 'generator', 'queue', 'server', 'terminator', 'gate', 'output_switch', 'input_switch', 'delay', 'resource_pool', 'resource_acquirer', 'resource_releaser', 'batch_creator', 'batch_splitter', 'replicator', 'entity_store', 'entity_find', 'entity_selector'"
+    },
+    {
+      "path": "blocks(i).parameters",
+      "type": "struct",
+      "required": false,
+      "description": "Block parameters (type-specific). E.g., for generator: struct('GenerationMethod','Intergeneration time','InterGenerationTime','exprnd(1)')"
+    },
+    {
+      "path": "blocks(i).actions",
+      "type": "struct",
+      "required": false,
+      "description": "Entity actions. Fields: .entry, .exit, .generate, .service_complete, .blocked (all optional char)."
+    },
+    {
+      "path": "connections",
+      "type": "struct_array",
+      "required": true,
+      "description": "Entity flow wiring. Each: .from, .to, optional .from_port (int), .to_port (int)."
+    },
+    {
+      "path": "connections(i).from",
+      "type": "char",
+      "required": true,
+      "description": "Source block name."
+    },
+    {
+      "path": "connections(i).to",
+      "type": "char",
+      "required": true,
+      "description": "Destination block name."
+    },
+    {
+      "path": "attributes",
+      "type": "struct_array",
+      "required": false,
+      "description": "Entity attributes. Each: .name (char), .initial (optional value)."
+    },
+    {
+      "path": "signal_inputs",
+      "type": "struct_array",
+      "required": false,
+      "description": "Simulink→DES bridging. Each: .name (Inport name), .target (DES block), .target_port, .use_message."
+    },
+    {
+      "path": "signal_outputs",
+      "type": "struct_array",
+      "required": false,
+      "description": "DES→Simulink bridging. Each: .name (Outport name), .source (DES block), .source_port, .use_message."
+    },
+    {
+      "path": "resources",
+      "type": "struct_array",
+      "required": false,
+      "description": "Resource pools. Each: .name, .amount (integer)."
+    },
+    {
+      "path": "simulink_functions",
+      "type": "struct_array",
+      "required": false,
+      "description": "Callable Simulink Functions for hybrid DES. Each: .name, .arguments, .returns, .body, .body_wiring."
+    },
+    {
+      "path": "continuous_dynamics",
+      "type": "struct_array",
+      "required": false,
+      "description": "Continuous-time blocks for hybrid DES. Each: .name, .type, .parameters."
+    },
+    {
+      "path": "continuous_wiring",
+      "type": "struct_array",
+      "required": false,
+      "description": "Wiring for continuous blocks. Each: .from, .from_port, .to, .to_port."
+    },
+    {
+      "path": "hit_crossings",
+      "type": "struct_array",
+      "required": false,
+      "description": "Threshold event detectors. Each: .name, .offset, .direction, .source, .target."
+    },
+    {
+      "path": "data_stores",
+      "type": "struct_array",
+      "required": false,
+      "description": "Shared data stores for DES-continuous coupling. Each: .name."
+    },
+    {
+      "path": "description",
+      "type": "char",
+      "required": false,
+      "description": "Model description."
+    }
+  ],
+
+  "examples": [
+    {
+      "name": "simple_queue_server",
+      "description": "Basic M/M/1 queue: generate → queue → serve → terminate",
+      "spec": {
+        "blocks": [
+          {"name": "Arrivals", "type": "generator", "parameters": {"InterGenerationTime": "exprnd(1)"}},
+          {"name": "Buffer", "type": "queue", "parameters": {"Capacity": "100"}},
+          {"name": "Processor", "type": "server", "parameters": {"ServiceTime": "exprnd(0.8)"}},
+          {"name": "Exit", "type": "terminator"}
+        ],
+        "connections": [
+          {"from": "Arrivals", "to": "Buffer"},
+          {"from": "Buffer", "to": "Processor"},
+          {"from": "Processor", "to": "Exit"}
+        ]
+      }
+    },
+    {
+      "name": "resource_constrained",
+      "description": "Server that acquires a resource before processing",
+      "spec": {
+        "blocks": [
+          {"name": "Source", "type": "generator", "parameters": {"InterGenerationTime": "2"}},
+          {"name": "GetTool", "type": "resource_acquirer", "parameters": {"ResourceName": "'tools'"}},
+          {"name": "Machine", "type": "server", "parameters": {"ServiceTime": "5"}},
+          {"name": "ReturnTool", "type": "resource_releaser", "parameters": {"ResourceName": "'tools'"}},
+          {"name": "Sink", "type": "terminator"}
+        ],
+        "connections": [
+          {"from": "Source", "to": "GetTool"},
+          {"from": "GetTool", "to": "Machine"},
+          {"from": "Machine", "to": "ReturnTool"},
+          {"from": "ReturnTool", "to": "Sink"}
+        ],
+        "resources": [
+          {"name": "tools", "amount": 3}
+        ]
+      }
+    }
+  ],
+
+  "tests": [
+    {
+      "name": "missing_blocks_rejected",
+      "spec": {"connections": [{"from": "A", "to": "B"}]},
+      "expect_valid": false,
+      "expect_issue_contains": "blocks"
+    },
+    {
+      "name": "missing_connections_rejected",
+      "spec": {"blocks": [{"name": "Gen", "type": "generator"}]},
+      "expect_valid": false,
+      "expect_issue_contains": "connections"
+    },
+    {
+      "name": "block_missing_type_rejected",
+      "spec": {"blocks": [{"name": "Gen"}], "connections": []},
+      "expect_valid": false,
+      "expect_issue_contains": "type"
+    },
+    {
+      "name": "minimal_valid",
+      "spec": {
+        "blocks": [
+          {"name": "Gen", "type": "generator"},
+          {"name": "Sink", "type": "terminator"}
+        ],
+        "connections": [
+          {"from": "Gen", "to": "Sink"}
+        ]
+      },
+      "expect_valid": true
+    }
+  ]
+}

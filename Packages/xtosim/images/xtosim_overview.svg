@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 632 120" font-family="Segoe UI, Arial, sans-serif">
+  <!-- Input box -->
+  <rect x="10" y="30" width="200" height="60" fill="white" stroke="#555" stroke-width="2" rx="6"/>
+  <!-- Paper icon -->
+  <path d="M20,45 L20,70 L38,70 L38,53 L32,45 Z" fill="none" stroke="#555" stroke-width="1.3"/>
+  <path d="M32,45 L32,53 L38,53" fill="none" stroke="#555" stroke-width="1.3"/>
+  <line x1="23" y1="53" x2="34" y2="53" stroke="#999" stroke-width="0.8"/>
+  <line x1="23" y1="57" x2="34" y2="57" stroke="#999" stroke-width="0.8"/>
+  <line x1="23" y1="61" x2="30" y2="61" stroke="#999" stroke-width="0.8"/>
+  <!-- Image icon -->
+  <rect x="43" y="45" width="20" height="15" fill="none" stroke="#555" stroke-width="1.3" rx="2"/>
+  <circle cx="48" cy="50" r="2" fill="#999"/>
+  <polyline points="43,58 49,52 54,56 59,53 63,58" fill="none" stroke="#999" stroke-width="1"/>
+  <text x="137" y="54" text-anchor="middle" font-size="16" fill="#333">PDF / Images /</text>
+  <text x="137" y="74" text-anchor="middle" font-size="16" fill="#333">Equations / Text</text>
+
+  <!-- Arrow 1 -->
+  <line x1="218" y1="60" x2="248" y2="60" stroke="#555" stroke-width="3.5"/>
+  <polygon points="248,53 262,60 248,67" fill="#555"/>
+
+  <!-- xToSim box -->
+  <rect x="268" y="25" width="130" height="70" fill="#e8740c" stroke="#c45e08" stroke-width="2" rx="6"/>
+  <text x="333" y="66" text-anchor="middle" font-size="19" font-weight="bold" fill="white">xToSim</text>
+
+  <!-- Arrow 2 -->
+  <line x1="406" y1="60" x2="436" y2="60" stroke="#555" stroke-width="3.5"/>
+  <polygon points="436,53 450,60 436,67" fill="#555"/>
+
+  <!-- Output box -->
+  <rect x="456" y="20" width="168" height="80" fill="white" stroke="#555" stroke-width="2" rx="6"/>
+  <!-- Row 1: Simulink icon + text -->
+  <rect x="466" y="33" width="20" height="12" fill="#cce5ff" stroke="#4a90d9" stroke-width="1" rx="2"/>
+  <rect x="466" y="48" width="20" height="12" fill="#cce5ff" stroke="#4a90d9" stroke-width="1" rx="2"/>
+  <line x1="486" y1="39" x2="491" y2="39" stroke="#333" stroke-width="1"/>
+  <line x1="491" y1="39" x2="491" y2="54" stroke="#333" stroke-width="1"/>
+  <line x1="486" y1="54" x2="491" y2="54" stroke="#333" stroke-width="1"/>
+  <text x="499" y="49" font-size="16" fill="#333">Simulink Model</text>
+  <!-- Row 2: Report icon + text -->
+  <rect x="467" y="67" width="16" height="20" fill="none" stroke="#555" stroke-width="1.2" rx="1"/>
+  <line x1="471" y1="73" x2="479" y2="73" stroke="#999" stroke-width="1"/>
+  <line x1="471" y1="77" x2="479" y2="77" stroke="#999" stroke-width="1"/>
+  <line x1="471" y1="81" x2="476" y2="81" stroke="#999" stroke-width="1"/>
+  <text x="499" y="81" font-size="16" fill="#333">HTML Report</text>
+</svg>

@@ -98,5 +98,15 @@
     "products": ["MATLAB", "Simulink", "Requirements Toolbox", "Simulink Test", "Simulink Design Verifier (optional)"],
     "topics": ["formal-verification", "requirements", "fret", "test-assessment", "model-based-design"],
     "categories": ["Verification & Validation"]
+  },
+  {
+    "name": "xToSim",
+    "folder": "Packages/xtosim",
+    "type": "Package",
+    "summary": "AI-powered pipeline that converts research papers, equations, images, and system descriptions into validated, hierarchical Simulink models. Uses multiple specialized builders (ODE, Simscape, Stateflow, blockset, lookup table, SimEvents) orchestrated by an AI coding assistant with a live MATLAB connection via MCP.",
+    "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Packages/xtosim/images/xtosim_overview.svg",
+    "products": ["MATLAB", "Simulink", "Simscape (optional)", "Stateflow (optional)", "SimEvents (optional)", "System Composer (optional)"],
+    "topics": ["ai-assisted", "model-generation", "simulink", "model-based-design", "automation"],
+    "categories": ["AI & Automation", "Model-Based Design"]
   }
 ]

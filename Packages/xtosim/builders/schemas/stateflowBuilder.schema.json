@@ -1,0 +1,206 @@
+{
+  "builder": "stateflowBuilder",
+  "version": "1.0",
+  "description": "Builds pure discrete state machines using Stateflow charts. For FSM, control logic, mode managers, protocol handlers. NOT for ODEs-per-state (use odeBuilder_cps).",
+  "call_signature": "[mdl, meta, info] = stateflowBuilder(spec, modelName)",
+
+  "fields": [
+    {
+      "path": "states",
+      "type": "struct_array",
+      "required": true,
+      "description": "State definitions. Each has .name (required), .entry, .during, .exit, .parent (all optional)."
+    },
+    {
+      "path": "states(i).name",
+      "type": "char",
+      "required": true,
+      "description": "State name (valid MATLAB identifier). E.g., 'Off', 'Running', 'Fault'"
+    },
+    {
+      "path": "states(i).entry",
+      "type": "char",
+      "required": false,
+      "description": "Entry action (MATLAB syntax). E.g., 'led=1; counter=0;'"
+    },
+    {
+      "path": "states(i).during",
+      "type": "char",
+      "required": false,
+      "description": "During action (executed each time step while in state)."
+    },
+    {
+      "path": "states(i).exit",
+      "type": "char",
+      "required": false,
+      "description": "Exit action."
+    },
+    {
+      "path": "states(i).parent",
+      "type": "char",
+      "required": false,
+      "description": "Parent state name for hierarchical state machines. Empty = top-level."
+    },
+    {
+      "path": "transitions",
+      "type": "struct_array",
+      "required": true,
+      "description": "Transition definitions. Each has .from, .to, .guard, .action, .event, .order."
+    },
+    {
+      "path": "transitions(i).from",
+      "type": "char",
+      "required": true,
+      "description": "Source state name. Empty string '' = default transition (enters initial state)."
+    },
+    {
+      "path": "transitions(i).to",
+      "type": "char",
+      "required": true,
+      "description": "Destination state name."
+    },
+    {
+      "path": "transitions(i).guard",
+      "type": "char",
+      "required": false,
+      "description": "Guard condition (without []). E.g., 'speed > 5 && gear < 4'"
+    },
+    {
+      "path": "transitions(i).action",
+      "type": "char",
+      "required": false,
+      "description": "Transition action (without {}). E.g., 'gear = gear + 1;'"
+    },
+    {
+      "path": "transitions(i).event",
+      "type": "char",
+      "required": false,
+      "description": "Triggering event name."
+    },
+    {
+      "path": "transitions(i).order",
+      "type": "numeric",
+      "required": false,
+      "description": "Evaluation order (lower = first). Matters when multiple transitions leave same state."
+    },
+    {
+      "path": "inputs",
+      "type": "cell_of_char_or_struct_array",
+      "required": true,
+      "description": "Input signals. Either cell of names (e.g., {'speed','brake'}) or struct array with .name, .type, .size."
+    },
+    {
+      "path": "outputs",
+      "type": "cell_of_char_or_struct_array",
+      "required": true,
+      "description": "Output signals. Either cell of names or struct array with .name, .type, .size, .initial."
+    },
+    {
+      "path": "initial",
+      "type": "char",
+      "required": true,
+      "description": "Name of the default/initial state. Must match one of states(i).name."
+    },
+    {
+      "path": "local_data",
+      "type": "struct_array",
+      "required": false,
+      "description": "Local variables. Each: .name, .type (default 'double'), .initial (default '0')."
+    },
+    {
+      "path": "events",
+      "type": "struct_array",
+      "required": false,
+      "description": "Event definitions. Each: .name, .scope ('Input' or 'Local')."
+    },
+    {
+      "path": "description",
+      "type": "char",
+      "required": false,
+      "description": "Chart description annotation."
+    },
+    {
+      "path": "sample_time",
+      "type": "char",
+      "required": false,
+      "description": "Chart sample time. '-1'=inherited, '0.01'=100Hz discrete."
+    }
+  ],
+
+  "examples": [
+    {
+      "name": "led_toggle",
+      "description": "Simple on/off toggle with button input",
+      "spec": {
+        "states": [
+          {"name": "Off", "entry": "led=0;", "during": "", "exit": "", "parent": ""},
+          {"name": "On", "entry": "led=1;", "during": "", "exit": "", "parent": ""}
+        ],
+        "transitions": [
+          {"from": "", "to": "Off", "guard": "", "action": "", "event": "", "order": 1},
+          {"from": "Off", "to": "On", "guard": "button==1", "action": "", "event": "", "order": 1},
+          {"from": "On", "to": "Off", "guard": "button==0", "action": "", "event": "", "order": 1}
+        ],
+        "inputs": ["button"],
+        "outputs": [{"name": "led", "type": "double", "size": "1", "initial": "0"}],
+        "initial": "Off"
+      }
+    },
+    {
+      "name": "gear_shift_logic",
+      "description": "Automatic transmission gear selection",
+      "spec": {
+        "states": [
+          {"name": "Gear1", "entry": "gear=1;", "during": "", "exit": "", "parent": ""},
+          {"name": "Gear2", "entry": "gear=2;", "during": "", "exit": "", "parent": ""},
+          {"name": "Gear3", "entry": "gear=3;", "during": "", "exit": "", "parent": ""},
+          {"name": "Gear4", "entry": "gear=4;", "during": "", "exit": "", "parent": ""}
+        ],
+        "transitions": [
+          {"from": "", "to": "Gear1", "guard": "", "action": "", "event": "", "order": 1},
+          {"from": "Gear1", "to": "Gear2", "guard": "speed>20 && throttle>0.3", "action": "", "event": "", "order": 1},
+          {"from": "Gear2", "to": "Gear3", "guard": "speed>40 && throttle>0.3", "action": "", "event": "", "order": 1},
+          {"from": "Gear3", "to": "Gear4", "guard": "speed>60 && throttle>0.3", "action": "", "event": "", "order": 1},
+          {"from": "Gear4", "to": "Gear3", "guard": "speed<50", "action": "", "event": "", "order": 1},
+          {"from": "Gear3", "to": "Gear2", "guard": "speed<30", "action": "", "event": "", "order": 1},
+          {"from": "Gear2", "to": "Gear1", "guard": "speed<15", "action": "", "event": "", "order": 1}
+        ],
+        "inputs": ["speed", "throttle"],
+        "outputs": [{"name": "gear", "type": "double", "size": "1", "initial": "1"}],
+        "initial": "Gear1"
+      }
+    }
+  ],
+
+  "tests": [
+    {
+      "name": "missing_states_rejected",
+      "spec": {"transitions": [{"from": "", "to": "A"}], "inputs": ["x"], "outputs": ["y"], "initial": "A"},
+      "expect_valid": false,
+      "expect_issue_contains": "states"
+    },
+    {
+      "name": "missing_transitions_rejected",
+      "spec": {"states": [{"name": "A"}], "inputs": ["x"], "outputs": ["y"], "initial": "A"},
+      "expect_valid": false,
+      "expect_issue_contains": "transitions"
+    },
+    {
+      "name": "missing_initial_rejected",
+      "spec": {"states": [{"name": "A"}], "transitions": [{"from": "", "to": "A"}], "inputs": ["x"], "outputs": ["y"]},
+      "expect_valid": false,
+      "expect_issue_contains": "initial"
+    },
+    {
+      "name": "minimal_valid",
+      "spec": {
+        "states": [{"name": "Idle", "entry": "", "during": "", "exit": "", "parent": ""}],
+        "transitions": [{"from": "", "to": "Idle", "guard": "", "action": "", "event": "", "order": 1}],
+        "inputs": ["trigger"],
+        "outputs": ["active"],
+        "initial": "Idle"
+      },
+      "expect_valid": true
+    }
+  ]
+}

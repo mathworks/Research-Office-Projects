@@ -1,0 +1,121 @@
+{
+  "builder": "odeBuilder",
+  "version": "1.0",
+  "description": "Builds Simulink subsystems from LaTeX ODE/algebraic equations using integrator chains, gains, and summers.",
+  "call_signature": "[c, m, cellEq, info] = odeBuilder(eqStr, mdl, 'Params', params, 'IC', ic, 'Logging', true, 'Arrange', true)",
+
+  "fields": [
+    {
+      "path": "equations",
+      "type": "char",
+      "required": true,
+      "description": "Space-separated double-quoted LaTeX equations in first-order form. E.g., '\"\\dot{x} = v\" \"\\dot{v} = -k*x\"'. Accepts char, string array, or cell array of chars."
+    },
+    {
+      "path": "params",
+      "type": "struct",
+      "required": false,
+      "description": "Struct mapping parameter names to numeric values. Field names = parameter symbols used in equations. Written to model InitFcn. E.g., struct('k',100,'m',1,'b',0.5)"
+    },
+    {
+      "path": "ic",
+      "type": "struct",
+      "required": false,
+      "description": "Struct mapping state names to initial condition values (numeric). State names must match LHS of \\dot{} terms. E.g., struct('x',0,'v',1)"
+    },
+    {
+      "path": "inputs",
+      "type": "cell_of_char",
+      "required": false,
+      "description": "External input signal names. Auto-detected from equations if omitted. Explicit list forces specific inport ordering."
+    }
+  ],
+
+  "name_value_pairs": [
+    {"name": "Params", "maps_to": "params"},
+    {"name": "IC", "maps_to": "ic"},
+    {"name": "Logging", "type": "logical", "default": true, "description": "Enable signal logging on integrator outputs"},
+    {"name": "Arrange", "type": "logical", "default": true, "description": "Auto-arrange blocks for readability"}
+  ],
+
+  "outputs": {
+    "c": "Computational graph struct (nodeListOfEq, nodeToBlock) — compatible with createHierarchy",
+    "m": "Model mapping struct — compatible with createHierarchy",
+    "cellEq": "Cell array of individual equation strings (parsed from eqStr)",
+    "info": "Build info: .elapsed_s, .block_count, .warnings, .states, .inputs, .algebraic_outputs"
+  },
+
+  "examples": [
+    {
+      "name": "simple_pendulum",
+      "description": "Nonlinear pendulum with gravity",
+      "spec": {
+        "equations": "\"\\dot{\\theta} = \\omega\" \"\\dot{\\omega} = -g/L * \\sin(\\theta)\"",
+        "params": {"g": 9.81, "L": 1.0},
+        "ic": {"theta": 0.5, "omega": 0}
+      },
+      "expected_states": ["theta", "omega"],
+      "expected_inputs": []
+    },
+    {
+      "name": "forced_spring_damper",
+      "description": "Linear spring-mass-damper with external force input",
+      "spec": {
+        "equations": "\"\\dot{x} = v\" \"\\dot{v} = (-k*x - b*v + F)/m\"",
+        "params": {"k": 100, "m": 1, "b": 10},
+        "ic": {"x": 0, "v": 0},
+        "inputs": ["F"]
+      },
+      "expected_states": ["x", "v"],
+      "expected_inputs": ["F"]
+    },
+    {
+      "name": "induction_motor_dq",
+      "description": "5-state induction motor in dq frame with algebraic outputs",
+      "spec": {
+        "equations": "\"\\dot{\\psi_{ds}} = v_{ds} - R_s * i_{ds} + \\omega_e * \\psi_{qs}\" \"\\dot{\\psi_{qs}} = v_{qs} - R_s * i_{qs} - \\omega_e * \\psi_{ds}\" \"\\dot{\\psi_{dr}} = -R_r * i_{dr} + (\\omega_e - \\omega_r) * \\psi_{qr}\" \"\\dot{\\psi_{qr}} = -R_r * i_{qr} - (\\omega_e - \\omega_r) * \\psi_{dr}\" \"\\dot{\\omega_r} = (T_e - T_L - B * \\omega_r) * P / (2*J)\" \"i_{ds} = (L_r * \\psi_{ds} - L_m * \\psi_{dr}) / (L_s * L_r - L_m^2)\" \"T_e = (3*P/4) * L_m * (i_{qs} * \\psi_{dr} - i_{ds} * \\psi_{qr}) / L_r\"",
+        "params": {"R_s": 1.77, "R_r": 1.34, "L_s": 0.1965, "L_r": 0.1965, "L_m": 0.179, "J": 0.025, "B": 0.01, "P": 4, "omega_e": 376.99},
+        "ic": {"psi_ds": 0, "psi_qs": 0, "psi_dr": 0, "psi_qr": 0, "omega_r": 0},
+        "inputs": ["v_ds", "v_qs", "T_L"]
+      },
+      "expected_states": ["psi_ds", "psi_qs", "psi_dr", "psi_qr", "omega_r"],
+      "expected_inputs": ["v_ds", "v_qs", "T_L"]
+    }
+  ],
+
+  "tests": [
+    {
+      "name": "missing_equations_rejected",
+      "spec": {"params": {"g": 9.81}},
+      "expect_valid": false,
+      "expect_issue_contains": "equations"
+    },
+    {
+      "name": "string_param_value_rejected",
+      "spec": {"equations": "\"\\dot{x} = -k*x\"", "params": {"k": "100"}},
+      "expect_valid": false,
+      "expect_issue_contains": "numeric"
+    },
+    {
+      "name": "string_ic_value_rejected",
+      "spec": {"equations": "\"\\dot{x} = -x\"", "ic": {"x": "0"}},
+      "expect_valid": false,
+      "expect_issue_contains": "numeric"
+    },
+    {
+      "name": "minimal_valid",
+      "spec": {"equations": "\"\\dot{x} = -x\""},
+      "expect_valid": true
+    },
+    {
+      "name": "full_valid",
+      "spec": {
+        "equations": "\"\\dot{x} = v\" \"\\dot{v} = -k*x\"",
+        "params": {"k": 10},
+        "ic": {"x": 1, "v": 0},
+        "inputs": []
+      },
+      "expect_valid": true
+    }
+  ]
+}

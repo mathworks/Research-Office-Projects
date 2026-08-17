@@ -1,0 +1,199 @@
+{
+  "_description": "Extraction schema V2 — what the system IS. Immutable after Stage A. Contains all information extracted from the source document.",
+  "_lifecycle": "Written once during Stage A (Intake). Never modified after. Used by report generator, validators, and plan construction.",
+
+  "fields": [
+    {
+      "path": "model_name",
+      "type": "char",
+      "required": true,
+      "default": "",
+      "consumers": ["fillReport", "writeSpecJSON", "executePlan"],
+      "description": "Simulink model name (valid MATLAB identifier, e.g., 'mass_spring_damper')"
+    },
+    {
+      "path": "title",
+      "type": "char",
+      "required": false,
+      "default": "",
+      "consumers": ["fillReport"],
+      "description": "Human-readable title for report heading"
+    },
+    {
+      "path": "source_type",
+      "type": "char",
+      "required": false,
+      "default": "paper",
+      "consumers": ["fillReport"],
+      "description": "What the input was: 'paper', 'datasheet', 'description', 'code', 'schematic', 'data'"
+    },
+    {
+      "path": "source",
+      "type": "char",
+      "required": false,
+      "default": "",
+      "consumers": ["fillReport"],
+      "description": "Source citation string or file path"
+    },
+    {
+      "path": "paper_title",
+      "type": "char",
+      "required": false,
+      "default": "",
+      "consumers": ["fillReport"],
+      "description": "Full paper/document title"
+    },
+    {
+      "path": "paper_authors",
+      "type": "char",
+      "required": false,
+      "default": "",
+      "consumers": ["fillReport"],
+      "description": "Author list string"
+    },
+    {
+      "path": "equations_raw_latex",
+      "type": "cell_of_char",
+      "required": true,
+      "default": [],
+      "consumers": ["validateSpec", "fillReport", "executePlan"],
+      "description": "Raw LaTeX equations as extracted from source. One cell per equation."
+    },
+    {
+      "path": "normalized_equations",
+      "type": "cell_of_char",
+      "required": false,
+      "default": [],
+      "consumers": ["fillReport", "executePlan"],
+      "description": "Normalized first-order form equations (after normalization pass). Required for odeBuilder components."
+    },
+    {
+      "path": "parameters",
+      "type": "struct",
+      "required": true,
+      "default": {},
+      "consumers": ["validateSpec", "fillReport", "executePlan"],
+      "description": "Parameters as name-value struct. Field names are parameter symbols, values are numeric."
+    },
+    {
+      "path": "initial_conditions",
+      "type": "struct",
+      "required": false,
+      "default": {},
+      "consumers": ["executePlan", "addSignalLogging"],
+      "description": "Dict-style struct: field names = state names, values = IC numerics."
+    },
+    {
+      "path": "states",
+      "type": "struct_array",
+      "required": false,
+      "default": null,
+      "consumers": ["addSignalLogging", "fillReport"],
+      "description": "State variable definitions (optional at extraction; identified during normalization)."
+    },
+    {
+      "path": "inputs",
+      "type": "struct_array",
+      "required": false,
+      "default": null,
+      "consumers": ["validateSpec", "autoPlotValidation"],
+      "description": "External input signals."
+    },
+    {
+      "path": "validation_targets",
+      "type": "struct_array",
+      "required": false,
+      "default": null,
+      "consumers": ["executePlan", "evaluateTests", "fillReport"],
+      "description": "Validation targets from source. Each has .signal, .type ('steady_state'|'transient'|'trajectory'), .value, optional .time, .tolerance."
+    },
+    {
+      "path": "scenario",
+      "type": "struct",
+      "required": false,
+      "default": {},
+      "consumers": ["executePlan", "autoPlotValidation"],
+      "description": "Primary scenario definition: .stop_time, .solver, .input (struct with signal definitions)."
+    },
+    {
+      "path": "scenario.stop_time",
+      "type": "numeric",
+      "required": false,
+      "default": 10,
+      "consumers": ["executePlan", "autoPlotValidation"],
+      "description": "Simulation stop time in seconds"
+    },
+    {
+      "path": "scenario.solver",
+      "type": "char",
+      "required": false,
+      "default": "ode45",
+      "consumers": ["executePlan"],
+      "description": "ODE solver name"
+    },
+    {
+      "path": "ambiguities",
+      "type": "cell_of_char",
+      "required": false,
+      "default": [],
+      "consumers": ["fillReport"],
+      "description": "Assumptions/ambiguities noted during extraction"
+    },
+    {
+      "path": "validation_figures",
+      "type": "struct_array",
+      "required": false,
+      "default": null,
+      "consumers": ["buildReportStruct", "autoPlotValidation", "fillReport"],
+      "description": "Paper figure reproduction targets. Required for document-mode (source_type='paper'). Each has .paper_fig, .title, .signals, .layout, .t_range, .y_ranges, .units, .notes."
+    },
+    {
+      "path": "programmatic",
+      "type": "struct_array_or_cell",
+      "required": false,
+      "default": null,
+      "consumers": ["executePlan", "buildReportStruct", "validateStageExit"],
+      "description": "Non-ODE components: inverters, transforms, controllers. Each has .name, .type, .desc, .impl, .status ('planned'|'built')."
+    },
+    {
+      "path": "physical_subsystems",
+      "type": "struct_array_or_cell",
+      "required": false,
+      "default": null,
+      "consumers": ["createHierarchy", "buildReportStruct", "fillReport"],
+      "description": "Subsystem decomposition for hierarchy. Each: .name, .equation_ref, .equations, .inports, .outports."
+    },
+    {
+      "path": "pipeline_start_time",
+      "type": "char",
+      "required": false,
+      "default": "",
+      "consumers": ["fillReport", "writeSpecJSON"],
+      "description": "ISO datetime string. Auto-set at pipeline start."
+    }
+  ],
+
+  "element_schemas": {
+    "states(i)": [
+      {"path": "name", "type": "char", "required": true, "description": "State variable name"},
+      {"path": "description", "type": "char", "required": false, "description": "Human-readable description"},
+      {"path": "unit", "type": "char", "required": false, "description": "Physical unit string"},
+      {"path": "ic", "type": "numeric", "required": false, "description": "Initial condition value"}
+    ],
+    "inputs(i)": [
+      {"path": "name", "type": "char", "required": true, "description": "Input signal name"},
+      {"path": "unit", "type": "char", "required": false, "description": "Physical unit"},
+      {"path": "default", "type": "numeric", "required": false, "description": "Default value"},
+      {"path": "source", "type": "char", "required": false, "description": "'constant', 'step', 'programmatic', 'external'"},
+      {"path": "description", "type": "char", "required": false, "description": "Human-readable description"}
+    ],
+    "validation_targets(i)": [
+      {"path": "signal", "type": "char", "required": true, "description": "Signal name to validate"},
+      {"path": "type", "type": "char", "required": true, "description": "'steady_state', 'transient', 'trajectory', 'frequency'"},
+      {"path": "value", "type": "numeric", "required": true, "description": "Expected numeric value (scalar or vector)"},
+      {"path": "time", "type": "numeric", "required": false, "description": "Time point(s) for validation"},
+      {"path": "tolerance", "type": "numeric", "required": false, "description": "Acceptable relative tolerance (default 0.05)"},
+      {"path": "source", "type": "char", "required": false, "description": "Where expected value comes from (e.g., 'Table 2', 'Fig. 5')"}
+    ]
+  }
+}

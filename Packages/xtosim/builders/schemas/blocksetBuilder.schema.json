@@ -1,0 +1,145 @@
+{
+  "builder": "blocksetBuilder",
+  "version": "1.0",
+  "description": "Adds validated built-in blocks from Simulink/Simscape/Aerospace/Vehicle Dynamics/Powertrain Blocksets. Use when a standard library block exists for the component.",
+  "call_signature": "[blkPath, meta, info] = blocksetBuilder(spec, mdl)",
+
+  "fields": [
+    {
+      "path": "name",
+      "type": "char",
+      "required": true,
+      "description": "Block instance name (e.g., 'FrontTire', 'BatteryPack'). Valid MATLAB identifier."
+    },
+    {
+      "path": "library",
+      "type": "char",
+      "required": true,
+      "description": "Full Simulink library path. Use findBlock() to discover. E.g., 'vdynblks/Tires/Tire (Magic Formula)' or 'simulink/Continuous/Transfer Fcn'"
+    },
+    {
+      "path": "parameters",
+      "type": "struct",
+      "required": false,
+      "description": "Struct of parameter name-value pairs. Field names MUST match block dialog parameter names exactly (case-sensitive). Use getBlockInfo() to discover valid parameter names."
+    },
+    {
+      "path": "paramMapping",
+      "type": "struct_array",
+      "required": false,
+      "description": "Traceability mapping from paper params to block params. Each element: .source_param (paper name), .block_param (dialog name), .conversion (optional expression)."
+    },
+    {
+      "path": "inputNames",
+      "type": "cell_of_char",
+      "required": false,
+      "description": "Input port signal names (for wiring documentation). Order matches block input ports."
+    },
+    {
+      "path": "outputNames",
+      "type": "cell_of_char",
+      "required": false,
+      "description": "Output port signal names. Order matches block output ports."
+    },
+    {
+      "path": "subsystem",
+      "type": "char",
+      "required": false,
+      "description": "Target subsystem path. If provided, block is placed inside this subsystem."
+    },
+    {
+      "path": "description",
+      "type": "char",
+      "required": false,
+      "description": "Block annotation text."
+    },
+    {
+      "path": "source_equation",
+      "type": "char",
+      "required": false,
+      "description": "Original equation from paper (for traceability report)."
+    },
+    {
+      "path": "recognized_model",
+      "type": "char",
+      "required": false,
+      "description": "Classified model type (e.g., 'Pacejka Magic Formula', 'Second-order transfer function')."
+    },
+    {
+      "path": "reason",
+      "type": "char",
+      "required": false,
+      "description": "Why a built-in block was chosen over odeBuilder."
+    }
+  ],
+
+  "examples": [
+    {
+      "name": "magic_formula_tire",
+      "description": "Vehicle Dynamics Blockset tire with Magic Formula",
+      "spec": {
+        "name": "FrontLeftTire",
+        "library": "vdynblks/Tires/Tire (Magic Formula)",
+        "parameters": {"FNOMIN": 4000, "UNLOADED_RADIUS": 0.3},
+        "source_equation": "Fy = D*sin(C*atan(B*alpha - E*(B*alpha - atan(B*alpha))))",
+        "recognized_model": "Pacejka Magic Formula",
+        "reason": "Standard tire model; validated VDX block preferred"
+      }
+    },
+    {
+      "name": "transfer_function",
+      "description": "Second-order system as transfer function block",
+      "spec": {
+        "name": "PlantTF",
+        "library": "simulink/Continuous/Transfer Fcn",
+        "parameters": {"Numerator": "[1]", "Denominator": "[1 0.5 4]"},
+        "inputNames": ["u"],
+        "outputNames": ["y"],
+        "recognized_model": "Second-order transfer function"
+      }
+    },
+    {
+      "name": "pid_controller",
+      "description": "PID controller from simulink library",
+      "spec": {
+        "name": "SpeedController",
+        "library": "simulink/Continuous/PID Controller",
+        "parameters": {"P": 10, "I": 5, "D": 0.1},
+        "inputNames": ["error"],
+        "outputNames": ["control_signal"],
+        "reason": "Standard PID; no need to build from integrators"
+      }
+    }
+  ],
+
+  "tests": [
+    {
+      "name": "missing_name_rejected",
+      "spec": {"library": "simulink/Continuous/Transfer Fcn"},
+      "expect_valid": false,
+      "expect_issue_contains": "name"
+    },
+    {
+      "name": "missing_library_rejected",
+      "spec": {"name": "MyBlock"},
+      "expect_valid": false,
+      "expect_issue_contains": "library"
+    },
+    {
+      "name": "minimal_valid",
+      "spec": {"name": "MyBlock", "library": "simulink/Continuous/Integrator"},
+      "expect_valid": true
+    },
+    {
+      "name": "full_valid_with_params",
+      "spec": {
+        "name": "PlantTF",
+        "library": "simulink/Continuous/Transfer Fcn",
+        "parameters": {"Numerator": "[1]", "Denominator": "[1 2 1]"},
+        "inputNames": ["u"],
+        "outputNames": ["y"]
+      },
+      "expect_valid": true
+    }
+  ]
+}

@@ -19,6 +19,7 @@ Projects from the MathWorks Advanced Research & Technology Office. This reposito
 | Package | [floor-plan-to-3D](Packages/floor-plan-to-3D/) | Convert architectural floor plan images into 3D wall geometry with automatic door, window, and passage detection |
 | Package | [matsuba](Packages/matsuba/) | Physically-based rendering for MATLAB via Mitsuba 3: photorealistic images, differentiable rendering, and transient light transport |
 | Package | [fret-to-simulink](Packages/fret-to-simulink/) | Translate NASA FRET temporal-logic requirements into Simulink Requirements Table and Test Assessment blocks for formal and runtime verification |
+| Package | [xtosim](Packages/xtosim/) | AI-powered pipeline that converts research papers, equations, and system descriptions into validated Simulink models using multiple specialized builders |
 | Example | [battery-fast-charging-optimization](Examples/battery-fast-charging-optimization/) | Compare CC-CV, multi-stage, and optimized charging strategies for a lithium-ion battery (SPM) with interactive app |
 | Example | [shape-from-shading-asteroids](Examples/shape-from-shading-asteroids/) | Enhance stereo depth maps of asteroid Bennu using Shape from Shading |
 | Example | [spot-sim3D](Examples/spot-sim3D/) | Keyboard-controlled quadruped walking with Simscape&trade; Multibody&trade; and Unreal Engine&reg; 3D visualization |

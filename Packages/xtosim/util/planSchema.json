@@ -1,0 +1,124 @@
+{
+  "_description": "Plan schema — how we BUILD it. Mutable during Stage B. Contains builder assignments, component specs, wiring, and composition strategy.",
+  "_lifecycle": "Written during Stage B (Plan). May iterate (fix builders, adjust wiring). References an extraction for source data. Consumed by executePlan/buildModel.",
+
+  "fields": [
+    {
+      "path": "name",
+      "type": "char",
+      "required": true,
+      "consumers": ["executePlan", "buildModel"],
+      "description": "Model name (same as extraction.model_name). Used as Simulink model name."
+    },
+    {
+      "path": "components",
+      "type": "struct_array",
+      "required": true,
+      "consumers": ["executePlan", "validatePlan", "buildModel"],
+      "description": "Components to build. Each has .name, .builder, .spec (builder-specific), .decision_path."
+    },
+    {
+      "path": "wiring",
+      "type": "struct_array",
+      "required": true,
+      "consumers": ["executePlan", "validatePlan", "composeModel"],
+      "description": "Connections between components. Can be empty [] for single-component models."
+    },
+    {
+      "path": "hierarchy",
+      "type": "struct_array",
+      "required": false,
+      "consumers": ["executePlan"],
+      "description": "Subsystem groupings for single-odeBuilder hierarchy path. Each: .name, .equations (indices into component eq list)."
+    },
+    {
+      "path": "programmatic",
+      "type": "struct_array",
+      "required": false,
+      "consumers": ["executePlan"],
+      "description": "Blocks to add post-compose (controllers, sources, sinks). Format per addProgrammaticBlocks."
+    },
+    {
+      "path": "interfaces",
+      "type": "struct_array",
+      "required": false,
+      "consumers": ["architectureBuilder", "composeModel", "validatePlan"],
+      "description": "Bus interface definitions. Each: .name, .elements, .used_by. Recommended when component has >6 ports AND signals form a semantically meaningful group."
+    },
+    {
+      "path": "solver",
+      "type": "char",
+      "required": false,
+      "consumers": ["executePlan"],
+      "description": "Override solver (e.g., 'ode23t' for stiff). Overrides extraction.simulation.solver."
+    },
+    {
+      "path": "stopTime",
+      "type": "char",
+      "required": false,
+      "consumers": ["executePlan"],
+      "description": "Override stop time as string (e.g., '5')."
+    },
+    {
+      "path": "topInputs",
+      "type": "struct_array",
+      "required": false,
+      "consumers": ["executePlan"],
+      "description": "Top-level model inputs (exposed as Inports)."
+    },
+    {
+      "path": "topOutputs",
+      "type": "struct_array",
+      "required": false,
+      "consumers": ["executePlan"],
+      "description": "Top-level model outputs (exposed as Outports)."
+    },
+    {
+      "path": "busMode",
+      "type": "char",
+      "required": false,
+      "consumers": ["executePlan"],
+      "description": "'none', 'per_subsystem', or 'grouped'. Bus wiring strategy."
+    },
+    {
+      "path": "signalFlowOrder",
+      "type": "cell_of_char",
+      "required": false,
+      "consumers": ["executePlan"],
+      "description": "Ordered subsystem names for layoutSignalFlow (left-to-right positioning)."
+    },
+    {
+      "path": "signalFlowSources",
+      "type": "struct_array",
+      "required": false,
+      "consumers": ["executePlan"],
+      "description": "Source block positions for layoutSignalFlow."
+    }
+  ],
+
+  "element_schemas": {
+    "components(i)": [
+      {"path": "name", "type": "char", "required": true, "description": "Component logical name (e.g., 'Body', 'Battery')"},
+      {"path": "builder", "type": "char", "required": true, "description": "Builder name: 'odeBuilder', 'simscapeBuilder', 'blocksetBuilder', 'lookupTableBuilder', 'stateflowBuilder', 'simeventsBuilder', 'odeBuilder_cps'"},
+      {"path": "spec", "type": "struct", "required": true, "description": "Builder-specific spec. Validated against <builder>.schema.json."},
+      {"path": "decision_path", "type": "struct", "required": true, "description": "Decision tree traversal proof. See validatePlan for required sub-fields."}
+    ],
+    "wiring(i)": [
+      {"path": "from_component", "type": "char", "required": true, "description": "Source component name (must exist in components)"},
+      {"path": "from_port", "type": "char", "required": true, "description": "Source output port name"},
+      {"path": "to_component", "type": "char", "required": true, "description": "Destination component name"},
+      {"path": "to_port", "type": "char", "required": true, "description": "Destination input port name"},
+      {"path": "type", "type": "char", "required": false, "description": "'signal', 'conserving', or 'auto' (default)"},
+      {"path": "bus", "type": "char", "required": false, "description": "Bus name if this wire is part of a typed bus"}
+    ],
+    "hierarchy(i)": [
+      {"path": "name", "type": "char", "required": true, "description": "Subsystem name"},
+      {"path": "equations", "type": "numeric_array", "required": true, "description": "Equation indices belonging to this subsystem"}
+    ],
+    "interfaces(i)": [
+      {"path": "name", "type": "char", "required": true, "description": "Bus type name (e.g., 'AircraftState')"},
+      {"path": "elements", "type": "struct_array", "required": true, "description": "Bus elements: .name, .type, .dimensions, .unit"},
+      {"path": "used_by", "type": "cell_of_char", "required": false, "description": "Which component ports use this bus"}
+    ]
+  }
+}

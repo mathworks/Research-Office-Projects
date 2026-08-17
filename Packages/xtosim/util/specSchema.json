@@ -1,0 +1,351 @@
+{
+  "_description": "xToSim spec struct schema — SINGLE SOURCE OF TRUTH. All downstream consumers rely on these definitions.",
+  "_usage": "LLM reads this at Stage A (spec creation). MATLAB validator (specSchema.m) loads this at runtime.",
+
+  "fields": [
+    {
+      "path": "model_name",
+      "type": "char",
+      "required": true,
+      "default": "",
+      "consumers": ["specToPlan", "fillReport", "writeSpecJSON"],
+      "description": "Simulink model name (valid MATLAB identifier, e.g., 'im_dq')"
+    },
+    {
+      "path": "paper_id",
+      "type": "char",
+      "required": true,
+      "default": "",
+      "consumers": ["validateSpec", "writeSpecJSON"],
+      "description": "Paper identifier (e.g., 'leedy2013')"
+    },
+    {
+      "path": "chapter_id",
+      "type": "numeric",
+      "required": true,
+      "default": 1,
+      "consumers": ["validateSpec", "writeSpecJSON"],
+      "description": "Chapter number (integer, for directory naming)"
+    },
+    {
+      "path": "section_id",
+      "type": "numeric",
+      "required": true,
+      "default": 1,
+      "consumers": ["validateSpec", "writeSpecJSON"],
+      "description": "Section number (integer, for file naming)"
+    },
+    {
+      "path": "title",
+      "type": "char",
+      "required": false,
+      "default": "",
+      "consumers": ["fillReport"],
+      "description": "Human-readable title for report heading"
+    },
+    {
+      "path": "source",
+      "type": "char",
+      "required": false,
+      "default": "Research paper",
+      "consumers": ["fillReport"],
+      "description": "Source citation string"
+    },
+    {
+      "path": "paper_title",
+      "type": "char",
+      "required": false,
+      "default": "",
+      "consumers": ["fillReport"],
+      "description": "Full paper title (for report Source Document section)"
+    },
+    {
+      "path": "paper_authors",
+      "type": "char",
+      "required": false,
+      "default": "",
+      "consumers": ["fillReport"],
+      "description": "Author list string"
+    },
+    {
+      "path": "paper_journal",
+      "type": "char",
+      "required": false,
+      "default": "",
+      "consumers": ["fillReport"],
+      "description": "Journal/conference/thesis reference"
+    },
+    {
+      "path": "model_type",
+      "type": "char",
+      "required": true,
+      "default": "",
+      "consumers": ["validateSpec"],
+      "description": "Model classification: 'ode','hybrid','physical_network','discrete'"
+    },
+    {
+      "path": "status",
+      "type": "char",
+      "required": true,
+      "default": "draft",
+      "consumers": ["validateSpec"],
+      "description": "Spec status: 'draft','validated','built','complete'"
+    },
+    {
+      "path": "pipeline_start_time",
+      "type": "char",
+      "required": false,
+      "default": "",
+      "consumers": ["fillReport", "writeSpecJSON"],
+      "description": "ISO datetime string (auto-set by writeSpecJSON if empty). Used for duration calc."
+    },
+    {
+      "path": "states",
+      "type": "struct_array",
+      "required": true,
+      "default": null,
+      "consumers": ["validateSpec", "addSignalLogging", "fillReport"],
+      "description": "State variable definitions. Each element has .name, .unit, .ic."
+    },
+    {
+      "path": "inputs",
+      "type": "struct_array",
+      "required": false,
+      "default": null,
+      "consumers": ["validateSpec", "autoPlotValidation"],
+      "description": "External input signals. Each has .name, .unit, .default, .source, .description."
+    },
+    {
+      "path": "parameters",
+      "type": "struct_array",
+      "required": true,
+      "default": null,
+      "consumers": ["validateSpec", "fillReport"],
+      "description": "Model parameters. Struct array with .name, .value, .unit, .description, .source."
+    },
+    {
+      "path": "equations_raw_latex",
+      "type": "cell_of_char",
+      "required": true,
+      "default": [],
+      "consumers": ["validateSpec", "fillReport"],
+      "description": "Raw LaTeX equations as extracted from source. One cell per equation."
+    },
+    {
+      "path": "equations_builder",
+      "type": "char",
+      "required": false,
+      "default": "",
+      "consumers": ["fillReport"],
+      "description": "Concatenated equation string in odeBuilder format (space-separated quoted LaTeX)."
+    },
+    {
+      "path": "normalized_equations",
+      "type": "cell_of_char",
+      "required": false,
+      "default": [],
+      "consumers": ["fillReport"],
+      "description": "Normalized first-order form equations (after Phase 5 normalization)."
+    },
+    {
+      "path": "physical_subsystems",
+      "type": "struct_array",
+      "required": true,
+      "default": null,
+      "consumers": ["addSignalLogging", "autoPlotValidation", "fillReport", "validateSpec"],
+      "description": "Subsystem groupings for hierarchy. Critical for signal logging and plotting."
+    },
+    {
+      "path": "initial_conditions",
+      "type": "struct",
+      "required": false,
+      "default": {},
+      "consumers": ["addSignalLogging"],
+      "description": "Dict-style struct: fieldnames are state names, values are IC numerics. Alternative to states(i).ic."
+    },
+    {
+      "path": "simulation",
+      "type": "struct",
+      "required": false,
+      "default": {},
+      "consumers": ["autoPlotValidation", "executePlan"],
+      "description": "Simulation parameters struct."
+    },
+    {
+      "path": "simulation.stop_time",
+      "type": "numeric",
+      "required": false,
+      "default": 10,
+      "consumers": ["executePlan", "autoPlotValidation"],
+      "description": "Simulation stop time in seconds"
+    },
+    {
+      "path": "simulation.solver",
+      "type": "char",
+      "required": false,
+      "default": "ode45",
+      "consumers": ["executePlan"],
+      "description": "ODE solver name"
+    },
+    {
+      "path": "simulation.load_step_time",
+      "type": "numeric_array",
+      "required": false,
+      "default": null,
+      "consumers": ["autoPlotValidation"],
+      "description": "Time breakpoints for load step input [t1, t2, ...]"
+    },
+    {
+      "path": "simulation.load_step_value",
+      "type": "numeric_array",
+      "required": false,
+      "default": null,
+      "consumers": ["autoPlotValidation"],
+      "description": "Load values at breakpoints [v1, v2, ...]"
+    },
+    {
+      "path": "validation",
+      "type": "struct",
+      "required": false,
+      "default": {},
+      "consumers": ["executePlan", "fillReport"],
+      "description": "Validation configuration struct."
+    },
+    {
+      "path": "validation.tests",
+      "type": "struct_array",
+      "required": false,
+      "default": null,
+      "consumers": ["executePlan", "evaluateTests"],
+      "description": "Test cases for quantitative validation. CRITICAL: .expected and .simulated must be NUMERIC."
+    },
+    {
+      "path": "plan_decisions",
+      "type": "struct",
+      "required": false,
+      "default": {},
+      "consumers": ["specToPlan"],
+      "description": "Builder assignment and wiring decisions. Required ONLY for specToPlan path."
+    },
+    {
+      "path": "plan_decisions.components",
+      "type": "struct_array_or_cell",
+      "required": true,
+      "default": null,
+      "consumers": ["specToPlan"],
+      "description": "Component list (required if plan_decisions exists). Each has .name, .builder, .equations, .params, .ic, .inputs, .outputs."
+    },
+    {
+      "path": "plan_decisions.wiring",
+      "type": "struct_array_or_cell",
+      "required": false,
+      "default": null,
+      "consumers": ["specToPlan"],
+      "description": "Wiring connections between components."
+    },
+    {
+      "path": "plan_decisions.buses",
+      "type": "struct_array_or_cell",
+      "required": false,
+      "default": null,
+      "consumers": ["specToPlan"],
+      "description": "Bus definitions with .name, .elements, .producers, .consumers."
+    },
+    {
+      "path": "plan_decisions.hierarchy",
+      "type": "struct_array_or_cell",
+      "required": false,
+      "default": null,
+      "consumers": ["specToPlan"],
+      "description": "Subsystem groupings for single-odeBuilder hierarchy path. .name, .equations (indices)."
+    },
+    {
+      "path": "plan_decisions.programmatic",
+      "type": "struct_array_or_cell",
+      "required": false,
+      "default": null,
+      "consumers": ["specToPlan"],
+      "description": "Programmatic blocks to add after compose (Phase 5). Format per addProgrammaticBlocks."
+    },
+    {
+      "path": "plan_decisions.solver",
+      "type": "char",
+      "required": false,
+      "default": "",
+      "consumers": ["specToPlan"],
+      "description": "Override solver (e.g., 'ode23t' for stiff systems)"
+    },
+    {
+      "path": "plan_decisions.stopTime",
+      "type": "char",
+      "required": false,
+      "default": "",
+      "consumers": ["specToPlan"],
+      "description": "Stop time as string (e.g., '5')"
+    },
+    {
+      "path": "ambiguities",
+      "type": "cell_of_char",
+      "required": false,
+      "default": [],
+      "consumers": ["fillReport"],
+      "description": "List of ambiguities/assumptions made during extraction"
+    },
+    {
+      "path": "components",
+      "type": "struct_array",
+      "required": false,
+      "default": null,
+      "consumers": ["validateSpec", "fillReport"],
+      "description": "Component registry with .name, .status, .build_method, .outputs"
+    },
+    {
+      "path": "scenario_signals",
+      "type": "cell_of_char",
+      "required": false,
+      "default": [],
+      "consumers": ["verifyOutportCompleteness"],
+      "description": "Signals that must be accessible for primary scenario validation"
+    }
+  ],
+
+  "element_schemas": {
+    "states(i)": [
+      {"path": "name", "type": "char", "required": true, "description": "State variable name (lowercase, no spaces). Must match integrator block naming."},
+      {"path": "description", "type": "char", "required": false, "description": "Human-readable description"},
+      {"path": "unit", "type": "char", "required": false, "description": "Physical unit string"},
+      {"path": "ic", "type": "numeric", "required": false, "description": "Initial condition value. Also accepted as .initial_condition."}
+    ],
+    "inputs(i)": [
+      {"path": "name", "type": "char", "required": true, "description": "Input signal name (matches Simulink block name)"},
+      {"path": "unit", "type": "char", "required": false, "description": "Physical unit string"},
+      {"path": "default", "type": "numeric", "required": false, "description": "Default value when not connected"},
+      {"path": "source", "type": "char", "required": false, "description": "Where this input comes from: 'constant','step','programmatic','external'"},
+      {"path": "description", "type": "char", "required": false, "description": "Human-readable description"}
+    ],
+    "parameters(i)": [
+      {"path": "name", "type": "char", "required": true, "description": "Parameter symbol (as used in equations, e.g., 'Rs', 'Lm')"},
+      {"path": "value", "type": "numeric", "required": true, "description": "MUST be numeric (not string). Scalar or array."},
+      {"path": "unit", "type": "char", "required": false, "description": "Unit string (e.g., 'ohm', 'H', 'kg*m^2')"},
+      {"path": "description", "type": "char", "required": false, "description": "What this parameter represents"},
+      {"path": "source", "type": "char", "required": false, "description": "Where value came from: 'Table 2', 'Eq 15', 'derived'"}
+    ],
+    "physical_subsystems(i)": [
+      {"path": "name", "type": "char", "required": true, "description": "Subsystem name (matches Simulink subsystem block name exactly)"},
+      {"path": "outports", "type": "cell_of_char", "required": true, "description": "Output signal names from this subsystem. Used for logging and plot grouping."},
+      {"path": "equations", "type": "numeric_array", "required": false, "description": "Equation indices (1-based into equations_raw_latex) belonging to this subsystem"},
+      {"path": "equation_ref", "type": "char", "required": false, "description": "Paper equation reference (e.g., 'Eq 28-31') for report table"},
+      {"path": "inports", "type": "cell_of_char", "required": false, "description": "Input signal names to this subsystem (for interconnection table)"},
+      {"path": "paper_figure", "type": "char", "required": false, "description": "Reference to paper figure (e.g., 'Fig. 8') for plot captions"}
+    ],
+    "validation.tests(i)": [
+      {"path": "name", "type": "char", "required": true, "description": "Test name (e.g., 'No-load speed')"},
+      {"path": "expected", "type": "numeric", "required": true, "description": "MUST BE NUMERIC (not string). E.g., 188.5, not '188.5 rad/s'."},
+      {"path": "simulated", "type": "numeric", "required": false, "description": "Auto-populated from logsout by executePlan. MUST BE NUMERIC."},
+      {"path": "unit", "type": "char", "required": false, "description": "Unit string (separate from value). E.g., 'rad/s', 'A', 'Nm'."},
+      {"path": "source", "type": "char", "required": false, "description": "Where expected value comes from (e.g., 'Table 2', 'synchronous speed = 120*f/P')"},
+      {"path": "signal_name", "type": "char", "required": false, "description": "Signal name in logsout to extract .simulated from. If empty, auto-population skipped."},
+      {"path": "notes", "type": "char", "required": false, "description": "Optional notes about this test"}
+    ]
+  }
+}

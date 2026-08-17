@@ -1,0 +1,192 @@
+{
+  "builder": "odeBuilder_cps",
+  "version": "1.0",
+  "description": "Builds Stateflow charts with Simulink-based states — one mode per operating regime with distinct ODEs. For hybrid/switched systems (bouncing ball, clutch, walking).",
+  "call_signature": "[mdl, chartObj] = odeBuilder_cps(modes, transitions, params, outputs, modelName, opts)",
+  "note": "Unlike other builders, odeBuilder_cps takes positional arguments, not a single spec struct. The schema below describes the logical spec that maps to these arguments.",
+
+  "fields": [
+    {
+      "path": "modes",
+      "type": "struct_array",
+      "required": true,
+      "description": "Operating modes. Each mode has its own ODE equations built by odeBuilder internally."
+    },
+    {
+      "path": "modes(i).name",
+      "type": "char",
+      "required": true,
+      "description": "Mode name (valid MATLAB identifier). E.g., 'FreeFall', 'Contact', 'Slipping'"
+    },
+    {
+      "path": "modes(i).equations",
+      "type": "char",
+      "required": true,
+      "description": "Equation string for this mode (same format as odeBuilder). Empty string '' = no dynamics (constant state)."
+    },
+    {
+      "path": "modes(i).ic",
+      "type": "struct_or_char",
+      "required": true,
+      "description": "Initial conditions struct (state→value) OR 'from_transition' if mode is only entered via transition action."
+    },
+    {
+      "path": "modes(i).outputs",
+      "type": "struct",
+      "required": false,
+      "description": "For disjoint-state topology: maps common-frame output names to expressions in this mode's states. E.g., struct('x_pos','(r+Pole)*cos(theta)')"
+    },
+    {
+      "path": "transitions",
+      "type": "struct_array",
+      "required": true,
+      "description": "Mode transitions with guards and reset actions."
+    },
+    {
+      "path": "transitions(i).source",
+      "type": "char",
+      "required": true,
+      "description": "Source mode name. '' = default transition (enters initial mode)."
+    },
+    {
+      "path": "transitions(i).destination",
+      "type": "char",
+      "required": true,
+      "description": "Destination mode name."
+    },
+    {
+      "path": "transitions(i).guard",
+      "type": "char",
+      "required": false,
+      "description": "Stateflow guard expression (without []). E.g., 'FreeFall.y <= 0 && abs(FreeFall.v) >= 0.5'"
+    },
+    {
+      "path": "transitions(i).action",
+      "type": "char",
+      "required": false,
+      "description": "Stateflow transition action (without {}). E.g., 'FreeFall.v = -0.8 * FreeFall.v;'"
+    },
+    {
+      "path": "transitions(i).direction",
+      "type": "char",
+      "required": false,
+      "description": "'rising', 'falling', or 'either'. Used for validation (warns if guard is already true at entry)."
+    },
+    {
+      "path": "params",
+      "type": "struct",
+      "required": false,
+      "description": "Parameters assigned to base workspace. Shared across all modes. E.g., struct('g',9.81,'e',0.8)"
+    },
+    {
+      "path": "outputs",
+      "type": "cell_of_char",
+      "required": true,
+      "description": "State names to log as chart outputs. Each gets a ToWorkspace block. E.g., {'v','y'}"
+    },
+    {
+      "path": "opts",
+      "type": "struct",
+      "required": false,
+      "description": "Options struct with solver, stopTime, maxStep, inputs, state_topology, derived_outputs."
+    },
+    {
+      "path": "opts.solver",
+      "type": "char",
+      "required": false,
+      "description": "ODE solver (default: 'ode45')."
+    },
+    {
+      "path": "opts.stopTime",
+      "type": "char",
+      "required": false,
+      "description": "Simulation stop time (default: '10')."
+    },
+    {
+      "path": "opts.inputs",
+      "type": "cell_of_char",
+      "required": false,
+      "description": "Variable names that become chart Inputs (time-varying signals from outside)."
+    },
+    {
+      "path": "opts.state_topology",
+      "type": "char",
+      "required": false,
+      "description": "'shared' (default): all modes use same state vector. 'disjoint': each mode has different states."
+    },
+    {
+      "path": "opts.derived_outputs",
+      "type": "struct_array",
+      "required": false,
+      "description": "For disjoint-state: common-frame outputs. Each: .name, .expressions (cell alternating {mode1, expr1, mode2, expr2})"
+    }
+  ],
+
+  "examples": [
+    {
+      "name": "bouncing_ball",
+      "description": "Classic bouncing ball with coefficient of restitution",
+      "spec": {
+        "modes": [
+          {"name": "FreeFall", "equations": "\"\\dot{v} = -g\" \"\\dot{y} = v\"", "ic": {"v": 0, "y": 10}},
+          {"name": "Rest", "equations": "", "ic": {}}
+        ],
+        "transitions": [
+          {"source": "", "destination": "FreeFall", "guard": "", "action": ""},
+          {"source": "FreeFall", "destination": "FreeFall", "guard": "FreeFall.y <= 0 && abs(FreeFall.v) >= 0.5", "action": "FreeFall.v = -e * FreeFall.v; FreeFall.y = abs(FreeFall.y);"},
+          {"source": "FreeFall", "destination": "Rest", "guard": "FreeFall.y <= 0 && abs(FreeFall.v) < 0.5", "action": ""}
+        ],
+        "params": {"g": 9.81, "e": 0.8},
+        "outputs": ["v", "y"]
+      }
+    },
+    {
+      "name": "clutch_engagement",
+      "description": "Clutch with slipping and locked modes",
+      "spec": {
+        "modes": [
+          {"name": "Slipping", "equations": "\"\\dot{\\omega_1} = (T_in - T_f) / J_1\" \"\\dot{\\omega_2} = (T_f - T_load) / J_2\"", "ic": {"omega_1": 100, "omega_2": 0}},
+          {"name": "Locked", "equations": "\"\\dot{\\omega} = (T_in - T_load) / (J_1 + J_2)\"", "ic": "from_transition"}
+        ],
+        "transitions": [
+          {"source": "", "destination": "Slipping", "guard": "", "action": ""},
+          {"source": "Slipping", "destination": "Locked", "guard": "abs(Slipping.omega_1 - Slipping.omega_2) < 0.01", "action": "Locked.omega = Slipping.omega_1;"},
+          {"source": "Locked", "destination": "Slipping", "guard": "abs(T_in - T_load) > T_f_max", "action": "Slipping.omega_1 = Locked.omega; Slipping.omega_2 = Locked.omega;"}
+        ],
+        "params": {"J_1": 1, "J_2": 5, "T_in": 50, "T_load": 20, "T_f_max": 100, "T_f": 30},
+        "outputs": ["omega_1", "omega_2"],
+        "opts": {"state_topology": "disjoint", "solver": "ode23t", "stopTime": "5"}
+      }
+    }
+  ],
+
+  "tests": [
+    {
+      "name": "missing_modes_rejected",
+      "spec": {"transitions": [{"source": "", "destination": "A"}], "outputs": ["x"]},
+      "expect_valid": false,
+      "expect_issue_contains": "modes"
+    },
+    {
+      "name": "missing_transitions_rejected",
+      "spec": {"modes": [{"name": "A", "equations": "\"\\dot{x}=-x\"", "ic": {"x": 0}}], "outputs": ["x"]},
+      "expect_valid": false,
+      "expect_issue_contains": "transitions"
+    },
+    {
+      "name": "missing_outputs_rejected",
+      "spec": {"modes": [{"name": "A", "equations": "\"\\dot{x}=-x\"", "ic": {"x": 0}}], "transitions": [{"source": "", "destination": "A"}]},
+      "expect_valid": false,
+      "expect_issue_contains": "outputs"
+    },
+    {
+      "name": "minimal_valid",
+      "spec": {
+        "modes": [{"name": "Running", "equations": "\"\\dot{x} = -x\"", "ic": {"x": 1}}],
+        "transitions": [{"source": "", "destination": "Running", "guard": "", "action": ""}],
+        "outputs": ["x"]
+      },
+      "expect_valid": true
+    }
+  ]
+}
