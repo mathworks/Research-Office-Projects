@@ -1,0 +1,1018 @@
+name: Publish project ZIPs
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "Examples/**"
+      - "Packages/**"
+      - "projects.json"
+      - ".github/workflows/publish-project-zips.yml"
+
+  workflow_dispatch:
+    inputs:
+      project:
+        description: "Optional project path to force republish, e.g. Packages/matsuba"
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: project-download-release
+  cancel-in-progress: false
+
+env:
+  RELEASE_TAG: project-downloads
+  COUNTER_FILE: .github/project-counters.json
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      # ------------------------------------------------------------
+      # Checkout
+      # ------------------------------------------------------------
+
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # ------------------------------------------------------------
+      # Ensure permanent release exists
+      # ------------------------------------------------------------
+
+      - name: Ensure release exists
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            echo "Release '$RELEASE_TAG' already exists."
+            exit 0
+          fi
+
+          echo "Creating release '$RELEASE_TAG'."
+
+          gh release create "$RELEASE_TAG" \
+            --target "$GITHUB_SHA" \
+            --title "Download" \
+            --latest=false \
+            --notes "Download individual projects below.
+
+          Each project is packaged as a single ZIP asset."
+
+      # ------------------------------------------------------------
+      # Read current release assets
+      #
+      # Format:
+      # name <tab> asset-id <tab> counter
+      # ------------------------------------------------------------
+
+      - name: Read existing release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          release_id="$(
+            gh api \
+              "repos/${GITHUB_REPOSITORY}/releases/tags/${RELEASE_TAG}" \
+              --jq '.id'
+          )"
+
+          gh api --paginate \
+            "repos/${GITHUB_REPOSITORY}/releases/${release_id}/assets?per_page=100" \
+            --jq '.[] | [.name, (.id | tostring), (.download_count | tostring)] | @tsv' \
+            > /tmp/existing-assets.tsv
+
+          echo "Existing release assets:"
+
+          if [[ -s /tmp/existing-assets.tsv ]]; then
+            cut -f1 /tmp/existing-assets.tsv
+          else
+            echo "None"
+          fi
+
+      # ------------------------------------------------------------
+      # Discover projects
+      #
+      # Every immediate folder beneath Examples/ and Packages/
+      # is a project.
+      # ------------------------------------------------------------
+
+      - name: Discover projects and changes
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+          FORCE_PROJECT: ${{ inputs.project }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          : > /tmp/projects.txt
+          : > /tmp/changed-projects.txt
+
+          for root in Examples Packages; do
+
+            if [[ -d "$root" ]]; then
+
+              find "$root" \
+                -mindepth 1 \
+                -maxdepth 1 \
+                -type d \
+                -print
+
+            fi
+
+          done | sort > /tmp/projects.txt
+
+          echo "Discovered projects:"
+          cat /tmp/projects.txt
+
+          if [[ ! -s /tmp/projects.txt ]]; then
+            echo "::error::No project directories found."
+            exit 1
+          fi
+
+          # --------------------------------------------------------
+          # Normal push:
+          # determine which project folders changed.
+          # --------------------------------------------------------
+
+          if [[ "$GITHUB_EVENT_NAME" == "push" ]]; then
+
+            if [[ -z "${BEFORE_SHA:-}" ]] \
+              || [[ "$BEFORE_SHA" == "0000000000000000000000000000000000000000" ]] \
+              || ! git cat-file -e "${BEFORE_SHA}^{commit}" 2>/dev/null; then
+
+              echo "No usable previous commit."
+              echo "Treating all projects as changed."
+
+              cp /tmp/projects.txt /tmp/changed-projects.txt
+
+            else
+
+              git diff \
+                --name-only \
+                "$BEFORE_SHA" \
+                "$GITHUB_SHA" \
+                | awk -F/ '
+                    ($1 == "Examples" || $1 == "Packages") && NF >= 2 {
+                      print $1 "/" $2
+                    }
+                  ' \
+                | sort -u \
+                | while IFS= read -r project; do
+
+                    if [[ -d "$project" ]]; then
+                      printf '%s\n' "$project"
+                    fi
+
+                  done \
+                > /tmp/changed-projects.txt
+
+            fi
+
+          fi
+
+          # --------------------------------------------------------
+          # Manual run:
+          # optionally force a particular project to be republished.
+          # --------------------------------------------------------
+
+          if [[ -n "${FORCE_PROJECT:-}" ]]; then
+
+            if ! grep -Fxq "$FORCE_PROJECT" /tmp/projects.txt; then
+              echo "::error::'$FORCE_PROJECT' is not a project."
+              exit 1
+            fi
+
+            printf '%s\n' "$FORCE_PROJECT" \
+              >> /tmp/changed-projects.txt
+
+            sort -u \
+              /tmp/changed-projects.txt \
+              -o /tmp/changed-projects.txt
+
+          fi
+
+          echo
+          echo "Changed projects:"
+
+          if [[ -s /tmp/changed-projects.txt ]]; then
+            cat /tmp/changed-projects.txt
+          else
+            echo "None"
+          fi
+
+      # ------------------------------------------------------------
+      # Determine which projects need publishing
+      #
+      # Asset names are permanent:
+      #
+      # package-matsuba.zip
+      # example-solar-power-app.zip
+      # ------------------------------------------------------------
+
+      - name: Build publishing plan
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          : > /tmp/project-plan.tsv
+
+          while IFS= read -r folder; do
+
+            case "$folder" in
+
+              Packages/*)
+                kind="package"
+                ;;
+
+              Examples/*)
+                kind="example"
+                ;;
+
+              *)
+                echo "::error::Unexpected project folder: $folder"
+                exit 1
+                ;;
+
+            esac
+
+            slug="$(basename "$folder")"
+            project="${kind}-${slug}"
+            asset="${project}.zip"
+
+            publish="false"
+
+            # Publish if the permanent asset doesn't exist yet.
+            if ! cut -f1 /tmp/existing-assets.tsv \
+              | grep -Fxq "$asset"; then
+
+              publish="true"
+
+            fi
+
+            # Republish when project contents changed.
+            if grep -Fxq "$folder" /tmp/changed-projects.txt; then
+              publish="true"
+            fi
+
+            printf '%s\t%s\t%s\t%s\t%s\t%s\n' \
+              "$folder" \
+              "$kind" \
+              "$slug" \
+              "$project" \
+              "$asset" \
+              "$publish" \
+              >> /tmp/project-plan.tsv
+
+          done < /tmp/projects.txt
+
+          echo
+          echo "Publishing plan:"
+          echo
+
+          while IFS=$'\t' read -r \
+            folder kind slug project asset publish; do
+
+            if [[ "$publish" == "true" ]]; then
+              echo "$folder -> $asset [PUBLISH]"
+            else
+              echo "$folder -> $asset [UNCHANGED]"
+            fi
+
+          done < /tmp/project-plan.tsv
+
+      # ------------------------------------------------------------
+      # Update README links
+      #
+      # Since asset names never change, the URL is permanent.
+      # README files are optional.
+      # ------------------------------------------------------------
+
+      - name: Update README links
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          python3 <<'PY'
+          import os
+          import re
+          from pathlib import Path
+          from urllib.parse import quote
+
+          repo = os.environ["GITHUB_REPOSITORY"]
+          release_tag = os.environ["RELEASE_TAG"]
+
+          start_marker = "<!-- project-download-link:start -->"
+          end_marker = "<!-- project-download-link:end -->"
+
+          plan = Path("/tmp/project-plan.tsv")
+
+          for line in plan.read_text(encoding="utf-8").splitlines():
+
+              (
+                  folder,
+                  kind,
+                  slug,
+                  project,
+                  asset,
+                  publish,
+              ) = line.split("\t")
+
+              folder_path = Path(folder)
+
+              readmes = [
+                  path
+                  for path in folder_path.iterdir()
+                  if path.is_file()
+                  and path.name.lower() == "readme.md"
+              ]
+
+              if not readmes:
+                  print(f"Skipping README for {folder}: none found")
+                  continue
+
+              readme = readmes[0]
+
+              download_url = (
+                  f"https://github.com/{repo}/releases/download/"
+                  f"{release_tag}/{quote(asset)}"
+              )
+
+              block = (
+                  f"{start_marker}\n"
+                  f"📦 Download this project "
+                  f"[here]({download_url}).\n"
+                  f"{end_marker}"
+              )
+
+              text = readme.read_text(encoding="utf-8")
+
+              if start_marker in text and end_marker in text:
+
+                  pattern = re.compile(
+                      re.escape(start_marker)
+                      + r".*?"
+                      + re.escape(end_marker),
+                      flags=re.DOTALL,
+                  )
+
+                  updated = pattern.sub(
+                      lambda _: block,
+                      text,
+                      count=1,
+                  )
+
+              else:
+
+                  heading = re.search(
+                      r"^# .+$",
+                      text,
+                      flags=re.MULTILINE,
+                  )
+
+                  if heading:
+
+                      insertion_point = heading.end()
+
+                      updated = (
+                          text[:insertion_point]
+                          + "\n\n"
+                          + block
+                          + text[insertion_point:]
+                      )
+
+                  else:
+
+                      updated = (
+                          block
+                          + "\n\n"
+                          + text
+                      )
+
+              if updated != text:
+
+                  print(f"Updating {readme}")
+
+                  readme.write_text(
+                      updated,
+                      encoding="utf-8",
+                  )
+
+              else:
+
+                  print(f"Already correct: {readme}")
+
+          PY
+
+      # ------------------------------------------------------------
+      # Regenerate root README table
+      #
+      # Rebuilds the project table between markers from
+      # projects.json, using shortSummary and download links.
+      # ------------------------------------------------------------
+
+      - name: Update root README table
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          python3 <<'PY'
+          import json
+          import os
+          import re
+          from pathlib import Path
+          from urllib.parse import quote
+
+          repo = os.environ["GITHUB_REPOSITORY"]
+          release_tag = os.environ["RELEASE_TAG"]
+
+          readme = Path("README.md")
+          text = readme.read_text(encoding="utf-8")
+
+          projects = json.loads(
+              Path("projects.json").read_text(encoding="utf-8")
+          )
+
+          start_marker = "<!-- project-table:start -->"
+          end_marker = "<!-- project-table:end -->"
+
+          # HTML entities for trademark symbols in Markdown
+          entity_map = {
+              "®": "&reg;",
+              "™": "&trade;",
+              "π": "&pi;",
+          }
+
+          def escape_md(s):
+              for char, entity in entity_map.items():
+                  s = s.replace(char, entity)
+              return s.replace("|", "\\|")
+
+          header = "| Name | Description | Download |"
+          separator = "|------|-------------|----------|"
+
+          def make_row(p):
+              folder = p["folder"]
+              slug = folder.split("/", 1)[1]
+              kind = p["type"]
+
+              short = escape_md(p.get("shortSummary", p["summary"]))
+
+              asset = f"{kind.lower()}-{slug}.zip"
+
+              download_url = (
+                  f"https://github.com/{repo}/releases/download/"
+                  f"{release_tag}/{quote(asset)}"
+              )
+
+              return (
+                  f"| [{slug}]({folder}/) "
+                  f"| {short} "
+                  f"| [ZIP]({download_url}) |"
+              )
+
+          packages = [p for p in projects if p["type"] == "Package"]
+          examples = [p for p in projects if p["type"] == "Example"]
+
+          rows = ["### Packages", "", header, separator]
+          for p in packages:
+              rows.append(make_row(p))
+
+          rows += ["", "### Examples", "", header, separator]
+          for p in examples:
+              rows.append(make_row(p))
+
+          table_block = (
+              start_marker
+              + "\n"
+              + "\n".join(rows)
+              + "\n"
+              + end_marker
+          )
+
+          if start_marker in text and end_marker in text:
+
+              pattern = re.compile(
+                  re.escape(start_marker)
+                  + r".*?"
+                  + re.escape(end_marker),
+                  flags=re.DOTALL,
+              )
+
+              updated = pattern.sub(
+                  lambda _: table_block,
+                  text,
+                  count=1,
+              )
+
+          else:
+
+              print("::warning::No table markers found in README.md")
+              updated = text
+
+          if updated != text:
+              print("Updating README.md table")
+              readme.write_text(updated, encoding="utf-8")
+          else:
+              print("README.md table already correct")
+
+          PY
+
+      # ------------------------------------------------------------
+      # Package projects before touching any existing release assets.
+      #
+      # If packaging fails, nothing has been removed.
+      # ------------------------------------------------------------
+
+      - name: Package projects
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mkdir -p dist
+
+          while IFS=$'\t' read -r \
+            folder kind slug project asset publish; do
+
+            if [[ "$publish" != "true" ]]; then
+              continue
+            fi
+
+            echo "Packaging $folder -> $asset"
+
+            archive_dir="$(mktemp -d)"
+
+            mkdir -p "$archive_dir/$slug"
+
+            cp -a \
+              "$folder/." \
+              "$archive_dir/$slug/"
+
+            (
+              cd "$archive_dir"
+
+              zip -qr \
+                "$GITHUB_WORKSPACE/dist/$asset" \
+                "$slug"
+            )
+
+            rm -rf "$archive_dir"
+
+          done < /tmp/project-plan.tsv
+
+      # ------------------------------------------------------------
+      # Refresh counters immediately before replacing anything.
+      # ------------------------------------------------------------
+
+      - name: Refresh release asset counters
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          release_id="$(
+            gh api \
+              "repos/${GITHUB_REPOSITORY}/releases/tags/${RELEASE_TAG}" \
+              --jq '.id'
+          )"
+
+          gh api --paginate \
+            "repos/${GITHUB_REPOSITORY}/releases/${release_id}/assets?per_page=100" \
+            --jq '.[] | [.name, (.id | tostring), (.download_count | tostring)] | @tsv' \
+            > /tmp/current-assets.tsv
+
+      # ------------------------------------------------------------
+      # Build counter ledger and deletion plan.
+      #
+      # .github/project-counters.json looks like:
+      #
+      # {
+      #   "example-foo": 100,
+      #   "package-bar": 250
+      # }
+      # ------------------------------------------------------------
+
+      - name: Update project counters
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mkdir -p "$(dirname "$COUNTER_FILE")"
+
+          # Previous checkpoint information is kept in commit messages.
+          #
+          # This prevents a failed workflow from counting the same
+          # release asset twice when the workflow is retried.
+          git log \
+            --format=%B \
+            -- "$COUNTER_FILE" \
+            > /tmp/counter-history.txt \
+            2>/dev/null || true
+
+          python3 <<'PY'
+          import json
+          import os
+          import re
+          from pathlib import Path
+
+          counter_file = Path(os.environ["COUNTER_FILE"])
+
+          # --------------------------------------------------------
+          # Load ledger.
+          # --------------------------------------------------------
+
+          if counter_file.exists():
+
+              counters = json.loads(
+                  counter_file.read_text(encoding="utf-8")
+              )
+
+              if not isinstance(counters, dict):
+                  raise RuntimeError(
+                      f"{counter_file} must contain a JSON object"
+                  )
+
+          else:
+
+              counters = {}
+
+          # --------------------------------------------------------
+          # Read project plan.
+          # --------------------------------------------------------
+
+          projects = []
+
+          for line in Path(
+              "/tmp/project-plan.tsv"
+          ).read_text(encoding="utf-8").splitlines():
+
+              (
+                  folder,
+                  kind,
+                  slug,
+                  project,
+                  asset,
+                  publish,
+              ) = line.split("\t")
+
+              projects.append(
+                  {
+                      "folder": folder,
+                      "kind": kind,
+                      "slug": slug,
+                      "project": project,
+                      "asset": asset,
+                      "publish": publish == "true",
+                  }
+              )
+
+              counters.setdefault(project, 0)
+
+          # --------------------------------------------------------
+          # Read release assets.
+          # --------------------------------------------------------
+
+          assets = []
+
+          assets_path = Path("/tmp/current-assets.tsv")
+
+          if assets_path.exists():
+
+              for line in assets_path.read_text(
+                  encoding="utf-8"
+              ).splitlines():
+
+                  if not line.strip():
+                      continue
+
+                  name, asset_id, count = line.split("\t")
+
+                  assets.append(
+                      {
+                          "name": name,
+                          "id": int(asset_id),
+                          "count": int(count),
+                      }
+                  )
+
+          # --------------------------------------------------------
+          # Read previous transaction checkpoints.
+          #
+          # Format in Git history:
+          #
+          # accounted-asset:123456:27
+          #
+          # Meaning asset ID 123456 had reached counter 27 when
+          # that checkpoint was committed.
+          # --------------------------------------------------------
+
+          checkpoints = {}
+
+          history = Path(
+              "/tmp/counter-history.txt"
+          ).read_text(
+              encoding="utf-8"
+          )
+
+          checkpoint_pattern = re.compile(
+              r"^accounted-asset:(\d+):(\d+)$"
+          )
+
+          for history_line in history.splitlines():
+
+              match = checkpoint_pattern.match(
+                  history_line.strip()
+              )
+
+              if not match:
+                  continue
+
+              asset_id = int(match.group(1))
+              count = int(match.group(2))
+
+              checkpoints[asset_id] = max(
+                  checkpoints.get(asset_id, 0),
+                  count,
+              )
+
+          # --------------------------------------------------------
+          # Determine which assets are about to be replaced.
+          # --------------------------------------------------------
+
+          delete_assets = []
+          new_checkpoints = []
+
+          for project in projects:
+
+              if not project["publish"]:
+                  continue
+
+              project_name = project["project"]
+              stable_name = project["asset"]
+
+              for asset in assets:
+
+                  if asset["name"] != stable_name:
+                      continue
+
+                  asset_id = asset["id"]
+                  current_count = asset["count"]
+
+                  previously_counted = checkpoints.get(
+                      asset_id,
+                      0,
+                  )
+
+                  delta = max(
+                      current_count - previously_counted,
+                      0,
+                  )
+
+                  if delta:
+
+                      counters[project_name] = (
+                          int(counters[project_name])
+                          + delta
+                      )
+
+                  if current_count > previously_counted:
+
+                      new_checkpoints.append(
+                          (
+                              asset_id,
+                              current_count,
+                          )
+                      )
+
+                  delete_assets.append(
+                      (
+                          asset_id,
+                          asset["name"],
+                          project_name,
+                      )
+                  )
+
+          # --------------------------------------------------------
+          # Save ledger.
+          # --------------------------------------------------------
+
+          counter_file.write_text(
+              json.dumps(
+                  dict(sorted(counters.items())),
+                  indent=2,
+              )
+              + "\n",
+              encoding="utf-8",
+          )
+
+          # --------------------------------------------------------
+          # Save deletion plan.
+          # --------------------------------------------------------
+
+          seen_ids = set()
+
+          with open(
+              "/tmp/assets-to-delete.tsv",
+              "w",
+              encoding="utf-8",
+          ) as f:
+
+              for asset_id, name, project_name in delete_assets:
+
+                  if asset_id in seen_ids:
+                      continue
+
+                  seen_ids.add(asset_id)
+
+                  f.write(
+                      f"{asset_id}\t{name}\t{project_name}\n"
+                  )
+
+          # --------------------------------------------------------
+          # Save checkpoint metadata for commit message.
+          # --------------------------------------------------------
+
+          with open(
+              "/tmp/new-counter-checkpoints.txt",
+              "w",
+              encoding="utf-8",
+          ) as f:
+
+              for asset_id, count in sorted(
+                  set(new_checkpoints)
+              ):
+
+                  f.write(
+                      f"accounted-asset:{asset_id}:{count}\n"
+                  )
+
+          print(f"Updated {counter_file}")
+          print()
+          print(
+              counter_file.read_text(
+                  encoding="utf-8"
+              )
+          )
+
+          PY
+
+      # ------------------------------------------------------------
+      # Commit counter checkpoint BEFORE deleting any assets.
+      #
+      # This is intentional:
+      #
+      # if an upload later fails, the historical counters have
+      # already been safely recorded in Git.
+      # ------------------------------------------------------------
+
+      - name: Commit counter checkpoint and README links
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git config \
+            user.name \
+            "github-actions[bot]"
+
+          git config \
+            user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add -- \
+            README.md \
+            Examples \
+            Packages \
+            "$COUNTER_FILE"
+
+          if git diff --cached --quiet; then
+
+            echo "No repository changes to commit."
+
+          else
+
+            commit_message="$(mktemp)"
+
+            {
+              echo "Update project counters"
+
+              if [[ -s /tmp/new-counter-checkpoints.txt ]]; then
+                echo
+                cat /tmp/new-counter-checkpoints.txt
+              fi
+
+            } > "$commit_message"
+
+            git commit \
+              -F "$commit_message"
+
+            git pull \
+              --rebase \
+              origin \
+              main
+
+            git push \
+              origin \
+              HEAD:main
+
+          fi
+
+      # ------------------------------------------------------------
+      # Delete assets that are being replaced.
+      # ------------------------------------------------------------
+
+      - name: Remove replaced assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ ! -s /tmp/assets-to-delete.tsv ]]; then
+            echo "No existing assets need to be removed."
+            exit 0
+          fi
+
+          while IFS=$'\t' read -r \
+            asset_id asset_name project; do
+
+            echo "Removing old asset: $asset_name"
+
+            gh api \
+              --method DELETE \
+              "repos/${GITHUB_REPOSITORY}/releases/assets/${asset_id}"
+
+          done < /tmp/assets-to-delete.tsv
+
+      # ------------------------------------------------------------
+      # Upload permanent asset names.
+      #
+      # Example:
+      #
+      # package-matsuba.zip
+      #
+      # If matsuba changes next week, package-matsuba.zip is
+      # replaced with the new contents.
+      # ------------------------------------------------------------
+
+      - name: Publish project assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          published=0
+
+          while IFS=$'\t' read -r \
+            folder kind slug project asset publish; do
+
+            if [[ "$publish" != "true" ]]; then
+              echo "Skipping unchanged project: $folder"
+              continue
+            fi
+
+            archive="dist/$asset"
+
+            if [[ ! -f "$archive" ]]; then
+              echo "::error::Archive does not exist: $archive"
+              exit 1
+            fi
+
+            echo "Uploading $asset"
+
+            gh release upload \
+              "$RELEASE_TAG" \
+              "${archive}#${slug}"
+
+            published=$((published + 1))
+
+            {
+              echo "### Published ${slug}"
+              echo
+              echo "- Project: \`${folder}\`"
+              echo "- Asset: \`${asset}\`"
+              echo
+            } >> "$GITHUB_STEP_SUMMARY"
+
+          done < /tmp/project-plan.tsv
+
+          if (( published == 0 )); then
+
+            echo "No project assets needed publishing."
+
+            echo "### No projects republished" \
+              >> "$GITHUB_STEP_SUMMARY"
+
+          fi
