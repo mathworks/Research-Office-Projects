@@ -1,5 +1,9 @@
 # Event Camera Simulator for MATLAB&reg; and Simulink&reg;
 
+<!-- project-download-link:start -->
+📦 Download this project [here](https://github.com/mathworks/Research-Office-Projects/releases/download/project-downloads/package-event-camera-simulator.zip).
+<!-- project-download-link:end -->
+
 An event camera simulator for MATLAB&reg; and Simulink&reg;, implementing the event generation algorithm from [ESIM](https://rpg.ifi.uzh.ch/docs/CORL18_Rebecq.pdf) (Rebecq et al., 2018). Converts intensity frame sequences into asynchronous events by detecting threshold crossings in log-intensity space with linear timestamp interpolation, producing output in the standard `[x, y, timestamp, polarity]` format.
 
 ![Event Camera Demo](images/eventcamera_demo.gif)

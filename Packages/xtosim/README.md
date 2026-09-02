@@ -1,5 +1,9 @@
 # xToSim — Multi-Builder Simulink Model Construction
 
+<!-- project-download-link:start -->
+📦 Download this project [here](https://github.com/mathworks/Research-Office-Projects/releases/download/project-downloads/package-xtosim.zip).
+<!-- project-download-link:end -->
+
 Automated pipeline that converts any source (research papers, system descriptions, equations, block diagrams) into professional Simulink models. Powered by an AI coding assistant with a live MATLAB connection.
 
 ![xToSim Overview](images/xtosim_overview.svg)

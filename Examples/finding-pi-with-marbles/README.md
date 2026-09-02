@@ -1,5 +1,9 @@
 # Finding Pi with Marbles
 
+<!-- project-download-link:start -->
+📦 Download this project [here](https://github.com/mathworks/Research-Office-Projects/releases/download/project-downloads/example-finding-pi-with-marbles.zip).
+<!-- project-download-link:end -->
+
 Estimate &pi; using a marble bag game developed with [Claude Code](https://docs.anthropic.com/en/docs/claude-code), MATLAB&reg;, and the [MATLAB MCP server](https://www.mathworks.com/products/matlab-agentic-toolkit.html).
 
 ## The Game

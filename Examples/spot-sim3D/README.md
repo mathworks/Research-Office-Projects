@@ -1,5 +1,9 @@
 # Spot Quadruped - Keyboard-Controlled Walking with 3D Visualization
 
+<!-- project-download-link:start -->
+📦 Download this project [here](https://github.com/mathworks/Research-Office-Projects/releases/download/project-downloads/example-spot-sim3D.zip).
+<!-- project-download-link:end -->
+
 Interactive simulation of a Boston Dynamics Spot-inspired quadruped robot with real-time keyboard control and Unreal Engine&reg; 3D visualization. Built entirely in Simulink&reg; using Model-Based Design.
 
 | | |

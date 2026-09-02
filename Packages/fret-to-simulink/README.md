@@ -1,5 +1,9 @@
 # FRET to Simulink Translator
 
+<!-- project-download-link:start -->
+📦 Download this project [here](https://github.com/mathworks/Research-Office-Projects/releases/download/project-downloads/package-fret-to-simulink.zip).
+<!-- project-download-link:end -->
+
 Translates [NASA FRET](https://github.com/NASA-SW-VnV/fret) temporal-logic requirements into Simulink&reg; verification artifacts - Requirements Table blocks for formal analysis with Simulink&reg; Design Verifier&trade;, and Test Assessment blocks for simulation-based runtime verification with Simulink&reg; Test&trade;.
 
 Unlike [CoCoSim](https://github.com/NASA-SW-VnV/CoCoSim), which generates Verification Subsystem blocks with Proof Objectives for SLDV property proving, this pipeline targets Simulink's newer native artifacts - Requirements Table blocks (R2022a+) and Test Assessment blocks - enabling SLDV completeness/consistency analysis (Design Error Detection) and Simulink Test runtime verification workflows.

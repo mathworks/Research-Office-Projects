@@ -1,5 +1,9 @@
 # Floor Plan to 3D Model
 
+<!-- project-download-link:start -->
+📦 Download this project [here](https://github.com/mathworks/Research-Office-Projects/releases/download/project-downloads/package-floor-plan-to-3D.zip).
+<!-- project-download-link:end -->
+
 Convert architectural floor plan images into 3D wall geometry with automatic door, window, and passage detection.
 
 ![Pipeline demo](FloorPlanTo3D.gif)

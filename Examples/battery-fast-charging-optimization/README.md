@@ -1,5 +1,9 @@
 # Battery Fast Charging: Strategy Comparison and Optimization
 
+<!-- project-download-link:start -->
+📦 Download this project [here](https://github.com/mathworks/Research-Office-Projects/releases/download/project-downloads/example-battery-fast-charging-optimization.zip).
+<!-- project-download-link:end -->
+
 Compare charging strategies for a lithium-ion battery using the Single Particle Model (SPM) from Simscape Battery. This example evaluates constant current-constant voltage (CC-CV), multi-stage, and optimized charging profiles for speed, safety, and efficiency.
 
 ### Interactive App

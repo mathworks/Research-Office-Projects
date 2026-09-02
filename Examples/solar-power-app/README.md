@@ -1,5 +1,9 @@
 # Solar Panel Planner for MATLAB&reg;
 
+<!-- project-download-link:start -->
+📦 Download this project [here](https://github.com/mathworks/Research-Office-Projects/releases/download/project-downloads/example-solar-power-app.zip).
+<!-- project-download-link:end -->
+
 ![Solar Panel Planner App](hero.gif)
 
 An interactive application for planning rooftop solar panel installations using satellite imagery, sun-position modeling, and energy yield estimation in MATLAB&reg;.

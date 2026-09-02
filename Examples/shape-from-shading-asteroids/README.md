@@ -1,5 +1,9 @@
 # Enhance Stereo Depth Maps with Shape from Shading
 
+<!-- project-download-link:start -->
+📦 Download this project [here](https://github.com/mathworks/Research-Office-Projects/releases/download/project-downloads/example-shape-from-shading-asteroids.zip).
+<!-- project-download-link:end -->
+
 This example adds high-frequency surface detail to stereo depth maps of asteroid Bennu using Shape from Shading (SfS). A screened Poisson solver corrects depth gradients to match observed shading, revealing craters and ridges that stereo alone cannot resolve.
 
 ![Output](output.png)
