@@ -1,5 +1,9 @@
 # Multi-UAV Drone Light Show: MAVLink Mission Delivery and RTK-Degraded Formation Flight
 
+<!-- project-download-link:start -->
+📦 Download this project [here](https://github.com/mathworks/Research-Office-Projects/releases/download/project-downloads/example-drone-show.zip).
+<!-- project-download-link:end -->
+
 A Simulink&reg; model of a coordinated drone light show, simulating the whole pipeline a real show
 depends on: trajectory planning, MAVLink command distribution over a modelled radio link,
 carrier-phase RTK correction from a base station, inertial navigation, and per-drone position
