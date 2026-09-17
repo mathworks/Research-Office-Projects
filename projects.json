@@ -119,5 +119,16 @@
     "products": ["MATLAB", "Simulink", "Simscape (optional)", "Stateflow (optional)", "SimEvents (optional)", "System Composer (optional)"],
     "topics": ["ai-assisted", "model-generation", "simulink", "model-based-design", "automation"],
     "categories": ["AI & Automation", "Model-Based Design"]
+  },
+  {
+    "name": "Drone Show",
+    "folder": "Examples/drone-show",
+    "type": "Example",
+    "shortSummary": "Coordinated drone light show for up to 500 UAVs with MAVLink mission delivery, carrier-phase RTK, and formation flight",
+    "summary": "Simulates the pipeline a real drone light show depends on: trajectory planning, MAVLink mission delivery over a modelled radio link, carrier-phase RTK correction, inertial navigation, and position control for up to 500 UAVs flying shape, text, or STL formations. The focus is the failure modes, where stale corrections walk a drone from RTK Fix to Float to Standalone with bounded error.",
+    "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Examples/drone-show/images/droneShowMembrane.gif",
+    "products": ["MATLAB", "Simulink", "Stateflow", "UAV Toolbox", "Navigation Toolbox", "Communications Toolbox", "DSP System Toolbox", "Statistics and Machine Learning Toolbox", "Image Processing Toolbox (optional)", "Computer Vision Toolbox (optional)"],
+    "topics": ["uav", "mavlink", "rtk-gnss", "formation-flight", "model-based-design"],
+    "categories": ["Robotics", "Optimization & Control", "Model-Based Design"]
   }
 ]
