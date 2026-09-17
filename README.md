@@ -33,6 +33,7 @@ Projects from the MathWorks Advanced Research & Technology Office. This reposito
 | [spot-sim3D](Examples/spot-sim3D/) | Keyboard-controlled quadruped walking with Simscape&trade; Multibody&trade; and Unreal Engine&reg; 3D visualization | [ZIP](https://github.com/mathworks/Research-Office-Projects/releases/download/project-downloads/example-spot-sim3D.zip) |
 | [finding-pi-with-marbles](Examples/finding-pi-with-marbles/) | Estimate &pi; using a marble bag game developed in a Claude Code and MATLAB MCP workflow | [ZIP](https://github.com/mathworks/Research-Office-Projects/releases/download/project-downloads/example-finding-pi-with-marbles.zip) |
 | [solar-power-app](Examples/solar-power-app/) | Interactive rooftop solar panel planner with satellite imagery, tilt optimization, and energy yield estimation | [ZIP](https://github.com/mathworks/Research-Office-Projects/releases/download/project-downloads/example-solar-power-app.zip) |
+| [drone-show](Examples/drone-show/) | Coordinated drone light show for up to 500 UAVs with MAVLink mission delivery, carrier-phase RTK, and formation flight | [ZIP](https://github.com/mathworks/Research-Office-Projects/releases/download/project-downloads/example-drone-show.zip) |
 <!-- project-table:end -->
 
 ## License
