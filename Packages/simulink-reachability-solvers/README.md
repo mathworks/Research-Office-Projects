@@ -1,5 +1,9 @@
 # Set-valued reachability as a Simulink solver
 
+<!-- project-download-link:start -->
+📦 Download this project [here](https://github.com/mathworks/Research-Office-Projects/releases/download/project-downloads/package-simulink-reachability-solvers.zip).
+<!-- project-download-link:end -->
+
 Simulate a Simulink model from a **set** of initial conditions instead of a single one, by selecting a solver from the Solver dropdown.
 
 **It works on your own model, and pressing the ordinary Run button is the whole workflow.**

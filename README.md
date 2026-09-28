@@ -23,6 +23,7 @@ Projects from the MathWorks Advanced Research & Technology Office. This reposito
 | [matsuba](Packages/matsuba/) | Physically-based rendering for MATLAB via Mitsuba 3: photorealistic images, differentiable rendering, and transient light transport | [ZIP](https://github.com/mathworks/Research-Office-Projects/releases/download/project-downloads/package-matsuba.zip) |
 | [fret-to-simulink](Packages/fret-to-simulink/) | Translate NASA FRET temporal-logic requirements into Simulink Requirements Table and Test Assessment blocks for formal and runtime verification | [ZIP](https://github.com/mathworks/Research-Office-Projects/releases/download/project-downloads/package-fret-to-simulink.zip) |
 | [xtosim](Packages/xtosim/) | AI-powered pipeline that converts research papers, equations, and system descriptions into validated Simulink models using multiple specialized builders | [ZIP](https://github.com/mathworks/Research-Office-Projects/releases/download/project-downloads/package-xtosim.zip) |
+| [simulink-reachability-solvers](Packages/simulink-reachability-solvers/) | Simulate a Simulink model from a set of initial conditions by picking a reachability solver from the Solver dropdown | [ZIP](https://github.com/mathworks/Research-Office-Projects/releases/download/project-downloads/package-simulink-reachability-solvers.zip) |
 
 ### Examples
 

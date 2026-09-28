@@ -9,6 +9,7 @@
   "package-floor-plan-to-3D": 0,
   "package-fret-to-simulink": 0,
   "package-matsuba": 0,
+  "package-simulink-reachability-solvers": 0,
   "package-video-framerate-upsampling": 0,
   "package-xtosim": 5
 }
