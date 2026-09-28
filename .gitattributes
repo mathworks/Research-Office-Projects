@@ -1,0 +1,25 @@
+# Normalise text files in the repository, leave binaries untouched.
+* text=auto
+
+# Binary artifacts, never line-ending converted or diffed as text.
+*.png  binary
+*.jpg  binary
+*.gif  binary
+*.mp4  binary
+*.fig  binary
+*.slx  binary
+*.mdl  binary
+*.mlx  binary
+*.mat  binary
+
+# Data and sources are text.
+*.m     text
+*.md    text
+*.py    text
+*.html  text
+*.json  text
+*.jsonl text
+*.log   text
+
+# MATLAB P-code is binary.
+*.p  binary
