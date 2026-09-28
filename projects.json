@@ -130,5 +130,16 @@
     "products": ["MATLAB", "Simulink", "Stateflow", "UAV Toolbox", "Navigation Toolbox", "Communications Toolbox", "DSP System Toolbox", "Statistics and Machine Learning Toolbox", "Image Processing Toolbox (optional)", "Computer Vision Toolbox (optional)"],
     "topics": ["uav", "mavlink", "rtk-gnss", "formation-flight", "model-based-design"],
     "categories": ["Robotics", "Optimization & Control", "Model-Based Design"]
+  },
+  {
+    "name": "Set-Valued Reachability Solvers for Simulink",
+    "folder": "Packages/simulink-reachability-solvers",
+    "type": "Package",
+    "shortSummary": "Simulate a Simulink model from a set of initial conditions by picking a reachability solver from the Solver dropdown",
+    "summary": "Proof-of-concept plugin solvers that propagate a whole set of initial conditions through a Simulink model instead of a single point, using the matrix exponential of the solver Jacobian. Four set representations (zonotope, support function, sensitivity matrix, ellipsoid) in fixed-step and variable-step variants, all selectable from the Solver dropdown. Includes results for van der Pol and Lorenz examples.",
+    "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Packages/simulink-reachability-solvers/images/vdp_4_shapes_reachtube.gif",
+    "products": ["MATLAB", "Simulink"],
+    "topics": ["reachability", "plugin-solver", "set-propagation", "hybrid-systems", "model-based-design"],
+    "categories": ["Verification & Validation", "Model-Based Design"]
   }
 ]
