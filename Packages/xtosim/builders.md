@@ -473,7 +473,7 @@ Before routing equations to `odeBuilder`, check this table. If an equation match
 | `y(t) = u(t - τ)` | Transport delay | `simulink/Continuous/Transport Delay` | `DelayTime` |
 | `y(t) = u(t - d(t))` | Variable delay | `simulink/Continuous/Variable Transport Delay` | `MaximumDelay` |
 | `Y(s)/U(s) = b(s)/a(s)` | Transfer function | `simulink/Continuous/Transfer Fcn` | `Numerator`, `Denominator` |
-| `ẋ=Ax+Bu, y=Cx+Du` | State-space | `simulink/Continuous/State-Space` | `A`, `B`, `C`, `D`, `X0` |
+| `ẋ=Ax+Bu, y=Cx+Du` | State-space | `simulink/Continuous/State-Space` | `A`, `B`, `C`, `D`, `InitialCondition` |
 | `Y(s)/U(s) = K·∏(s-z)/∏(s-p)` | Zero-pole-gain | `simulink/Continuous/Zero-Pole` | `Zeros`, `Poles`, `Gain` |
 | `u = Kp·e + Ki·∫e + Kd·ė` | PID controller | `simulink/Continuous/PID Controller` | `P`, `I`, `D`, `N` |
 | `G(s) = K/(τs+1)` | First-order lag | `simulink/Continuous/Transfer Fcn` | `Numerator=[K]`, `Denominator=[τ 1]` |
