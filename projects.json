@@ -141,5 +141,16 @@
     "products": ["MATLAB", "Simulink"],
     "topics": ["reachability", "plugin-solver", "set-propagation", "hybrid-systems", "model-based-design"],
     "categories": ["Verification & Validation", "Model-Based Design"]
+  },
+  {
+    "name": "Closed-Loop Camera Autofocus",
+    "folder": "Examples/autofocus",
+    "type": "Example",
+    "shortSummary": "Contrast-detect camera autofocus loop driven by physically based defocus blur in an Unreal Engine scene",
+    "summary": "A Simulink model of a camera that focuses itself. An Unreal Engine parking lot is rendered to RGB and depth, a physically based defocus blur turns the depth into real optical blur, and a contrast-detect autofocus loop drives the focus distance using nothing but the blurred image. An integrator dithers the focus and climbs the contrast peak, while a Stateflow chart detects the loss of contrast when the camera pans to a subject at a new distance and sweeps the focus range to reacquire the peak.",
+    "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Examples/autofocus/autofocusCompare.gif",
+    "products": ["MATLAB", "Simulink", "Stateflow", "Automated Driving Toolbox", "Computer Vision Toolbox", "Image Processing Toolbox"],
+    "topics": ["autofocus", "camera-simulation", "contrast-detection", "unreal-engine", "model-based-design"],
+    "categories": ["Computer Vision", "Optimization & Control", "3D & Simulation"]
   }
 ]

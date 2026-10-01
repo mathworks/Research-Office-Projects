@@ -1,0 +1,19 @@
+# Simulink build and cache output. Regenerated on demand, and slprj/ also holds the
+# accelerator-mode target, which is machine specific and must not be shared.
+slprj/
+*.slxc
+codegen/
+
+# Autosaves and backups
+*.asv
+*.autosave
+*.slx.original
+*.mdl.original
+
+# Compiled MEX
+*.mex*
+
+# OS and OneDrive clutter
+desktop.ini
+Thumbs.db
+.DS_Store
