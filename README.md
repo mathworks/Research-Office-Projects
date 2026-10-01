@@ -35,6 +35,7 @@ Projects from the MathWorks Advanced Research & Technology Office. This reposito
 | [finding-pi-with-marbles](Examples/finding-pi-with-marbles/) | Estimate &pi; using a marble bag game developed in a Claude Code and MATLAB MCP workflow | [ZIP](https://github.com/mathworks/Research-Office-Projects/releases/download/project-downloads/example-finding-pi-with-marbles.zip) |
 | [solar-power-app](Examples/solar-power-app/) | Interactive rooftop solar panel planner with satellite imagery, tilt optimization, and energy yield estimation | [ZIP](https://github.com/mathworks/Research-Office-Projects/releases/download/project-downloads/example-solar-power-app.zip) |
 | [drone-show](Examples/drone-show/) | Coordinated drone light show for up to 500 UAVs with MAVLink mission delivery, carrier-phase RTK, and formation flight | [ZIP](https://github.com/mathworks/Research-Office-Projects/releases/download/project-downloads/example-drone-show.zip) |
+| [autofocus](Examples/autofocus/) | Contrast-detect camera autofocus loop driven by physically based defocus blur in an Unreal Engine scene | [ZIP](https://github.com/mathworks/Research-Office-Projects/releases/download/project-downloads/example-autofocus.zip) |
 <!-- project-table:end -->
 
 ## License

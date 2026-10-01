@@ -1,5 +1,9 @@
 # Closed-Loop Camera Autofocus in a Simulated Scene
 
+<!-- project-download-link:start -->
+📦 Download this project [here](https://github.com/mathworks/Research-Office-Projects/releases/download/project-downloads/example-autofocus.zip).
+<!-- project-download-link:end -->
+
 A Simulink model of a camera that has to focus itself. An Unreal Engine parking lot is rendered
 to RGB and depth, a physically based defocus blur turns the depth into real optical blur, and a
 contrast-detect autofocus loop drives the focus distance using nothing but the blurred image.
