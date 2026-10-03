@@ -24,7 +24,7 @@ sim(mdl);             % or just press Run
 plotSetTube;          % draws the log the run left behind
 ```
 
-This is an **experiment and a proof of concept**, published so the research community can see what the plugin solver interface makes possible and build on it. It computes **approximate reachability**: at each step the set is pushed through the linearisation of the dynamics about the centre trajectory, which is exact for linear dynamics and an approximation for nonlinear dynamics.
+This is an **experiment and a proof of concept**, published so the research community can see what the plugin solver interface makes possible and build on it. It computes **approximate reachability**: at each step the set is pushed through the linearisation of the dynamics about the centre trajectory, which is exact for linear dynamics and an approximation for nonlinear dynamics. With [state splitting](#error-handling-getting-arbitrarily-close), the approximation can be made arbitrarily close, up to a chosen tolerance, at the cost of running extra simulations.
 
 ## How it works
 
@@ -134,7 +134,25 @@ the needle while being paper-thin across it.
 
 ## Error handling: getting arbitrarily close
 
-Van der Pol example shows that some simulated trajectories go outside the plotted tube due to it being an approximation. The error is quadratic in the diameter of the initial set. HSCC'09 gives the bound as `‖y − x‖ ≤ K‖S‖²` and an error handling mechanism: partition `S` into smaller subsets, propagate each one, and take the union. Halving the diameter quarters the error, so refining the partition until a chosen tolerance is met gets arbitrarily close to the true reachable set, at the cost of one simulation per piece. That paper also supplies the machinery to do it adaptively, refining only where the local error estimate exceeds the tolerance. **Splitting is not implemented here.**
+Van der Pol example shows that some simulated trajectories go outside the plotted tube due to it being an approximation. The error is quadratic in the diameter of the initial set. HSCC'09 gives the bound as `‖y − x‖ ≤ K‖S‖²` and an error handling mechanism: partition `S` into smaller subsets, propagate each one, and take the union. Halving the diameter quarters the error, so refining the partition until a chosen tolerance is met gets arbitrarily close to the true reachable set, at the cost of one simulation per piece. That paper also supplies the machinery to do it adaptively, refining only where the local error estimate exceeds the tolerance. `splitSetReach` implements it.
+
+```matlab
+vdp                   % open the shipping model
+R = splitSetReach('vdp', Tol = 1, Radii = 0.15, StopTime = 8, FixedStep = 0.01);
+plotSplitSetTube(R, 'Samples', sampleModelTrajectories('vdp', R.t, 0.15, 8));
+```
+
+It keeps halving the initial set until every piece's error estimate is at most `Tol`, and each piece is an ordinary run of the unmodified model.
+
+![van der Pol, unsplit against split](images/vdp_split_tube.gif)
+
+`examples/vdpSplitTube.m`, `mu = 2`, initial half-widths `0.15`, `h = 0.01`, one full loop over `t = 0..8`, `Tol = 1`.
+The top row is the unsplit tube and the bottom row the split one; the grey curves are 64 trajectories re-simulated from sampled initial states.
+The unsplit tube misses the truth by up to `3.57`, and the split tube, 52 pieces from 72 simulations in about 40 s, by at most `0.129`.
+Colour is how many times a piece was halved.
+
+Each split halves every uncertain state at once, so it costs `2^m` simulations for `m` uncertain states: 4 for van der Pol, 8 for Lorenz.
+The pieces run in parallel when Parallel Computing Toolbox is installed and a pool is open.
 
 ## Limitations
 - This work primarily supports continuous (continuous-time and continuous-valued) dynamics.
@@ -142,6 +160,7 @@ Van der Pol example shows that some simulated trajectories go outside the plotte
     The variable-step solvers do sharpen *where* the engine puts a crossing, because `interpolateState` answers the engine's bisection with the step's own affine flow instead of a straight line.
     But that improves the **centre** only, and the set has no notion of the crossing, which is why it cannot be carried across the jump.
   - Discrete-time dynamics, e.g., the evolution of the state inside a Unit Delay block, are handled directly by the block types themselves and not the solver. Therefore our plugin solver has no way to directly interact with these, and their set-valued extensions are not supported. This is different from a fixed-step solver numerically integrating continuous-time state variables with a fixed stepsize, which *is* supported.
+- Splitting works with the fixed-step zonotope solvers only.
 
 ## References
 
@@ -190,11 +209,11 @@ Van der Pol example shows that some simulated trajectories go outside the plotte
 
 | folder | contents |
 | --- | --- |
-| `solvers/` | `SetReach` and `SetReachVar` base classes, the eight registered subclasses, `registerSetSolvers` |
+| `solvers/` | `SetReach` and `SetReachVar` base classes, the eight registered subclasses, `registerSetSolvers`, `splitSetReach` |
 | `representations/` | `SetRep` and the `ZonotopeRep`, `SupportRep`, `SensitivityRep`, `EllipsoidRep`, `HullRep` implementations |
-| `examples/` | `vdpReachTube`, `lorenzReachTube` |
-| `visualization/` | `plotSetTube`, `zonotopeVertices` |
+| `examples/` | `vdpReachTube`, `lorenzReachTube`, `vdpSplitTube` |
+| `visualization/` | `plotSetTube`, `plotSplitSetTube`, `zonotopeVertices` |
 | `helpers/` | `sampleModelTrajectories` and set-log utilities |
-| `tests/` | `tSetReach`, run with `runtests('tSetReach')` |
+| `tests/` | `tSetReach` and `tSplitSetReach`, run with `runtests('tests')` |
 
 Run `setup` once per session to put all of it on the path.

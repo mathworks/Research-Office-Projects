@@ -177,7 +177,7 @@ classdef SetReach < Simulink.Solver.FixedStepSolver
             if isempty(obj.S) || obj.S.dim() ~= n
                 obj.S = SetReach.resolveInitialSet(obj.shapeKind(), n);
             end
-            if isempty(SetReach.store().t)
+            if SetReach.logLength() == 0
                 SetReach.record(t0, x0(:), obj.S, mu, A, h, f0);
             end
 
@@ -396,15 +396,7 @@ classdef SetReach < Simulink.Solver.FixedStepSolver
             %   sldemo_bounce: an entry exists at every reset time under BOTH the
             %   fixed-step and variable-step solvers, so the [] case is the t = 0
             %   establishing reset rather than a routine occurrence.
-            L = SetReach.store();
-            c = [];
-            if isempty(L.t)
-                return
-            end
-            k = find(abs(L.t - t) < 1e-12, 1, 'last');
-            if ~isempty(k)
-                c = L.c{k};
-            end
+            c = SetReach.store(t, 'centreAt');
         end
 
         function out = resetStore(in)
@@ -467,19 +459,12 @@ classdef SetReach < Simulink.Solver.FixedStepSolver
             %   Position is continuous across a jump, so only the jumping states
             %   change; the entry is overwritten wholesale because x is exactly what
             %   the engine will carry forward.
-            L = SetReach.store();
-            if isempty(L.t)
-                return
-            end
-            k = find(abs(L.t - t) < 1e-12, 1, 'last');
-            if isempty(k)
-                % No entry at this time yet. Fixed-step: reset at t=0 before any
-                % step has run. Variable-step: t is a located root strictly inside
-                % a step, and the next step() call will record it as its own t0.
-                return
-            end
-            L.c{k} = x(:);
-            SetReach.store(L);
+            %
+            %   With no entry at this time yet it does nothing. Fixed-step: reset
+            %   at t=0 before any step has run. Variable-step: t is a located root
+            %   strictly inside a step, and the next step() call will record it as
+            %   its own t0.
+            SetReach.store({t, x}, 'setCentreAt');
         end
 
         function rewind(t0)
@@ -535,15 +520,13 @@ classdef SetReach < Simulink.Solver.FixedStepSolver
             %     Phi(tau) = expm([A f0; 0]*tau) for tau in [0, h], which is what
             %     lets the tube be evaluated at times the solver never stopped at.
             %     See resampleSetLog.m.
-            L = SetReach.store();
-            L.t(end+1, 1) = t;
-            L.c{end+1, 1} = c;
-            L.S{end+1, 1} = S;
-            L.mu(end+1, 1) = mu;
-            L.A{end+1, 1} = A;
-            L.h(end+1, 1) = h;
-            L.f0{end+1, 1} = f0(:);
-            SetReach.store(L);
+            SetReach.store(struct('t', t, 'c', c, 'S', S, 'mu', mu, 'A', A, ...
+                'h', h, 'f0', f0(:)), 'append');
+        end
+
+        function n = logLength()
+            %LOGLENGTH Entries in the log, without copying it.
+            n = SetReach.store([], 'count');
         end
 
         function out = getLog()
@@ -589,15 +572,92 @@ classdef SetReach < Simulink.Solver.FixedStepSolver
             SetReach.store(L);
         end
 
-        function out = store(in)
-            persistent L
+        function out = store(in, op)
+            %STORE The log, one per MATLAB process, shared by every set solver.
+            %   store() returns it and store(L) replaces it. The ops are the
+            %   per-step and per-reset paths, and none of them copies the log:
+            %     store(e, 'append')       add entry e, a struct of one row
+            %     store([], 'count')       number of entries
+            %     store(t, 'centreAt')     centre of the last entry at time t, or []
+            %     store({t, x}, 'setCentreAt')  overwrite that centre, if any
+            %   The log is held with spare capacity and a count. Appending by
+            %   get, modify, set copied every field on every step, so a run of K
+            %   steps cost O(K^2): on 6400 vdp steps, 21 of 25 s were the log.
+            persistent L n
             if isempty(L)
                 L = SetReach.emptyLog();
+                n = 0;
             end
-            if nargin > 0
+            if nargin == 0
+                out = L;
+                if n < numel(L.t)
+                    for f = SetReach.logFields()
+                        out.(f{1}) = L.(f{1})(1:n, 1);
+                    end
+                end
+                return
+            end
+            if nargin == 1
                 L = in;
+                n = numel(in.t);
+                out = [];
+                return
             end
-            out = L;
+            out = [];
+            switch op
+                case 'append'
+                    n = n + 1;
+                    if n > numel(L.t)
+                        cap = max(64, 2 * numel(L.t));
+                        L.t(cap, 1) = 0;
+                        L.c{cap, 1} = [];
+                        L.S{cap, 1} = [];
+                        L.mu(cap, 1) = 0;
+                        L.A{cap, 1} = [];
+                        L.h(cap, 1) = 0;
+                        L.f0{cap, 1} = [];
+                    end
+                    L.t(n) = in.t;
+                    L.c{n} = in.c;
+                    L.S{n} = in.S;
+                    L.mu(n) = in.mu;
+                    L.A{n} = in.A;
+                    L.h(n) = in.h;
+                    L.f0{n} = in.f0;
+                case 'count'
+                    out = n;
+                case 'centreAt'
+                    k = lastAt(L.t, n, in);
+                    if ~isempty(k)
+                        out = L.c{k};
+                    end
+                case 'setCentreAt'
+                    k = lastAt(L.t, n, in{1});
+                    if ~isempty(k)
+                        L.c{k} = in{2}(:);
+                    end
+            end
+        end
+
+        function f = logFields()
+            %LOGFIELDS The log's per-entry fields, every one a column of n rows.
+            f = {'t', 'c', 'S', 'mu', 'A', 'h', 'f0'};
         end
     end
+end
+
+function k = lastAt(t, n, tq)
+%LASTAT Index of the last of the first n entries of t within 1e-12 of tq, or [].
+%   Searches back from the newest entry, which is where a reset's time is, and
+%   stops once the times fall below tq, since the log's times never decrease.
+k = [];
+for i = n:-1:1
+    if abs(t(i) - tq) < 1e-12
+        k = i;
+        return
+    end
+    if t(i) < tq - 1e-12
+        return
+    end
+end
 end

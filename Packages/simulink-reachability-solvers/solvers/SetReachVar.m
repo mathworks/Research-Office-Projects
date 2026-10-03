@@ -187,7 +187,7 @@ classdef SetReachVar < Simulink.Solver.VariableStepSolver
 
             % First entry needs x0, so it cannot be made in start(). Matches
             % SetReach: entry 1 duplicates entry 2's step data.
-            if isempty(SetReach.store().t)
+            if SetReach.logLength() == 0
                 SetReach.record(t0, x0(:), obj.S, mu, A, h, f0);
             end
 
