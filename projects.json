@@ -152,5 +152,16 @@
     "products": ["MATLAB", "Simulink", "Stateflow", "Automated Driving Toolbox", "Computer Vision Toolbox", "Image Processing Toolbox"],
     "topics": ["autofocus", "camera-simulation", "contrast-detection", "unreal-engine", "model-based-design"],
     "categories": ["Computer Vision", "Optimization & Control", "3D & Simulation"]
+  },
+  {
+    "name": "M-plicits Neural Surface Reconstruction",
+    "folder": "Packages/mplicit-surface-meshing",
+    "type": "Package",
+    "shortSummary": "Reconstruct watertight surface meshes from oriented point clouds using a multiscale neural implicit surface",
+    "summary": "Turns an oriented point cloud into a watertight surface mesh using M-plicits, a multiscale neural implicit surface, with a pc2surfacemesh-style interface. The surface is the zero level set of a sum of sinusoidal neural networks (SIRENs) trained coarse to fine: a smooth coarse signed distance field plus higher-frequency residuals that add detail in a band around the surface. Includes a Live Script that reconstructs an aircraft model and compares the result with Screened Poisson.",
+    "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Packages/mplicit-surface-meshing/mplicitTraining.gif",
+    "products": ["MATLAB", "Deep Learning Toolbox", "Computer Vision Toolbox", "Image Processing Toolbox", "Statistics and Machine Learning Toolbox", "Parallel Computing Toolbox (optional)"],
+    "topics": ["surface-reconstruction", "point-cloud", "neural-implicit", "siren", "meshing"],
+    "categories": ["Computer Vision", "3D & Simulation"]
   }
 ]
