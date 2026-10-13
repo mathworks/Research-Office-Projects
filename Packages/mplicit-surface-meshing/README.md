@@ -1,5 +1,9 @@
 # M-plicits Neural Surface Reconstruction for MATLAB
 
+<!-- project-download-link:start -->
+📦 Download this project [here](https://github.com/mathworks/Research-Office-Projects/releases/download/project-downloads/package-mplicit-surface-meshing.zip).
+<!-- project-download-link:end -->
+
 ![M-plicits reconstructing an aircraft surface from a 10,000-point cloud, level by level: coarse shape, adding detail, fine detail](mplicitTraining.gif)
 
 `pc2mplicitmesh` turns an oriented point cloud into a watertight surface mesh
