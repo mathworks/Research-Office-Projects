@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            color-scheme: light;
+            --page-bg: #f8f8f8;
+            --panel-bg: rgba(255, 255, 255, 0.96);
+            --panel-border: rgba(29, 28, 29, 0.10);
+            --ink: #1d1c1d;
+            --muted: #616061;
+            --shadow: 0 1px 2px rgba(29, 28, 29, 0.08);
+            --card-shadow: 0 1px 2px rgba(29, 28, 29, 0.06);
+            --mono: "Consolas", "Courier New", monospace;
+            --sans: "Segoe UI", Arial, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            height: 100%;
+            overflow: hidden;
+            background: var(--page-bg);
+            color: var(--ink);
+            font-family: var(--sans);
+        }
+
+        body {
+            background-image:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(246, 246, 246, 1));
+        }
+
+        .board-shell {
+            height: 100%;
+            padding: 10px;
+        }
+
+        .board-frame {
+            height: 100%;
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            background: var(--panel-bg);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .board-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 16px 10px 16px;
+            border-bottom: 1px solid rgba(29, 28, 29, 0.08);
+            background: rgba(255, 255, 255, 0.98);
+        }
+
+        .board-title {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+        }
+
+        .board-subtitle {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .board-count {
+            font-size: 12px;
+            color: var(--muted);
+            white-space: nowrap;
+        }
+
+        .board-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px 10px 12px 10px;
+        }
+
+        .board-scroll::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .board-scroll::-webkit-scrollbar-thumb {
+            border-radius: 999px;
+            background: rgba(29, 28, 29, 0.16);
+        }
+
+        .turn-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .turn-row {
+            display: flex;
+            width: 100%;
+        }
+
+        .turn-row-left {
+            justify-content: flex-start;
+        }
+
+        .turn-row-right {
+            justify-content: flex-end;
+        }
+
+        .turn-card {
+            width: min(78%, 820px);
+            border-radius: 10px;
+            border: 1px solid rgba(29, 28, 29, 0.06);
+            background: color-mix(in srgb, var(--card, #f8f8f8) 52%, white 48%);
+            box-shadow: 0 1px 2px rgba(29, 28, 29, 0.05), 0 4px 10px rgba(29, 28, 29, 0.03);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .turn-card::before {
+            content: none;
+        }
+
+        .turn-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 10px 12px 4px 12px;
+            background: color-mix(in srgb, var(--card, #f8f8f8) 78%, white 22%);
+            border-bottom: 1px solid rgba(29, 28, 29, 0.05);
+        }
+
+        .turn-header-main {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .turn-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 24px;
+            height: 18px;
+            padding: 0 7px;
+            border-radius: 999px;
+            background: color-mix(in srgb, var(--accent, #425364) 10%, white 90%);
+            color: var(--accent, #425364);
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            flex-shrink: 0;
+        }
+
+        .turn-agent {
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            color: var(--ink);
+            min-width: 0;
+        }
+
+        .turn-meta {
+            font-size: 10px;
+            color: var(--muted);
+            text-align: right;
+        }
+
+        .turn-body {
+            padding: 0 12px 12px 12px;
+            background: color-mix(in srgb, var(--card, #f8f8f8) 18%, white 82%);
+        }
+
+        .turn-row-right .turn-card {
+            background: color-mix(in srgb, var(--card, #f8f8f8) 44%, white 56%);
+        }
+
+        .turn-row-right .turn-header {
+            background: color-mix(in srgb, var(--card, #f8f8f8) 68%, white 32%);
+        }
+
+        .turn-row-right .turn-body {
+            background: color-mix(in srgb, var(--card, #f8f8f8) 14%, white 86%);
+        }
+
+        .turn-message {
+            margin: 0;
+            white-space: pre-wrap;
+            word-break: break-word;
+            font-family: var(--mono);
+            font-size: 11px;
+            line-height: 1.4;
+            color: color-mix(in srgb, var(--ink) 88%, white 12%);
+        }
+
+        .board-empty {
+            height: 100%;
+            min-height: 180px;
+            border: 1px dashed rgba(29, 28, 29, 0.12);
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            background: rgba(251, 251, 251, 0.95);
+            padding: 24px;
+            text-align: center;
+        }
+
+        .board-empty-title {
+            margin: 0 0 8px 0;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+        }
+
+        .board-empty-copy {
+            margin: 0;
+            max-width: 420px;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        @media (width <= 900px) {
+            .turn-card {
+                width: min(92%, 820px);
+            }
+        }
+    </style>
+    <script>
+        function defaultPayload() {
+            return {
+                revision: 0,
+                title: "Live Board",
+                subtitle: "Controller prompts stay hidden here while the raw transcript keeps them.",
+                emptyMessage: "Run a meeting, run a workflow, or load a saved transcript to populate the board.",
+                turns: []
+            };
+        }
+
+        function parsePayload(rawData) {
+            if (!rawData) {
+                return defaultPayload();
+            }
+
+            if (typeof rawData === "string") {
+                try {
+                    return Object.assign(defaultPayload(), JSON.parse(rawData));
+                } catch (error) {
+                    return defaultPayload();
+                }
+            }
+
+            return Object.assign(defaultPayload(), rawData);
+        }
+
+        function normalizeTurns(turns) {
+            if (!turns) {
+                return [];
+            }
+
+            if (Array.isArray(turns)) {
+                return turns;
+            }
+
+            return [turns];
+        }
+
+        function createNode(tagName, className, text) {
+            const node = document.createElement(tagName);
+            if (className) {
+                node.className = className;
+            }
+            if (typeof text === "string") {
+                node.textContent = text;
+            }
+            return node;
+        }
+
+        function renderBoard(payload) {
+            const titleNode = document.getElementById("boardTitle");
+            const subtitleNode = document.getElementById("boardSubtitle");
+            const countNode = document.getElementById("boardCount");
+            const bodyNode = document.getElementById("boardBody");
+            const scrollNode = document.getElementById("boardScroll");
+            const turns = normalizeTurns(payload.turns);
+
+            titleNode.textContent = payload.title;
+            subtitleNode.textContent = payload.subtitle;
+            countNode.textContent = turns.length === 1 ? "1 visible turn" : `${turns.length} visible turns`;
+            bodyNode.replaceChildren();
+
+            if (turns.length === 0) {
+                const emptyNode = createNode("section", "board-empty");
+                const copyWrap = document.createElement("div");
+                copyWrap.appendChild(createNode("h2", "board-empty-title", "Board is waiting"));
+                copyWrap.appendChild(createNode("p", "board-empty-copy", payload.emptyMessage));
+                emptyNode.appendChild(copyWrap);
+                bodyNode.appendChild(emptyNode);
+                return;
+            }
+
+            const listNode = createNode("div", "turn-list");
+            turns.forEach((turn, index) => {
+                const rowNode = createNode("div", index % 2 === 0 ? "turn-row turn-row-left" : "turn-row turn-row-right");
+                const cardNode = createNode("article", "turn-card");
+                cardNode.style.setProperty("--card", turn.CardColor || "#f5f4ef");
+                cardNode.style.setProperty("--accent", turn.AccentColor || "#425364");
+
+                const headerNode = createNode("header", "turn-header");
+                const headerMainNode = createNode("div", "turn-header-main");
+                headerMainNode.appendChild(createNode("div", "turn-pill", roleInitials(turn.DisplayAgent || turn.Agent || "Agent")));
+                headerMainNode.appendChild(createNode("div", "turn-agent", turn.DisplayAgent || turn.Agent || "Agent"));
+                headerNode.appendChild(headerMainNode);
+                headerNode.appendChild(createNode("div", "turn-meta", turn.MetaText || ""));
+
+                const bodyWrapNode = createNode("div", "turn-body");
+                bodyWrapNode.appendChild(createNode("pre", "turn-message", turn.Message || ""));
+
+                cardNode.appendChild(headerNode);
+                cardNode.appendChild(bodyWrapNode);
+                rowNode.appendChild(cardNode);
+                listNode.appendChild(rowNode);
+            });
+
+            bodyNode.appendChild(listNode);
+            requestAnimationFrame(() => {
+                scrollNode.scrollTop = scrollNode.scrollHeight;
+            });
+        }
+
+        function roleInitials(name) {
+            const words = String(name || "").trim().split(/\s+/).filter(Boolean);
+            if (words.length === 0) {
+                return "AG";
+            }
+
+            if (words.length === 1) {
+                return words[0].slice(0, 2).toUpperCase();
+            }
+
+            return words.slice(0, 2).map((word) => word.charAt(0)).join("").toUpperCase();
+        }
+
+        function setup(htmlComponent) {
+            const render = function () {
+                renderBoard(parsePayload(htmlComponent.Data));
+            };
+
+            htmlComponent.addEventListener("DataChanged", render);
+            render();
+        }
+    </script>
+</head>
+<body>
+    <div class="board-shell">
+        <div class="board-frame">
+            <div class="board-header">
+                <div>
+                    <h1 class="board-title" id="boardTitle">Live Board</h1>
+                    <div class="board-subtitle" id="boardSubtitle">
+                        Controller prompts stay hidden here while the raw transcript keeps them.
+                    </div>
+                </div>
+                <div class="board-count" id="boardCount">0 visible turns</div>
+            </div>
+            <div class="board-scroll" id="boardScroll">
+                <div id="boardBody"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

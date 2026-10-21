@@ -1,0 +1,28 @@
+{
+  "Version": 1,
+  "PresetName": "Starter - Single Review Loop",
+  "SavedAt": "2026-08-22T13:05:00",
+  "Phases": [
+    {
+      "Name": "design_review",
+      "MeetingType": "team",
+      "TeamLead": "PrincipalInvestigator",
+      "TeamMembers": [
+        "Immunologist",
+        "MachineLearningSpecialist",
+        "ScientificCritic"
+      ],
+      "TeamMember": "",
+      "Agenda": "Project brief:\n{{PROJECT_BRIEF}}\n\nRun a single focused review meeting that turns the brief into a concrete recommendation, immediate next step, and explicit risk list.",
+      "AgendaQuestions": [
+        "What recommendation should the team commit to now?",
+        "What should happen next immediately after this meeting?",
+        "What unresolved risk matters most?"
+      ],
+      "AgendaRules": [
+        "Produce one recommendation, not a menu of options."
+      ],
+      "Contexts": []
+    }
+  ]
+}

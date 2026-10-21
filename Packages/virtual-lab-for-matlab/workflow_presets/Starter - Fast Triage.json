@@ -1,0 +1,46 @@
+{
+  "Version": 1,
+  "PresetName": "Starter - Fast Triage",
+  "SavedAt": "2026-08-22T13:05:00",
+  "Phases": [
+    {
+      "Name": "problem_framing",
+      "MeetingType": "individual",
+      "TeamLead": "",
+      "TeamMembers": [],
+      "TeamMember": "PrincipalInvestigator",
+      "Agenda": "Project brief:\n{{PROJECT_BRIEF}}\n\nFrame the problem for an accelerated planning pass. Identify the single most important objective, the main scientific constraint, and the narrowest useful next step.",
+      "AgendaQuestions": [
+        "What is the single objective for the first pass?",
+        "What constraint most limits the plan?",
+        "What is the narrowest credible next step?"
+      ],
+      "AgendaRules": [
+        "Prioritize speed and clarity over completeness."
+      ],
+      "Contexts": []
+    },
+    {
+      "Name": "execution_triage",
+      "MeetingType": "team",
+      "TeamLead": "PrincipalInvestigator",
+      "TeamMembers": [
+        "MachineLearningSpecialist",
+        "ComputationalBiologist",
+        "ScientificCritic"
+      ],
+      "TeamMember": "",
+      "Agenda": "Project brief:\n{{PROJECT_BRIEF}}\n\nDefine a fast execution plan with the smallest viable toolchain, highest-risk dependency checks, and clear stop/go criteria.",
+      "AgendaQuestions": [
+        "Which tools are strictly necessary for the first pass?",
+        "What dependency or integration risk should be checked first?",
+        "What result would justify continuing?"
+      ],
+      "AgendaRules": [
+        "Prefer fewer tools and fewer handoffs.",
+        "Call out one decisive risk check."
+      ],
+      "Contexts": []
+    }
+  ]
+}
