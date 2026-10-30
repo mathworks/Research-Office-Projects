@@ -25,6 +25,7 @@ Projects from the MathWorks Advanced Research & Technology Office. This reposito
 | [xtosim](Packages/xtosim/) | AI-powered pipeline that converts research papers, equations, and system descriptions into validated Simulink models using multiple specialized builders | [ZIP](https://github.com/mathworks/Research-Office-Projects/releases/download/project-downloads/package-xtosim.zip) |
 | [simulink-reachability-solvers](Packages/simulink-reachability-solvers/) | Simulate a Simulink model from a set of initial conditions by picking a reachability solver from the Solver dropdown | [ZIP](https://github.com/mathworks/Research-Office-Projects/releases/download/project-downloads/package-simulink-reachability-solvers.zip) |
 | [mplicit-surface-meshing](Packages/mplicit-surface-meshing/) | Reconstruct watertight surface meshes from oriented point clouds using a multiscale neural implicit surface | [ZIP](https://github.com/mathworks/Research-Office-Projects/releases/download/project-downloads/package-mplicit-surface-meshing.zip) |
+| [virtual-lab-for-matlab](Packages/virtual-lab-for-matlab/) | Coordinate multi-agent research discussions with a shared conversation, configurable workflows, and an interactive MATLAB app | [ZIP](https://github.com/mathworks/Research-Office-Projects/releases/download/project-downloads/package-virtual-lab-for-matlab.zip) |
 
 ### Examples
 

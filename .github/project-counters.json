@@ -13,5 +13,6 @@
   "package-mplicit-surface-meshing": 0,
   "package-simulink-reachability-solvers": 3,
   "package-video-framerate-upsampling": 0,
+  "package-virtual-lab-for-matlab": 0,
   "package-xtosim": 5
 }

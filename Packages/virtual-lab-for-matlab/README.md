@@ -1,5 +1,9 @@
 # Virtual Lab for MATLAB&reg;
 
+<!-- project-download-link:start -->
+📦 Download this project [here](https://github.com/mathworks/Research-Office-Projects/releases/download/project-downloads/package-virtual-lab-for-matlab.zip).
+<!-- project-download-link:end -->
+
 ![Virtual Lab app running a simulated team meeting and a four-phase workflow: participant turns appear on the live board and each phase is merged in the workflow summary](images/virtual-lab-app-demo.gif)
 
 Virtual Lab for MATLAB is a conversation-centric prototype for structured multi-agent collaboration in MATLAB. The app and its MATLAB runtime own the shared conversation: they maintain its history, schedule participant turns, and save the transcript. Each participant contributes through its configured LLM, while the conversation exists independently of any one model or agent session. Saved conversations can be reopened in the app for inspection without making model calls.
