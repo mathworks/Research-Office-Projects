@@ -1,0 +1,4 @@
+name = "Virtual Lab for MATLAB"
+
+[dependencies]
+matlab_ai_agent_sdk = {version = ">=0.4.0", id = "a7e1e8d5-f64a-413b-bde9-e314f401b0cd"}

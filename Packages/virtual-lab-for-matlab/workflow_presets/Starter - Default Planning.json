@@ -1,0 +1,85 @@
+{
+  "Version": 1,
+  "PresetName": "Starter - Default Planning",
+  "SavedAt": "2026-08-22T13:05:00",
+  "Phases": [
+    {
+      "Name": "team_selection",
+      "MeetingType": "individual",
+      "TeamLead": "",
+      "TeamMembers": [],
+      "TeamMember": "PrincipalInvestigator",
+      "Agenda": "You are planning a scientific research project.\n\nProject brief:\n{{PROJECT_BRIEF}}\n\nSelect three specialist scientists to help with this project. For each one, explain the expertise gap they cover and why they belong in the first planning meeting.",
+      "AgendaQuestions": [
+        "Which three specialists should participate in the planning meeting?",
+        "What unique role does each specialist play?"
+      ],
+      "AgendaRules": [],
+      "Contexts": []
+    },
+    {
+      "Name": "project_specification",
+      "MeetingType": "team",
+      "TeamLead": "PrincipalInvestigator",
+      "TeamMembers": [
+        "Immunologist",
+        "MachineLearningSpecialist",
+        "ScientificCritic"
+      ],
+      "TeamMember": "",
+      "Agenda": "Project brief:\n{{PROJECT_BRIEF}}\n\nCreate the project specification. Make concrete decisions about the initial research strategy and what the team will build first.",
+      "AgendaQuestions": [
+        "What is the primary research strategy?",
+        "What is the first implementation slice?",
+        "What evidence would count as success in the first slice?"
+      ],
+      "AgendaRules": [
+        "Choose one primary strategy rather than listing multiple equal options.",
+        "Keep the first implementation slice narrow enough to execute."
+      ],
+      "Contexts": []
+    },
+    {
+      "Name": "tools_selection",
+      "MeetingType": "team",
+      "TeamLead": "PrincipalInvestigator",
+      "TeamMembers": [
+        "MachineLearningSpecialist",
+        "ComputationalBiologist",
+        "ScientificCritic"
+      ],
+      "TeamMember": "",
+      "Agenda": "Project brief:\n{{PROJECT_BRIEF}}\n\nSelect the computational and data tools needed to implement the project specification.",
+      "AgendaQuestions": [
+        "Which tools belong in the first implementation slice?",
+        "What does each tool contribute?",
+        "Which dependencies or integration risks matter most?"
+      ],
+      "AgendaRules": [
+        "Prefer the smallest toolset that can still execute the first slice."
+      ],
+      "Contexts": []
+    },
+    {
+      "Name": "workflow_design",
+      "MeetingType": "team",
+      "TeamLead": "PrincipalInvestigator",
+      "TeamMembers": [
+        "ComputationalBiologist",
+        "MachineLearningSpecialist",
+        "ScientificCritic"
+      ],
+      "TeamMember": "",
+      "Agenda": "Project brief:\n{{PROJECT_BRIEF}}\n\nDesign the end-to-end workflow the team will execute, including inputs, tools, evaluation steps, and handoff artifacts.",
+      "AgendaQuestions": [
+        "What are the ordered workflow steps?",
+        "What artifacts should each step produce?",
+        "Where are the highest-risk handoffs or assumptions?"
+      ],
+      "AgendaRules": [
+        "Describe an executable workflow rather than a broad research vision."
+      ],
+      "Contexts": []
+    }
+  ]
+}

@@ -163,5 +163,16 @@
     "products": ["MATLAB", "Deep Learning Toolbox", "Computer Vision Toolbox", "Image Processing Toolbox", "Statistics and Machine Learning Toolbox", "Parallel Computing Toolbox (optional)"],
     "topics": ["surface-reconstruction", "point-cloud", "neural-implicit", "siren", "meshing"],
     "categories": ["Computer Vision", "3D & Simulation"]
+  },
+  {
+    "name": "Virtual Lab for MATLAB",
+    "folder": "Packages/virtual-lab-for-matlab",
+    "type": "Package",
+    "shortSummary": "Coordinate multi-agent research discussions with a shared conversation, configurable workflows, and an interactive MATLAB app",
+    "summary": "MATLAB runtime and app for structured multi-agent research meetings, inspired by the Virtual Lab of AI agents (Swanson et al., Nature 2025). Specialist agents with their own roles and models take turns in one shared conversation, and multi-phase workflows repeat each meeting and merge the results into a single phase decision. Includes configurable agents and workflow presets, saved JSON and Markdown transcripts, and simulated demos that run without credentials. Real model calls use MATLAB AI Agent SDK; retrieval and computation tools are supplied by the user.",
+    "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Packages/virtual-lab-for-matlab/images/virtual-lab-app-demo.gif",
+    "products": ["MATLAB", "MATLAB AI Agent SDK (optional)"],
+    "topics": ["large-language-models", "multi-agent", "ai-agents", "research-workflows", "app-building"],
+    "categories": ["AI & Automation"]
   }
 ]
