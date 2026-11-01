@@ -38,6 +38,7 @@ Projects from the MathWorks Advanced Research & Technology Office. This reposito
 | [solar-power-app](Examples/solar-power-app/) | Interactive rooftop solar panel planner with satellite imagery, tilt optimization, and energy yield estimation | [ZIP](https://github.com/mathworks/Research-Office-Projects/releases/download/project-downloads/example-solar-power-app.zip) |
 | [drone-show](Examples/drone-show/) | Coordinated drone light show for up to 500 UAVs with MAVLink mission delivery, carrier-phase RTK, and formation flight | [ZIP](https://github.com/mathworks/Research-Office-Projects/releases/download/project-downloads/example-drone-show.zip) |
 | [autofocus](Examples/autofocus/) | Contrast-detect camera autofocus loop driven by physically based defocus blur in an Unreal Engine scene | [ZIP](https://github.com/mathworks/Research-Office-Projects/releases/download/project-downloads/example-autofocus.zip) |
+| [vla-guided-mobile-manipulation](Examples/vla-guided-mobile-manipulation/) | A mobile manipulator in a photorealistic Unreal Engine&reg; apartment turns one plain-English instruction into a drive, a grasp and a place, grounded by Gemini Robotics-ER | [ZIP](https://github.com/mathworks/Research-Office-Projects/releases/download/project-downloads/example-vla-guided-mobile-manipulation.zip) |
 <!-- project-table:end -->
 
 ## License
