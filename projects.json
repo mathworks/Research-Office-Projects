@@ -174,5 +174,16 @@
     "products": ["MATLAB", "MATLAB AI Agent SDK (optional)"],
     "topics": ["large-language-models", "multi-agent", "ai-agents", "research-workflows", "app-building"],
     "categories": ["AI & Automation"]
+  },
+  {
+    "name": "VLA-Guided Mobile Manipulation",
+    "folder": "Examples/vla-guided-mobile-manipulation",
+    "type": "Example",
+    "shortSummary": "A mobile manipulator in a photorealistic Unreal Engine® apartment turns one plain-English instruction into a drive, a grasp and a place, grounded by Gemini Robotics-ER",
+    "summary": "Type an instruction such as \"Take the soap dispenser from the bathroom and set it next to the kitchen sink\" and a mobile manipulator carries it out in a photorealistic apartment. Gemini Robotics-ER grounds the sentence in four camera views, perception turns its pick and place points into targets in metres, the base plans and follows a path across the apartment, a wrist camera refines the grasp, and four Stateflow supervisors sequence the pick and the place under a latched safety monitor. Runs offline on bundled sample responses, or live with your own Gemini API key, from an operator app or a live script.",
+    "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Examples/vla-guided-mobile-manipulation/docs/images/hero.jpg",
+    "products": ["MATLAB", "Simulink", "Stateflow", "Robotics System Toolbox", "Navigation Toolbox", "Simulink 3D Animation", "Computer Vision Toolbox", "Image Processing Toolbox", "Automated Driving Toolbox"],
+    "topics": ["robotics", "mobile-manipulation", "vision-language-action", "gemini", "unreal-engine", "model-based-design"],
+    "categories": ["Robotics", "AI & Automation", "3D & Simulation"]
   }
 ]

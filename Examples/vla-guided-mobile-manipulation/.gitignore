@@ -1,0 +1,34 @@
+# Simulink build artifacts and caches - regenerated on every build
+slprj/
+*.slxc
+*_cgxe.mexw64
+
+# Reflected render meshes, written by hmmMirrorTree on first setup (~24 MB). Each is a
+# y-reflected copy of a mesh that is committed or ships with Robotics System Toolbox, and
+# a missing file is simply rewritten.
+robots/meshes/mirrored/
+
+# The myAGV Pro base meshes are Elephant Robotics' files, downloaded by each user into
+# robots/meshes/agv_pro (README, "Robot Base Meshes"). They are not redistributed here.
+robots/meshes/agv_pro/*.stl
+
+# Textures unpacked from the scene FBX files on first load
+*.fbm/
+*_textures/
+
+# MATLAB editor and Simulink autosave
+*.asv
+*.m~
+*.autosave
+
+# Your Gemini API key, if you keep it in a file instead of GEMINI_API_KEY. Never commit it.
+# These are every name hmmProviderKey accepts, plus the folders it looks in for them.
+gemini.key
+GEMINI_API_KEY
+.gemini_api_key
+gemini_api_key.txt
+secrets/
+.secrets/
+
+# Runs recorded by the operator console (Record run). Local only.
+records/

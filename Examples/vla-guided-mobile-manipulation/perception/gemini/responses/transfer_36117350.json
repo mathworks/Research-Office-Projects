@@ -1,0 +1,13 @@
+{
+  "actions": [
+    {
+      "action": "transfer",
+      "object": "mug",
+      "pick_point": [365, 378],
+      "pick_image": 1,
+      "place_point": [764, 414],
+      "place_image": 2,
+      "confidence": 0.88
+    }
+  ]
+}
