@@ -1,5 +1,9 @@
 # VLA-Guided Mobile Manipulation in a Home
 
+<!-- project-download-link:start -->
+📦 Download this project [here](https://github.com/mathworks/Research-Office-Projects/releases/download/project-downloads/example-vla-guided-mobile-manipulation.zip).
+<!-- project-download-link:end -->
+
 A Simulink&reg; model of a mobile manipulator that is given one sentence of plain English and carries
 it out in a photorealistic apartment rendered in Unreal Engine&reg;. Gemini Robotics-ER grounds the
 instruction in four camera views, perception turns its answer into targets in metres, and four
