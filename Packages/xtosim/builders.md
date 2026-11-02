@@ -1069,6 +1069,107 @@ spec.ground_node = 'gnd';
 
 ---
 
+## multibodyBuilder — Articulated Rigid-Body Builder (Simscape Multibody)
+
+Builds a kinematic tree of rigid links joined by revolute joints in a vertical motion plane (X right, Y up, joints about Z — the plane a single camera sees). By default (`plane 'xz'`) that plane stands upright in the world X-Z plane with Z up, matching Mechanics Explorer's default view. Typical sources: limbs, pendulums and robot arms measured from video (`phases/stage_A_video.md`), linkages from papers.
+
+### Function Signature
+
+```matlab
+[mdlName, meta] = multibodyBuilder(spec, mdlName, 'Save', true, 'Verbose', true)
+```
+
+### Spec Struct Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `.name` | char | Component name (also the name of the mechanism subsystem) |
+| `.bodies(i).name` | char | Body name (valid identifier) |
+| `.bodies(i).parent` | char | Parent body, `''` = attached to the base |
+| `.bodies(i).length` | double | m, proximal joint to distal end (link along local +X) |
+| `.bodies(i).width` | double | m, brick thickness (default 0.04) — inertia from geometry |
+| `.bodies(i).mass` | double | kg (default 1) |
+| `.bodies(i).tip_mass`, `.tip_radius` | double | sphere at the distal end, e.g. a pendulum bob (default 0 kg, 0.03 m) |
+| `.bodies(i).offset` | 1x2 | m (default [0 0]): the joint beside the frame it attaches to (parent's distal end, or the base), in that frame's axes — hips and shoulders seen from the front |
+| `.bodies(i).joint` | struct | `.name` (default `j_<body>`), `.type` `'revolute'`, `.q0`, `.damping`, `.stiffness`, `.cylinder` |
+| `.bodies(i).joint.w0` | double/char | initial angular velocity, rad/s (torque/passive) |
+| `.bodies(i).joint.cylinder` | struct | Cylinder drawn at the joint, axis = joint axis, turns with the child link: `.show` (default true), `.radius` (0.6 x width, at most 0.05 m), `.length` (1.4 x width, at most 0.12 m), `.mass` (default 0.001 kg = visual only; set a real value for a motor housing) |
+| `.actuation` | char | `'motion'` (angles in, torques out — inverse dynamics), `'torque'`, `'passive'` |
+| `.plane` | char | `'xz'` (default): the motion plane stands upright in the world X-Z plane, Z up — Mechanics Explorer's default view; `'xy'`: motion plane = world X-Y. Outputs are measured in the motion plane either way |
+| `.gravity` | 1x3 | in the motion plane, default `[0 -9.80665 0]` (down; becomes world -Z with plane `xz`) |
+| `.base_position` | 1x2 | m, world position of the root joint |
+| `.motion_filter_tc` | double | s, motion-input filter (provides velocity/acceleration). Video at 30 fps: 0.05, and lead the input by `2*tc` (`motionToInputs 'LeadTime'`); set the band with `motionToInputs 'Lowpass'` (whole body: 2 Hz slow, 5 Hz fast); a throw's 0.1 s wrist flick: 0.01, no smoothing |
+| `.bodies(i).joint.q0` (motion mode) | double | if given: the pose shown before the simulation starts (e.g. the first measured angle) |
+| `.tip_velocity` | logical | also output `tipvx_<body>`, `tipvy_<body>` (m/s), e.g. the hand's velocity at the release of a thrown object |
+| `.markers(k)` | struct | spheres placed by **input** signals `mx_<name>`, `my_<name>` (m) to show another component in Mechanics Explorer (e.g. a ball simulated by `odeBuilder_cps`): `.name`, `.radius`, `.mass` (0.001), `.color`, `.position0`. Own Simscape network: no algebraic loop when the marker is computed from this mechanism's outputs |
+| `.loads(k)` | struct | external force + moment on a body's distal end: `.name`, `.body`; inputs `fx_<name>`, `fy_<name>` (N, the force ON the body, world axes of the plane), `tz_<name>` (N*m). The ground reaction at the feet (`footLoads`): leg joint torques carry the weight, base reaction ~0 |
+| `.base.q0` | 1x3 | floating base: `[x y rz]` (m, rad) shown before the run (first measured pose; `bodyTreeFromPose` sets it) |
+| `.payloads(k)` | struct | a carried object loading the body: `.name`, `.body` (at its distal end), `.mass` (kg or variable); input `held_<name>` (0/1); force `held*m*(g - a_end)` computed inside the network |
+| `.scenery(k)` | struct | fixed solids measured in the video, visual only (no contact): `.name`, `.shape` `'box'` [w h depth] / `'cylinder'` [r length] (vertical) / `'rod'` [r length] (towards the camera) / `'ring'` [R r] (horizontal torus, a basket rim) / `'frustum'` [rTop rBottom height thickness] (a net), `.center` [x y], `.color`, `.opacity` |
+
+Joint angles are **relative**: body i from its parent's X axis (root: world X), counter-clockwise positive — the convention of `computePlanarJointAngles`.
+
+### Ports
+
+| Mode | Inputs | Outputs |
+|------|--------|---------|
+| `motion` | `q_<joint>` (rad) | `angle_<joint>`, `torque_<joint>`, `tipx_<body>`, `tipy_<body>` |
+| `torque` | `tau_<joint>` (N*m) | `angle_<joint>`, `tipx_<body>`, `tipy_<body>` |
+| `passive` | — | `angle_<joint>`, `tipx_<body>`, `tipy_<body>` |
+| any, with `.tip_velocity` | | + `tipvx_<body>`, `tipvy_<body>` |
+| any, with `.markers` | + `mx_<marker>`, `my_<marker>` (m) | |
+
+### Notes
+
+- The physical network is built **inside a subsystem**; the root carries only signal lines (xToSim's layout pass redraws root lines and would cut physical connections).
+- Output lines are named after their ports, so `simOut.yout.get('torque_elbow')` works.
+- Verified: static torques of a horizontal 2-link arm match `g*(m1*L1/2 + m2*(L1+L2/2))` exactly; tip positions match forward kinematics to 1e-16 m; inverse-dynamics torques from noisy video angles within ~2% RMS of the analytic Lagrange solution (`tests/videoToSimTests/test_video_arm_e2e.m`).
+- Joint units are set explicitly to rad, N*m/(rad/s), N*m/rad (the block defaults are degree-based).
+- `.length`, `.joint.q0`, `.joint.w0`, `.joint.damping`, `.joint.stiffness` accept a workspace variable name (e.g. `'c_pend'`), so `fitParameters` can tune them.
+- v1 limits: revolute joints only, planar (Z-axis) joints, brick links (+ optional tip sphere).
+
+### Example
+
+```matlab
+spec.name = 'Arm';
+spec.actuation = 'motion';
+spec.bodies(1) = struct('name','upper','parent','','length',0.30,'width',0.06,'mass',2.0,'joint',struct('name','shoulder'));
+spec.bodies(2) = struct('name','fore','parent','upper','length',0.28,'width',0.05,'mass',1.5,'joint',struct('name','elbow'));
+plan.components = struct('name','Arm','builder','multibodyBuilder','spec',spec,'decision_path',dp);
+plan.topInputs = motionToInputs(md.time, q, 'Arm', {'q_shoulder','q_elbow'}, 'LeadTime', 0.1, 'Smooth', 9);
+plan.solver = 'daessc';
+```
+
+---
+
+## objectInteractionSpec — Object Handled by a Body (spec generator for odeBuilder_cps)
+
+Not a builder: it writes the `odeBuilder_cps` spec of an object in a body + object scene, so the
+agent never hand-writes contact guards and impulse resets. Use with `builder = 'odeBuilder_cps'`.
+
+```matlab
+[spec, info] = objectInteractionSpec(obj)
+```
+
+| Field | Meaning |
+|-------|---------|
+| `.name`, `.radius`, `.g`, `.air_drag` | component name (parameters prefixed `lower(name)_`), m, m/s^2, 1/s |
+| `.holders` | body points (= `multibodyBuilder` body names whose tips hold it), inputs `<point>_x/_y/_vx/_vy` |
+| `.start` | `.mode` `'held'` (+ `.holder`) / `'flight'` / `'rest'`, `.x .y` (+ `.vx .vy`) |
+| `.events` | time-ordered `release` / `catch` with `.t`, `.holder` (from `detectInteractions`) |
+| `.obstacles` | `circle`, `segment`, `line` (floor, wall), `body` (moving segment between two body tips: strikes, also from rest); `.e`, `.f`, `.group` (shared parameters) — e.g. from `sceneFromPixels` |
+| `.regions` | `.box`, `.drag`, `.funnel` (a net, water) |
+
+Modes: `Flight`, one `Held_k` per holding episode, `Rest` (if a support exists), `In_<region>`.
+State `x y vx vy tau` (motion plane, m). Each release has a correction `k_rel`, `a_rel` (speed gain,
+angle) — fit on the flight right after: the body's velocity is a noisy derivative.
+
+`info.wiring(bodyComp)` gives the `plan.wiring` (body tips -> object, object -> body marker);
+`info.marker` goes into the body's `.markers`; `info.fit.release / .contacts.<group> / .regions.<name>`
+are the parameter names for staged fitting. Recipe and decision table: `phases/stage_A_video.md` A3b.
+
+---
+
 ## stateflowBuilder — Pure Discrete FSM Builder
 
 Builds **pure Stateflow state machines** — no ODEs per state, no Simulink-based states. For supervisory control, protocol controllers, mode managers, and any logic-only FSM. Distinct from `odeBuilder_cps` which embeds continuous dynamics inside each state.

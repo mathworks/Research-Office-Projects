@@ -113,11 +113,11 @@
     "name": "xToSim",
     "folder": "Packages/xtosim",
     "type": "Package",
-    "shortSummary": "AI-powered pipeline that converts research papers, equations, and system descriptions into validated Simulink models using multiple specialized builders",
-    "summary": "AI-powered pipeline that converts research papers, equations, images, and system descriptions into validated, hierarchical Simulink models. Uses multiple specialized builders (ODE, Simscape, Stateflow, blockset, lookup table, SimEvents) orchestrated by an AI coding assistant with a live MATLAB connection via MCP.",
+    "shortSummary": "AI-powered pipeline that converts research papers, equations, system descriptions, and videos into validated Simulink models using multiple specialized builders",
+    "summary": "AI-powered pipeline that converts research papers, equations, images, system descriptions, and video files or webcam recordings into validated, hierarchical Simulink models. Uses multiple specialized builders (ODE, Simscape, Simscape Multibody, Stateflow, blockset, lookup table, SimEvents) orchestrated by an AI coding assistant with a live MATLAB connection via MCP. From video, computer vision measures the motion (body keypoints, object masks) and the agent identifies the system: bouncing balls, pendulums, arms and whole bodies with joint torques and ground reaction forces, and people interacting with objects.",
     "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Packages/xtosim/images/xtosim_overview.svg",
-    "products": ["MATLAB", "Simulink", "Simscape (optional)", "Stateflow (optional)", "SimEvents (optional)", "System Composer (optional)"],
-    "topics": ["ai-assisted", "model-generation", "simulink", "model-based-design", "automation"],
+    "products": ["MATLAB", "Simulink", "Simscape (optional)", "Simscape Multibody (optional)", "Stateflow (optional)", "SimEvents (optional)", "System Composer (optional)", "Computer Vision Toolbox (optional)", "Image Processing Toolbox (optional)", "Image Acquisition Toolbox (optional)", "Deep Learning Toolbox (optional)"],
+    "topics": ["ai-assisted", "model-generation", "simulink", "model-based-design", "automation", "computer-vision"],
     "categories": ["AI & Automation", "Model-Based Design"]
   },
   {

@@ -1,9 +1,17 @@
+---
+name: xtosim
+description: "Convert any source into a validated Simulink model: research papers (PDF, LaTeX, Word), images, text descriptions, existing models, and VIDEO (video files or webcam recordings of a person, arm, hand, robot or object such as a bouncing ball). Plans components, builds with odeBuilder/odeBuilder_cps/simscapeBuilder/multibodyBuilder/stateflowBuilder and others, fits and validates, and delivers a report. Use when the user asks to build, simulate or model something from a source, or to record/simulate what a camera sees."
+---
+
 # xToSim — Multi-Builder Model Construction Agent
+
+> **Version:** 2.6.0 | **Last updated:** 2026-10-21 | See `CHANGELOG.md` for history
 
 ## What to tell me
 
 Just say what you want built. Examples:
 - `"Build a Simulink model from this paper"` + drop a PDF/tex/docx/image
+- `"Simulate what happens in this video"` + a video file, or `"record me"` (webcam)
 - `"Model a DC motor with field weakening"` (I'll derive equations)
 - `"Here's my spec JSON, just build and validate"` (skip intake)
 - `"Audit this existing model and fix it"`
@@ -34,7 +42,7 @@ If context was compacted, your FIRST action MUST be: `Read` both `rules.md` and 
 
 | Stage | Phase File(s) | LLM role |
 |-------|---------------|----------|
-| A | `phases/stage_A_intake.md` | Active |
+| A | `phases/stage_A_intake.md` (video sources: `phases/stage_A_video.md`) | Active |
 | B | `phases/stage_B_plan.md` | Active |
 | C | `phases/stage_C_build.md` (+ `_simscape`, `_stateflow`, `_simevents`) | Reference — `executePlan` handles |
 | D | `phases/stage_D_controllers.md`, `phases/stage_D_hierarchy.md` | Reference — `executePlan` handles |
@@ -157,6 +165,7 @@ See `rules.md` §"Stage C-F Enforcement" for banned commands and allowed command
 | Input type | Action |
 |-----------|--------|
 | File path (PDF, .tex, .docx, .png) | **Document mode** — extract equations, parameter tables, code listings, block diagrams, result plots, algorithms, data arrays |
+| Video (.mp4/.avi/.mov), webcam recording, or motion data (`motion.mat` / `motion_summary.json`) | **Video mode** — perception (no LLM) turns frames into motion data; you interpret it and identify the system. See `phases/stage_A_video.md` |
 | System description ("build a DC motor", "F-14 model") | **Derivation mode** — derive equations from first principles |
 | Existing model/code | **Audit mode** — read structure, extract equations, identify gaps |
 | Ambiguous | Ask only if both are plausible |
@@ -246,6 +255,12 @@ Does this equation MAP TO A KNOWN BLOCK? (check recognition table in builders.md
     (delays, TFs, state-space, PID, saturation, rate limiter, relay,
      discrete TF, ZOH, tire models, battery models, etc.)
     |-- yes --> blocksetBuilder
+    |
+    no
+    |
+    v
+Is this an articulated rigid-body system (links + joints: limb, robot arm, linkage)?
+    |-- yes --> multibodyBuilder (Simscape Multibody; motion / torque / passive actuation)
     |
     no
     |

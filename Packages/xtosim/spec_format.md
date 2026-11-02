@@ -35,7 +35,7 @@ comp.description    = 'Stator flux ODEs';   % OPTIONAL: for report
 comp.equation_ref   = 'Eqs 28-29';         % OPTIONAL: for report table
 ```
 
-Valid builders: `'odeBuilder'`, `'odeBuilder_cps'`, `'simscapeBuilder'`, `'blocksetBuilder'`, `'lookupTableBuilder'`, `'stateflowBuilder'`, `'simeventsBuilder'`, `'existing'`
+Valid builders: `'odeBuilder'`, `'odeBuilder_cps'`, `'simscapeBuilder'`, `'multibodyBuilder'` (articulated rigid bodies, Simscape Multibody; spec: `builders.md`), `'blocksetBuilder'`, `'lookupTableBuilder'`, `'stateflowBuilder'`, `'simeventsBuilder'`, `'existing'`
 
 ---
 
@@ -609,9 +609,16 @@ If `expected_range` is omitted, `checkFigureConsistency` still checks for flat/z
 **Pipeline behavior:**
 - `executePlan` runs `checkFigureConsistency` after invariants, before `evaluateTests`
 - FAIL on any signal → blocks validation (same as invariant failure)
-- For each `validation_figures` entry, extracts the named signals from `logsout` and generates a figure
-- Output filename: `fig<N>_reproduction.png` (e.g., `fig16_reproduction.png`)
+- For each `validation_figures` entry, extracts the named signals from `logsout` — or, when the
+  model logs nothing, from `yout` (root outports, `SaveFormat` `'Dataset'`: e.g. Multibody outputs) —
+  and generates a figure
+- Output filename: `fig<N>_reproduction.png` (e.g., `fig16_reproduction.png`); without `.paper_fig`,
+  `<name>.png` from `.name` (lower case, spaces -> `_`)
 - The report places these figures in the validation section so the reader can visually compare against the paper
+- **Your own figure** (made with your own script, e.g. a ground-reaction plot): an entry with only
+  `.name` and `.title` (no `.signals`) — save the PNG as `figures/<name>.png` and the report shows it
+- `spec.illustration_path` / `spec.derivation_schematic` may point anywhere: `finalizeReport` copies
+  them into `figures/`
 
 ---
 

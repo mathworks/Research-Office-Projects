@@ -9,5 +9,7 @@ addpath(fullfile(skillDir, 'compose'));
 addpath(fullfile(skillDir, 'validate'));
 addpath(fullfile(skillDir, 'package'));
 addpath(fullfile(skillDir, 'util'));
+addpath(fullfile(skillDir, 'perceive'));   % video -> motion data (no Simulink)
+addpath(fullfile(skillDir, 'identify'));   % motion data -> parameters, fits, comparisons
 
 fprintf('xToSim: paths added (%s)\n', skillDir);
