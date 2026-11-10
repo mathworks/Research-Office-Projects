@@ -185,5 +185,16 @@
     "products": ["MATLAB", "Simulink", "Stateflow", "Robotics System Toolbox", "Navigation Toolbox", "Simulink 3D Animation", "Computer Vision Toolbox", "Image Processing Toolbox", "Automated Driving Toolbox"],
     "topics": ["robotics", "mobile-manipulation", "vision-language-action", "gemini", "unreal-engine", "model-based-design"],
     "categories": ["Robotics", "AI & Automation", "3D & Simulation"]
+  },
+  {
+    "name": "Soft Gripper Fruit Picking",
+    "folder": "Examples/soft-gripper-fruit-picking",
+    "type": "Example",
+    "shortSummary": "A UR5e arm with a four-finger soft pneumatic gripper picks an apple, a tomato and a pear, modelled physically in Simscape and validated against published hardware data",
+    "summary": "A UR5e arm with a four-finger soft pneumatic gripper picks an apple, a tomato and a pear from a table and places each one in a tray. Each finger is an 8-hinge pseudo-rigid-body model in Simscape Multibody coupled to a Simscape gas network, so pressure bends the fingers and the bending changes the chamber volume, with no FEM and no lookup-table actuator. The finger is identified from a published force table and validated against four independent hardware tables, a Stateflow pick controller checks the grasp using only the fingers' bend sensors, and Unreal Engine® replays are drawn from the logged simulation. The project was built with an AI agent following a written Model-Based Design guide, which ships with the example.",
+    "image": "https://raw.githubusercontent.com/mathworks/Research-Office-Projects/main/Examples/soft-gripper-fruit-picking/images/apple_pick_close.gif",
+    "products": ["MATLAB", "Simulink", "Simscape", "Simscape Multibody", "Stateflow", "Robotics System Toolbox", "Simulink 3D Animation (optional)", "Optimization Toolbox (optional)", "Requirements Toolbox (optional)"],
+    "topics": ["robotics", "soft-robotics", "pneumatic-actuators", "grasping", "simscape", "model-based-design"],
+    "categories": ["Robotics", "Model-Based Design", "3D & Simulation"]
   }
 ]
