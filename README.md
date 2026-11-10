@@ -39,6 +39,7 @@ Projects from the MathWorks Advanced Research & Technology Office. This reposito
 | [drone-show](Examples/drone-show/) | Coordinated drone light show for up to 500 UAVs with MAVLink mission delivery, carrier-phase RTK, and formation flight | [ZIP](https://github.com/mathworks/Research-Office-Projects/releases/download/project-downloads/example-drone-show.zip) |
 | [autofocus](Examples/autofocus/) | Contrast-detect camera autofocus loop driven by physically based defocus blur in an Unreal Engine scene | [ZIP](https://github.com/mathworks/Research-Office-Projects/releases/download/project-downloads/example-autofocus.zip) |
 | [vla-guided-mobile-manipulation](Examples/vla-guided-mobile-manipulation/) | A mobile manipulator in a photorealistic Unreal Engine&reg; apartment turns one plain-English instruction into a drive, a grasp and a place, grounded by Gemini Robotics-ER | [ZIP](https://github.com/mathworks/Research-Office-Projects/releases/download/project-downloads/example-vla-guided-mobile-manipulation.zip) |
+| [soft-gripper-fruit-picking](Examples/soft-gripper-fruit-picking/) | A UR5e arm with a four-finger soft pneumatic gripper picks an apple, a tomato and a pear, modelled physically in Simscape and validated against published hardware data | [ZIP](https://github.com/mathworks/Research-Office-Projects/releases/download/project-downloads/example-soft-gripper-fruit-picking.zip) |
 <!-- project-table:end -->
 
 ## License
