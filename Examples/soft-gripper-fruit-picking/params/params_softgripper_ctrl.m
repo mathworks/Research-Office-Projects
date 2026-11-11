@@ -15,7 +15,7 @@ ctrl.T_PickMax = 15;                % s        REQ_GRIP_018 (engineer)
 ctrl.N_Attempts = 3;                % -        REQ_GRIP_018
 ctrl.s_SlipMax = 5e-3;              % m        REQ_GRIP_017 (GATE A)
 ctrl.a_Transport = 2;               % m/s^2    REQ_GRIP_017 (GATE A)
-ctrl.mu_Min = 0.5;                  % -        REQ_GRIP_024 (test plan)
+ctrl.mu_Min = 0.5;                  % -        REQ_GRIP_024
 
 % ---- sensors (y) ------------------------------------------------------------------------------------
 ctrl.sens.pAcc = gas.p_GripAcc * gas.p_GripFS;   % Pa   +/- 2 kPa band (ITV101x output accuracy)

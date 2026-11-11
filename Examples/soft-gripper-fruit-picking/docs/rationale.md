@@ -1,7 +1,7 @@
 # Pick controller — parameter rationale
 
 One row per design number: *analyze → extract quantity → convert to constraint → choose value*.
-Status: **GATE D PASSED 2026-10-24** (engineer chose the recommended option on all three tradeoffs). Measured quantities come from M2 (`RESUME-HERE.md`, `results/`).
+Status: **GATE D PASSED 2026-10-24** (engineer chose the recommended option on all three tradeoffs). Measured quantities come from the M2 bench checks in `checks/`.
 
 | # | Parameter | Analysis | Quantity extracted | Constraint | Value | Status |
 |---|---|---|---|---|---|---|

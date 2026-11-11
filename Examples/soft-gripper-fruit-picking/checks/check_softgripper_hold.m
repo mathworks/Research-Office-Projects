@@ -1,5 +1,5 @@
 function R = check_softgripper_hold(ids, wallLimit, evalOnly, placement)
-% CHECK_SOFTGRIPPER_HOLD  Phase 2 integrated open-loop tests T-I2 and T-I3 on GripperBench.slx (test plan section 3).
+% CHECK_SOFTGRIPPER_HOLD  Phase 2 integrated open-loop tests T-I2 and T-I3 on GripperBench.slx.
 %
 %   R = CHECK_SOFTGRIPPER_HOLD()                 the five Table 4 fruits (cherry tomato, apple, tomato, pear, mango)
 %   R = CHECK_SOFTGRIPPER_HOLD([3 6], 1800)      a subset (objId), wall limit per case (s)

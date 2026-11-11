@@ -32,7 +32,7 @@ the component and integrated MIL checks from M2, and the three nominal closed-lo
 | REQ_GRIP_026 | supply droop 0.16 MPa | — (the controller logs `supplyLow`) | **NOT VERIFIED** (minimal M4) |
 | REQ_GRIP_027 | raspberry stem pick | stem picks and T-I6/T-I7: the fruit is shoved 33–41 mm up, stem pull 6.6–8.2 N > 2 N | **NOT MET** — out of range (engineer, R8b) |
 | REQ_GRIP_029 | 3D replay of logged picks | `playSoftGripperPick` reads `results/pick_<id>.mat` only; GIFs for apple, tomato, pear (M6, 2026-10-26) | **PASS** |
-| REQ_GRIP_030 | product list | the model uses Simulink, Simscape, Simscape Multibody, Stateflow, Robotics System Toolbox; Optimization Toolbox only in `fit_zhu_finger_prb.m`; Requirements Toolbox only in the `update_*` scripts | **PASS by inspection + clean-folder test** (2026-10-26, from the packaged folder alone: hierarchy check 10/10, T-F1 finger bench re-run 81.1/93.5/103.7°, replay loader for apple and pear). Not run: a machine with only the listed products installed |
+| REQ_GRIP_030 | product list | the model uses Simulink, Simscape, Simscape Multibody, Stateflow, Robotics System Toolbox; Optimization Toolbox only in `fit_zhu_finger_prb.m`; Requirements Toolbox only to open `SoftGripper_Requirements.slreqx` | **PASS by inspection + clean-folder test** (2026-10-26, from the packaged folder alone: hierarchy check 10/10, T-F1 finger bench re-run 81.1/93.5/103.7°, replay loader for apple and pear). Not run: a machine with only the listed products installed |
 | REQ_GRIP_031 | one pick within T_RunPick (35 min, Gate E) | final model (20 finger contacts, stop 0.6 s after release): apple 1414 s, tomato 1319 s, pear 1910 s (23.6 / 22.0 / 31.8 min) | **PASS (3/3)** |
 
 ## 2. Closed-loop picks (system MIL, final design)
@@ -63,8 +63,8 @@ Files: `results/pick_3.mat`, `pick_4.mat`, `pick_5.mat` (and `runSoftGripperPick
 ## 4. Not verified, and why
 
 - REQ_GRIP_024, 025, 026 (off-nominal): not run, engineer chose the minimal M4.
-- Robustness (test plan §6–7: tolerance, contact width, damping ×0.3…×3, finger mass, dead volume): not run. The
+- Robustness (tolerance, contact width, damping ×0.3…×3, finger mass, dead volume): not run. The
   tomato's 5 % bruise margin depends on the estimated finger and contact damping — the first item to run if M4
   is extended.
 - Coverage and guideline compliance: not measured (not used elsewhere in this repo; offered as follow-up).
-- Persistent `test_create` tests: approved at the test plan, not created in this minimal scope.
+- Persistent `test_create` tests: planned, not created in this minimal scope.

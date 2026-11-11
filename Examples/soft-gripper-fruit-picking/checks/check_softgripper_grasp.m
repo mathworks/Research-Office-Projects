@@ -1,5 +1,5 @@
 function R = check_softgripper_grasp(modes, pList, wallLimit, evalOnly, zFingertip)
-% CHECK_SOFTGRIPPER_GRASP  Phase 2 integrated open-loop test T-I1 on GripperBench.slx (test plan section 3).
+% CHECK_SOFTGRIPPER_GRASP  Phase 2 integrated open-loop test T-I1 on GripperBench.slx.
 %
 %   R = CHECK_SOFTGRIPPER_GRASP()                              both modes, 10..60 kPa, 900 s wall limit per case
 %   R = CHECK_SOFTGRIPPER_GRASP("fingertip", [30 60]*1e3, 600)  a subset

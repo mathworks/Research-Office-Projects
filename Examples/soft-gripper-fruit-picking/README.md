@@ -8,7 +8,7 @@ A UR5e arm with a **four-finger soft pneumatic gripper** picks an apple, a tomat
 places each one in a tray. Air pressure bends the fingers, and the bending changes the chamber volume, which
 changes the pressure again. All of this is modelled physically in Simscape&trade;, with no FEM and no
 lookup-table actuator. The finger is validated against published hardware data, and the whole project was built
-with an **AI agent following a written Model-Based Design guide**, which ships here so you can reuse it.
+by an **AI agent working with a research scientist through a Model-Based Design workflow**.
 
 | | | |
 |:---:|:---:|:---:|
@@ -178,8 +178,8 @@ traces to a row of [`docs/rationale.md`](docs/rationale.md).
 ## Built with Model-Based Design and an AI agent
 
 The project was run by a generic AI agent (with the Simulink Agentic Toolkit) working with a research scientist,
-following [`MBD-CHEAT-SHEET.md`](MBD-CHEAT-SHEET.md). The agent built, ran and reported. It stopped at each
-gate, and the research scientist made every call on physics, tolerances and tradeoffs.
+one Model-Based Design milestone at a time. The agent built, ran and reported. It stopped at each gate, and the
+research scientist made every call on physics, tolerances and tradeoffs.
 
 ```mermaid
 flowchart LR
@@ -190,8 +190,9 @@ flowchart LR
   M4 --> E{{"Gate E<br/>accept"}} --> M6["M6<br/>3D replay ·<br/>package"]
 ```
 
-**Drop [`MBD-CHEAT-SHEET.md`](MBD-CHEAT-SHEET.md) into your own project to run it the same way.** It is one
-file: a quick start for you at the top, and the agent's instructions below.
+Every milestone left a file you can open: the requirements (`docs/SoftGripper_Requirements.slreqx`), the
+bench checks with their predictions, `docs/rationale.md` for every design number, and the pass/fail report
+per requirement ([`docs/soft-gripper-verification.md`](docs/soft-gripper-verification.md)).
 
 ## Limits of validity: read before reusing
 
@@ -250,16 +251,17 @@ the validation order the example follows.
 | `checks/` | `check_softgripper_*.m`, `verify_softgripper_hierarchy.m`: validation tests, resumable, with an evaluate-only mode |
 | `pick/` | One closed-loop pick: `planSoftGripperPick`, `runSoftGripperPick`, `scoreSoftGripperPick` |
 | `replay/` | `playSoftGripperPick` and helpers (Unreal replay, GIFs); `plotSoftGripperFigures` (README figures) |
-| `docs/` | System, architecture and pick-controller specs; `rationale.md`; verification report; object sourcing; `SoftGripper_Requirements.slreqx` |
+| `docs/` | `rationale.md` (every controller number); verification report; object sourcing; `SoftGripper_Requirements.slreqx` |
 | `results/` | Saved picks (replay copies) |
 | `images/` | GIFs, figures, model screenshots, replay meshes |
-| `MBD-CHEAT-SHEET.md` | The reusable AI-agent MBD guide, one file |
 
 ## References and acknowledgments
 
 - Zhu, Feng, Hua, Wang, Hu, Wang, Su, *Sensors* 22(12):4532, 2022,
   [doi:10.3390/s22124532](https://doi.org/10.3390/s22124532) (open access,
-  [PMC9230056](https://pmc.ncbi.nlm.nih.gov/articles/PMC9230056/)): finger geometry, Tables 1–4.
+  [PMC9230056](https://pmc.ncbi.nlm.nih.gov/articles/PMC9230056/)): finger geometry, Tables 1–4. © 2022 the
+  authors, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). The table values are used in
+  `fit_zhu_finger_prb.m` and the checks, and plotted in `finger_validation.png`; the figure is our own.
 - SMC ITV1000-series electro-pneumatic regulator catalogue: flow and accuracy.
 - UR5e model from Robotics System Toolbox&trade; (`loadrobot("universalUR5e")`).
 

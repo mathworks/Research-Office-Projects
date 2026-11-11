@@ -21,8 +21,7 @@ L ∝ m^(1/3) from the cited mean fruit.
 - Dragon Skin 20 is about as soft as the fruit, so the combined finger + fruit contact stiffness is roughly
   half the fruit-only value. That is an M2 modelling item.
 - μ > 1 (silicone on tomato) includes adhesion at light load; it falls as grip force rises.
-- ⚠️ **Reconcile at GATE A:** the agent proposed 1.5 N for the raspberry limit, but the engineer already set
-  F_Crush = 3.0 N (REQ_SOFTARM_059). The engineer-set value stands unless changed.
+- Raspberry limit: the agent proposed 1.5 N; the engineer's earlier 3.0 N value was kept at GATE A.
 
 ## Evidence per object
 

@@ -1,5 +1,5 @@
 function R = check_softgripper_gas(tests)
-% CHECK_SOFTGRIPPER_GAS  M2 gripper-gas validation on GasBench.slx (test plan section 2.2).
+% CHECK_SOFTGRIPPER_GAS  M2 gripper-gas validation on GasBench.slx.
 %
 %   R = CHECK_SOFTGRIPPER_GAS()           runs T-G1 and T-G2
 %   R = CHECK_SOFTGRIPPER_GAS("T-G1")     runs a subset

@@ -6,7 +6,7 @@ function finger = params_softgripper_finger()
 %   Basis: Zhu et al., Sensors 22(12):4532 (2022), PMC9230056. The 8-chamber Dragon Skin 20 finger is
 %   modelled as N_Joint revolute hinges, one per chamber (REQ_GRIP_003). Values marked IDENTIFIED come
 %   from fit_zhu_finger_prb.m (cubic spring, Table 1, 29 points, RMS 0.050 N, 2026-10-23). Values marked
-%   EST are not published; each is swept (soft-gripper-test-plan.md section 6). Units SI.
+%   EST are not published; see the README limits of validity. Units SI.
 
 finger.N_Joint = 8;                 % -        Zhu: 8 chambers                          REQ_GRIP_003
 finger.L = 0.1050;                  % m        IDENTIFIED (not published)
@@ -24,7 +24,7 @@ finger.p0 = 13.0e3;                 % Pa       IDENTIFIED: wall pre-stretch pres
 finger.l_Link = finger.L / finger.N_Joint;            % m    derived
 
 % ---- not published: estimates, swept --------------------------------------------------------------
-finger.m = 15e-3;                   % kg       EST 10-20 g (soft-arm-picking-sourcing.md)
+finger.m = 15e-3;                   % kg       EST 10-20 g (silicone finger of this size)
 finger.m_Link = finger.m / finger.N_Joint;            % kg   derived
 finger.w_Link = 20e-3;              % m        EST cross-section width, along the hinge axis (link Z)
 finger.h_Link = 15e-3;              % m        EST cross-section thickness, along the bend direction (link Y)

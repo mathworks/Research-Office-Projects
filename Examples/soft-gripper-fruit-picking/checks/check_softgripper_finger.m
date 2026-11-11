@@ -1,5 +1,5 @@
 function R = check_softgripper_finger(tests, idx)
-% CHECK_SOFTGRIPPER_FINGER  M2 finger validation on FingerBench.slx (test plan section 2.1).
+% CHECK_SOFTGRIPPER_FINGER  M2 finger validation on FingerBench.slx.
 %
 %   R = CHECK_SOFTGRIPPER_FINGER()            runs T-F1 and T-F2
 %   R = CHECK_SOFTGRIPPER_FINGER(["T-F2"])    runs a subset

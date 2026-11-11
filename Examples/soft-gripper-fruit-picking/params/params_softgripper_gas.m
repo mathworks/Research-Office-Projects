@@ -3,9 +3,9 @@ function gas = params_softgripper_gas(finger)
 %
 %   gas = PARAMS_SOFTGRIPPER_GAS(finger)
 %
-%   Same derivation chain as the validated soft-arm gas network (../soft-arm/params_softarm_pneu.m):
+%   Same derivation chain as an earlier validated soft-arm gas network (not shipped):
 %   ISO 6358 sonic conductance -> ideal-nozzle Cd*A -> divide by Cd and by the measured Local Restriction (G)
-%   capacity factor (k_BlockCapacity = 1.1027, soft-arm S-07). Regulator gains by the same rule: full valve
+%   capacity factor (k_BlockCapacity = 1.1027, measured on that network). Regulator gains by the same rule: full valve
 %   opening at the output-accuracy band; integral time = flow-limited fill time. REQ_GRIP_008..010.
 
 arguments
@@ -29,7 +29,7 @@ gas.p_SupplyMin = 0.16e6;           % Pa gauge set + 0.1 MPa for 60 kPa         
 gas.Q_ANR = 80e-3/60;               % m^3/s    GRAPH READ: about 80 L/min ANR at 0.2 MPa supply, p. 1186
 gas.C = gas.Q_ANR / (gas.p_Supply + gas.p_Atm);       % m^3/(s*Pa) ISO 6358
 gas.Cd = 0.64;                      % -        modelling choice; only Cd*A sets choked flow
-gas.k_BlockCapacity = 1.1027;       % -        measured, soft-arm S-07 (Local Restriction (G) vs nozzle)
+gas.k_BlockCapacity = 1.1027;       % -        measured on the soft-arm network (Local Restriction (G) vs nozzle)
 gas.CdA_Catalog = gas.C * gas.rho_ANR * sqrt(gas.R_Air*gas.T_Amb/g) / gas.Psi_Choked;   % m^2
 gas.a_Max = gas.CdA_Catalog / gas.Cd / gas.k_BlockCapacity;                           % m^2 supply = exhaust
 gas.a_Leak = 1e-6 * gas.a_Max;      % m^2      numerical floor (> 0 required by the block)

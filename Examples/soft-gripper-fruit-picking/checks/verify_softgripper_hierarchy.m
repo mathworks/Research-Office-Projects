@@ -1,10 +1,10 @@
 function nFail = verify_softgripper_hierarchy
-% VERIFY_SOFTGRIPPER_HIERARCHY  Assert SoftGripperPick.slx against the frozen interface (system spec 7).
+% VERIFY_SOFTGRIPPER_HIERARCHY  Assert SoftGripperPick.slx against its frozen interface.
 %
 %   nFail = VERIFY_SOFTGRIPPER_HIERARCHY()
 %
 %   Read-only: loads the model if needed, changes nothing, does not cd. Checks:
-%     - root and Controller/Plant ports match soft-gripper-system.md 7 (frozen 2026-10-23)
+%     - root and Controller/Plant ports match the interface frozen at M1 (2026-10-23; see the README diagram)
 %     - REQ_GRIP_021/022: the Controller's inputs come ONLY from the Plant's y outputs and the root
 %       objPoseInit; zTruth goes ONLY to the root logging outport (traced through the actual lines)
 %     - finite StopTime; code-generation-safe block names
