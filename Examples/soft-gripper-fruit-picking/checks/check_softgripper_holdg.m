@@ -4,8 +4,8 @@ function R = check_softgripper_holdg(ids, cases, wallLimit, evalOnly)
 %   R = CHECK_SOFTGRIPPER_HOLDG(1:6, ["lift" "carry0" "carry45"])
 %   R = CHECK_SOFTGRIPPER_HOLDG(ids, cases, [], true)     evaluate saved results only
 %
-%   Engineer decision 2026-10-25, after the closed-loop pear pick slipped during Lift and the apple slipped
-%   sideways in Transport although T-I2/T-I4 said they hold: those benches loaded only the FRUIT. In the pick the
+%   T-I2 and T-I4 load only the FRUIT, and overestimate the grip (in the closed loop the pear slips in Lift and
+%   the apple sideways in Transport at pressures those tests call safe). In the pick the
 %   whole gripper accelerates, so the soft fingers carry their own inertia and open. An accelerating gripper is
 %   equivalent to a still one in the effective gravity g_eff = g - a_gripper, which loads fingers AND fruit.
 %   Cases (a = aTransportObj(id), 2 m/s^2; mango 0.5):

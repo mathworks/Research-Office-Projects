@@ -1,8 +1,8 @@
 function plan = planSoftGripperPick(objPose, objId, P)
-% PLANSOFTGRIPPERPICK  Offline pick plan (candidate A, Gate D 2026-10-24): IK waypoints + minimum-jerk durations.
+% PLANSOFTGRIPPERPICK  Offline pick plan: IK waypoints + minimum-jerk durations.
 %
 %   plan = PLANSOFTGRIPPERPICK(objPose, objId, P)
-%     objPose  [x y z roll pitch yaw] camera estimate of the object pose (m, rad), the frozen objPoseInit
+%     objPose  [x y z roll pitch yaw] camera estimate of the object pose (m, rad), objPoseInit
 %     objId    1..6 (params_softgripper_objects order)
 %     P        struct with fields finger, ctrl, arm, bench (tPalm)
 %
@@ -11,9 +11,9 @@ function plan = planSoftGripperPick(objPose, objId, P)
 %   plan.zPalm   grasp height of the palm underside (m, world)
 %   plan.aPeak   (1 x 6) planned peak tool acceleration (m/s^2); plan.ikErr  max IK position error (m)
 %
-%   Grasp height (spec 4.2, rationale R14): table objects: palm underside at max(L + hClear, h + 1 mm) above
-%   the table. Stem objects (raspberry, R8): the palm sits so the fingertips first touch 0.5 c BELOW the fruit
-%   centre (free-bend arc geometry), so the fingers cradle it. Durations: minimum-jerk (quintic) in joint space;
+%   Grasp height: table objects: palm underside at max(L + hClear, h + 1 mm) above the table. Stem objects
+%   (raspberry, cherry tomato): the palm sits so the fully curled fingertips finish just under the fruit
+%   (stemPalmOffset below). Durations: minimum-jerk (quintic) in joint space;
 %   its peak tool acceleration scales exactly as 1/T^2 along a fixed path, so T = sqrt(a(T = 1 s) / a_lim),
 %   then T >= the UR5e joint-speed bound 1.875*dq/qdMax and >= tMin. Lift and Lower use aLiftObj(objId),
 %   Transport aTransportObj(objId); unloaded ones use a_Transport. Does not touch any model.
@@ -23,9 +23,9 @@ objs = params_softgripper_objects(); o = objs(objId);
 rb = loadrobot('universalUR5e', 'DataFormat', 'row');
 ik = inverseKinematics('RigidBodyTree', rb);
 Rdown = [1 0 0; 0 -1 0; 0 0 -1];
-% Tool yaw (revised 2026-10-25, engineer saw the gripper spin in the replay): with a fixed yaw the wrist turned
-% 95 deg on the way to the fruit. The four fingers sit at 90 deg, so any quarter turn gives the same grasp; take
-% the quarter turn closest to the home tool yaw, so the wrist barely turns.
+% Tool yaw: a fixed yaw would turn the wrist 95 deg on the way to the fruit. The four fingers sit at 90 deg, so
+% any quarter turn gives the same grasp; take the quarter turn closest to the home tool yaw, so the wrist barely
+% turns.
 Th = getTransform(rb, P.arm.qHome, 'tool0');
 best = Inf;
 for kq = 0:3
@@ -36,7 +36,7 @@ end
 Rdown = Rbest;
 qdMax = pi; tMin = 0.3;                    % rad/s UR5e joint speed limit (datasheet 180 deg/s); s minimum segment
 xy = objPose(1:2);
-if ismember(objId, c.stemSet)              % stem / vine pick (R8)
+if ismember(objId, c.stemSet)              % stem / vine pick
     plan.zPalm = objPose(3) + stemPalmOffset(fi, o, c.pGrip(objId));
 else
     plan.zPalm = max(fi.L + c.hClear, 2*o.semiAxes(3) + 1e-3);
@@ -50,8 +50,8 @@ zRel = L.trayZ + o.semiAxes(3) + L.hRelease + (plan.zPalm - objPose(3));
 % contact is modelled): palm >= tray floor + L + hClear. Binds only for the stem pick (raspberry).
 zRel = max(zRel, L.trayZ + fi.L + c.hClear);
 plan.zRelease = zRel;
-% Tray waypoints (revised 2026-10-26, engineer still saw the wrist turn): instead of holding the gripper square to
-% the world (wrist 3 counter-turning about 90 deg against the base pan), let the gripper turn WITH the arm: rotate
+% Tray waypoints: instead of holding the gripper square to the world (wrist 3 counter-turning about 90 deg
+% against the base pan), let the gripper turn WITH the arm: rotate
 % the tray-side tool orientation about world z by the base-angle change, so wrist 3 holds its angle. The fruit is
 % already held, so its yaw in the tray does not matter.
 dPsi = atan2(L.trayXY(2), L.trayXY(1)) - atan2(xy(2), xy(1));
@@ -93,11 +93,8 @@ a = max(vecnorm(acc, 2, 2));
 end
 
 function d = stemPalmOffset(fi, o, pGrip)
-% Palm-underside height above the hanging fruit's centre (R8, revised 2026-10-25). The first version aimed the
-% FIRST touch of a smooth-arc finger 0.5c below the centre; in the closed-loop raspberry pick the real 8-link tips
-% swept past it (closest 14.5 mm from the centre, a 4.5 mm miss). Now: take the 8-link chain fully curled at its
-% free bend for pGrip and place the fruit so those tips sit 0.5c below its centre, inside its half-width: the
-% curling fingers then come up under the fruit and close around its lower half.
+% Palm-underside height above the hanging fruit's centre. Take the 8-link chain fully curled at its free bend
+% for pGrip (aiming at the first touch of a smooth arc instead makes the real tips sweep past the fruit).
 N = fi.N_Joint; l = fi.L / N; h2 = fi.h_Link / 2;
 tau = fi.D * max(pGrip - fi.p0, 0);
 th = fzero(@(t) fi.K*t + fi.K3*t^3 - tau, [0 2*pi]);       % free hinge angle at pGrip
@@ -107,7 +104,7 @@ rTip = fi.r_Mount - inward - h2;                            % tip inner face fro
 if rTip >= o.semiAxes(1)
     warning('stemPalmOffset:noReach', 'curled tips stay %.1f mm from the axis, outside the fruit (%.1f mm)', rTip*1e3, o.semiAxes(1)*1e3);
 end
-% Revised again 2026-10-25 (T-I7): with the tips 0.5c below the centre the curling fingers lifted the berry 39 mm
-% (stem pull 7.7 N > F_Detach). Now the curled tips finish 1 mm under the fruit's bottom: they close under it.
+% The curled tips finish 1 mm under the fruit's bottom, so they close under it (tips 0.5c below the centre
+% lift the berry 39 mm, stem pull 7.7 N > F_Detach, T-I7).
 d = depth - o.semiAxes(3) - 1e-3;
 end

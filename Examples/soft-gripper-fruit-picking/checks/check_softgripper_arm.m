@@ -1,5 +1,5 @@
 function R = check_softgripper_arm()
-% CHECK_SOFTGRIPPER_ARM  M2 UR5e kinematics check on UR5eArm.slx (T-O2).
+% CHECK_SOFTGRIPPER_ARM  UR5e kinematics check on UR5eArm.slx (T-O2).
 %
 %   R = CHECK_SOFTGRIPPER_ARM()
 %

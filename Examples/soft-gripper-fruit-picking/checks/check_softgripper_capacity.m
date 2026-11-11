@@ -3,9 +3,9 @@ function R = check_softgripper_capacity(objId, pList, cases, wallLimit, evalOnly
 %
 %   R = CHECK_SOFTGRIPPER_CAPACITY(3, [38.6 45]*1e3, "carry0")
 %
-%   2026-10-25. T-I5 (and T-I2) closed at 60 kPa and then LOWERED the pressure: the hard squeeze seats the fruit
-%   deeper, so those tests measure release, not grasp formation (apple carry: T-I5 said 34.8 kPa holds, the real
-%   pick slipped at 38.6). Here the gripper closes AT p (as the controller does) in the effective gravity g_eff
+%   T-I5 and T-I2 close at 60 kPa and then LOWER the pressure: the hard squeeze seats the fruit deeper, so they
+%   measure release, not grasp formation (apple carry: T-I5 says 34.8 kPa holds, the pick slips at 38.6). Here
+%   the gripper closes AT p (as the controller does) in the effective gravity g_eff
 %   (fingers and fruit loaded, d'Alembert), the table-like support is released 0.5 -> 0.6 s, then an EXTRA force
 %   along g_eff ramps on the fruit: F = m*|g_eff|*s(t), s: 0 -> sMax over tRamp. Capacity ratio = 1 + s at 5 mm
 %   slip (1 = holds exactly its working load). A ratio below 1 means it slips as soon as it is released.
@@ -34,7 +34,7 @@ for c = cases
         case "stem",    gE = [0 0 -g];   % stem/vine pick: the stem pulls down with up to F_Detach before it lets go
     end
     u = gE / norm(gE); W = o.mass * norm(gE);
-    if c == "stem"                       % ratio 1 = holds F_Detach + weight; closes with the pick's ramp (R2b)
+    if c == "stem"                       % ratio 1 = holds F_Detach + weight; closes with the pick's ramp
         W = ctrl.F_Detach + o.mass * g; tClose = ctrl.tCloseRamp;
         tW0 = tClose + 0.4; tW1 = tW0 + 0.1; tL = tW1 + 0.1; tEnd = tL + tRamp;
     end

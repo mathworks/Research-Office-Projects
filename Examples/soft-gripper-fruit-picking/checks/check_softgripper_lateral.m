@@ -3,8 +3,8 @@ function R = check_softgripper_lateral(objId, pList, dirDeg, wallLimit, evalOnly
 %
 %   R = CHECK_SOFTGRIPPER_LATERAL(3, [40 50 60]*1e3, [0 45])
 %
-%   Added 2026-10-24 after the first closed-loop apple pick slipped out SIDEWAYS during Transport at about
-%   2 m/s^2, while T-I2 (vertical load only) said 34 kPa holds it. The bench gripper is fixed, so a horizontal
+%   T-I2 loads only vertically (34 kPa holds the apple), but in the pick the apple can slip out SIDEWAYS in
+%   Transport at about 2 m/s^2. The bench gripper is fixed, so a horizontal
 %   force m*a on the object is the d'Alembert equivalent of the gripper accelerating sideways at a.
 %   Procedure: the object sits where the pick grips it (planner grasp height), the gripper closes at p (ramp
 %   0.1 s), the weight m*g is applied downward from 0.5 to 0.6 s, then a horizontal force m*a(t) ramps from

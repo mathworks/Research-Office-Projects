@@ -12,27 +12,27 @@ function [tree, jointNames] = softgripperReplayTree(P)
 
 fi = P.finger; b = P.bench;
 tree = loadrobot('universalUR5e', 'DataFormat', 'row');
-% Serial only (2026-10-26): the toolbox tree branches at base_link (base) and wrist_3_link (ft_frame); both are
+% Serial only: the toolbox tree branches at base_link (base) and wrist_3_link (ft_frame); both are
 % bare reference frames, and in the replay the palm under the flange branch jittered against steady joint data.
 removeBody(tree, 'base');
 removeBody(tree, 'ft_frame');
 palm = rigidBody('palm');
 setFixedTransform(palm.Joint, [rotm2tform([1 0 0; 0 -1 0; 0 0 -1]) * 1]);        % 180 deg about X (FlangeToGripper)
-% Visuals are MESHES (STL boxes), not 'Box' primitives (revised 2026-10-26): in the replay the primitive boxes
+% Visuals are MESHES (STL boxes), not 'Box' primitives: in the replay the primitive boxes
 % updated out of step with the UR5e's mesh links, so the palm and fingers wobbled against the wrist while the arm
 % moved. The STL files are written next to this function on first use.
 meshDir = fullfile(fileparts(fileparts(mfilename('fullpath'))), 'images', 'mesh');
 palmStl = boxStl(meshDir, 'palm_box.stl', [b.wPalm b.wPalm b.tPalm]);
 linkStl = boxStl(meshDir, 'finger_link_box.stl', [fi.w_Link fi.h_Link fi.L / fi.N_Joint]);
 addVisual(palm, 'Mesh', palmStl, trvec2tform([0 0 b.tPalm/2]));
-% Realistic mass properties (revised 2026-10-26): the rigidBody default is 1 kg with inertia 1 kg*m^2. The replay
+% Realistic mass properties: the rigidBody default is 1 kg with inertia 1 kg*m^2. The replay
 % renderer drives the joints physically, and 33 such bodies on the UR5e wrist made the wrist twist back and forth.
 mPalm = 0.05;                                       % kg  EST (display only)
 setBoxMass(palm, mPalm, [b.wPalm b.wPalm b.tPalm], [0 0 b.tPalm/2]);
 addBody(tree, palm, 'tool0');
-% The fingers are NOT in this tree (2026-10-26): the Simulation 3D Robot block mis-draws branching trees, so
+% The fingers are NOT in this tree: the Simulation 3D Robot block mis-draws branching trees, so
 % each finger is its own serial robot (softgripperFingerTree), placed on its mount every frame.
-% Gimbal-lock split (2026-10-26, the root cause of the wobbling wrist): the robot block sends each body's rotation
+% Gimbal-lock split (otherwise the wrist wobbles): the robot block sends each body's rotation
 % RELATIVE TO ITS PARENT to Unreal as Euler angles. For wrist_2_link and flange that relative rotation sits at
 % pitch = 90 deg, where roll and yaw are undefined; joint changes below 1e-4 deg flipped them by 170-340 deg
 % between frames, and the wrist jumped back and forth. Each such body gets an invisible intermediate frame that

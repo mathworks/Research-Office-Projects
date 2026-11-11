@@ -1,11 +1,11 @@
 function R = check_softgripper_grasp(modes, pList, wallLimit, evalOnly, zFingertip)
-% CHECK_SOFTGRIPPER_GRASP  Phase 2 integrated open-loop test T-I1 on GripperBench.slx.
+% CHECK_SOFTGRIPPER_GRASP  Integrated open-loop test T-I1 on GripperBench.slx.
 %
 %   R = CHECK_SOFTGRIPPER_GRASP()                              both modes, 10..60 kPa, 900 s wall limit per case
 %   R = CHECK_SOFTGRIPPER_GRASP("fingertip", [30 60]*1e3, 600)  a subset
 %   R = CHECK_SOFTGRIPPER_GRASP(modes, pList, [], true)         evaluate saved results only, never simulate
 %   R = CHECK_SOFTGRIPPER_GRASP("fingertip", pList, [], false, -0.080)  fingertip ball at another height (m):
-%       the engineer-approved height sweep (2026-10-24), since Zhu give no ball placement
+%       a height sweep, since Zhu give no ball placement
 %
 %   T-I1  Zhu Table 3 grasp force, measured like Zhu's force gauge (FGJ-50 on a moving arm = displacement
 %         controlled): the ball hangs on a gauge spring (kGauge) whose end is fixed while the gripper closes

@@ -1,5 +1,5 @@
 function P = gripperBenchParams(o, zObj)
-% GRIPPERBENCHPARAMS  Parameter struct for GripperBench.slx (Phase 2: 4 fingers on a fixed flange, pointing down).
+% GRIPPERBENCHPARAMS  Parameter struct for GripperBench.slx (4 fingers on a fixed flange, pointing down).
 %
 %   P = GRIPPERBENCHPARAMS(o, zObj)
 %     o     object struct (an element of params_softgripper_objects, or a test sphere with the same fields)

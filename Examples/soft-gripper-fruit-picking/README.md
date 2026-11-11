@@ -7,8 +7,7 @@
 A UR5e arm with a **four-finger soft pneumatic gripper** picks an apple, a tomato and a pear from a table and
 places each one in a tray. Air pressure bends the fingers, and the bending changes the chamber volume, which
 changes the pressure again. All of this is modelled physically in Simscape&trade;, with no FEM and no
-lookup-table actuator. The finger is validated against published hardware data, and the whole project was built
-by an **AI agent working with a research scientist through a Model-Based Design workflow**.
+lookup-table actuator. The finger is validated against published hardware data.
 
 | | | |
 |:---:|:---:|:---:|
@@ -25,11 +24,9 @@ the physics.*
 - How to model a **soft actuator in Simscape Multibody&trade;**: an 8-hinge pseudo-rigid-body finger, coupled to
   a **Simscape gas network** through one Rotational Mechanical Converter per chamber.
 - How to **identify** the finger from a published force table and **validate** it against four independent
-  hardware tables, predicting each result before running it.
+  hardware tables.
 - How to close the loop with a **Stateflow&reg; pick controller** that checks the grasp using only the fingers'
   bend sensors.
-- How a full **Model-Based Design workflow** (requirements → validated plant → design → verification → handoff)
-  runs with an AI agent, and where the research scientist stays in charge.
 
 ## Setup
 
@@ -50,7 +47,6 @@ the physics.*
 |---------|----------|
 | Simulink&reg; 3D Animation&trade; | Unreal Engine replay and the GIFs (`playSoftGripperPick`) |
 | Optimization Toolbox&trade; | Re-identifying the finger from the data (`fit_zhu_finger_prb`, `plotSoftGripperFigures`) |
-| Requirements Toolbox&trade; | Opening `docs/SoftGripper_Requirements.slreqx` |
 
 R2026b is needed for the `JointConfiguration` port of the Simulation 3D Robot block used by the replay.
 
@@ -138,8 +134,8 @@ all four fingers through 2 mm ports.
 
 ## Validated against hardware data
 
-The finger was validated against **Zhu et al., *Sensors* 22:4532 (2022)** before any controller existed. Every
-test's result was predicted before the run.
+The finger is validated against **Zhu et al., *Sensors* 22:4532 (2022)**. "Component" checks run one part on its
+own test bench; "integrated" checks run the whole gripper on a bench, without the arm.
 
 ![Finger validation](images/finger_validation.png)
 
@@ -172,27 +168,8 @@ venting releases it into the tray.
 | Tomato 282.9 g | 39.2 kPa | 5.21 s | 1 | 2.1 mm | 10.5 / 11 N |
 | Pear 389.1 g (lying) | 60 kPa, lift at 1 m/s&sup2; | 5.72 s | 1 | 3.1 mm | 26.3 / 40 N |
 
-Every design number in the controller (sample time, closing ramp, grasp-check thresholds, per-fruit pressure)
-traces to a row of [`docs/rationale.md`](docs/rationale.md).
-
-## Built with Model-Based Design and an AI agent
-
-The project was run by a generic AI agent (with the Simulink Agentic Toolkit) working with a research scientist,
-one Model-Based Design milestone at a time. The agent built, ran and reported. It stopped at each gate, and the
-research scientist made every call on physics, tolerances and tradeoffs.
-
-```mermaid
-flowchart LR
-  M0["M0<br/>31 requirements<br/>REQ_GRIP_001–031"] --> A{{"Gate A<br/>research scientist sets<br/>tolerances"}}
-  A --> M1["M1<br/>specs + interfaces"] --> F{{"⛔ interface<br/>frozen"}}
-  F --> M2["M2<br/>finger · gas · fruit · arm<br/>benches vs Zhu"] --> M3["M3<br/>controller +<br/>rationale.md"]
-  M3 --> D{{"Gate D<br/>research scientist picks<br/>tradeoffs"}} --> M4["M4<br/>closed-loop picks<br/>pass/fail per ID"]
-  M4 --> E{{"Gate E<br/>accept"}} --> M6["M6<br/>3D replay ·<br/>package"]
-```
-
-Every milestone left a file you can open: the requirements (`docs/SoftGripper_Requirements.slreqx`), the
-bench checks with their predictions, `docs/rationale.md` for every design number, and the pass/fail report
-per requirement ([`docs/soft-gripper-verification.md`](docs/soft-gripper-verification.md)).
+Every controller value (sample time, closing ramp, grasp-check thresholds, per-fruit pressure) is derived in
+[`docs/rationale.md`](docs/rationale.md).
 
 ## Limits of validity: read before reusing
 
@@ -211,21 +188,20 @@ per requirement ([`docs/soft-gripper-verification.md`](docs/soft-gripper-verific
 
 ## What the example teaches
 
-1. **Validate in the loop, not only on benches.** Benches that loaded only the fruit said the grip was safe. In
-   the moving pick, the soft fingers carry their own inertia and open. The benches were redone with an effective
-   gravity *g* − *a*<sub>gripper</sub> that loads fingers and fruit together.
-2. **Build what you identified, and test it the way it was measured.** The first force test failed (RMS 0.49 N):
-   under the gauge, the identified finger takes an S-shape with slightly negative base angles, which a hinge end
-   stop in the Simscape model forbade. Removing the stop, so the model matches the identification, fixed most
-   points. The second run failed because the tip slid off a frictionless plate. A prismatic "gauge slide" that
-   holds the tip angle like the experiment then passed at 0.050 N, with no parameter re-tuned.
+1. **Load the fingers too, not only the fruit.** In a moving pick the soft fingers carry their own inertia and
+   open. The grip benches therefore use an effective gravity *g* − *a*<sub>gripper</sub> that loads fingers and
+   fruit together; a bench that loads only the fruit overestimates the grip.
+2. **Build what you identified, and test it the way it was measured.** Under the force gauge the identified
+   finger takes an S-shape with slightly negative base angles, so the Simscape hinges have no end stop. The tip
+   sits in a prismatic "gauge slide" that holds its angle as in the experiment; a frictionless plate lets it slide
+   off.
 3. **How you test hold pressure matters.** Closing at full pressure and then lowering it measures *release*. A
-   grasp *formed* at the working pressure holds less, and the final pressures use the second method.
-4. **Closing speed is a design parameter.** A 0.1 s pressure ramp made impact spikes above the bruise limits
+   grasp *formed* at the working pressure holds less, and the grip pressures here use that second method.
+4. **Closing speed is a design parameter.** A 0.1 s pressure ramp gives impact spikes above the bruise limits
    (tomato 18.7 N, pear 46.5 N); 0.3 s keeps them below.
-5. **Watch the solver.** Zero-crossing detection on the regulator's valve limits shrank the step to 2e-6 s
-   and stalled a pick after 28 minutes. With it off, the whole pick runs in about 23 minutes. The limits are
-   only kinks that the variable-step solver crosses accurately.
+5. **Watch the solver.** With zero-crossing detection on the regulator's valve limits, the step shrinks to
+   2e-6 s and a pick stalls. With it off, a pick runs in about 23 minutes. The limits are only kinks that the
+   variable-step solver crosses accurately.
 
 ## Adapt it to your own soft gripper
 
@@ -251,7 +227,7 @@ the validation order the example follows.
 | `checks/` | `check_softgripper_*.m`, `verify_softgripper_hierarchy.m`: validation tests, resumable, with an evaluate-only mode |
 | `pick/` | One closed-loop pick: `planSoftGripperPick`, `runSoftGripperPick`, `scoreSoftGripperPick` |
 | `replay/` | `playSoftGripperPick` and helpers (Unreal replay, GIFs); `plotSoftGripperFigures` (README figures) |
-| `docs/` | `rationale.md` (every controller number); verification report; object sourcing; `SoftGripper_Requirements.slreqx` |
+| `docs/` | `rationale.md` (every controller value); verification results; object properties and sources |
 | `results/` | Saved picks (replay copies) |
 | `images/` | GIFs, figures, model screenshots, replay meshes |
 

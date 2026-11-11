@@ -1,19 +1,18 @@
 function nFail = verify_softgripper_hierarchy
-% VERIFY_SOFTGRIPPER_HIERARCHY  Assert SoftGripperPick.slx against its frozen interface.
+% VERIFY_SOFTGRIPPER_HIERARCHY  Assert SoftGripperPick.slx against its interface.
 %
 %   nFail = VERIFY_SOFTGRIPPER_HIERARCHY()
 %
 %   Read-only: loads the model if needed, changes nothing, does not cd. Checks:
-%     - root and Controller/Plant ports match the interface frozen at M1 (2026-10-23; see the README diagram)
+%     - root and Controller/Plant ports match the interface (see the README diagram)
 %     - REQ_GRIP_021/022: the Controller's inputs come ONLY from the Plant's y outputs and the root
 %       objPoseInit; zTruth goes ONLY to the root logging outport (traced through the actual lines)
 %     - finite StopTime; code-generation-safe block names
-%     - placeholder census (Ground/Terminator blocks whose names end in a phase tag), so "skeleton" is a number
 
 mdl = 'SoftGripperPick';
 if ~bdIsLoaded(mdl), load_system(mdl); end
 nFail = 0;
-fprintf('\n=========== SoftGripperPick vs the frozen interface ===========\n');
+fprintf('\n=========== SoftGripperPick structure check ===========\n');
 
 ports = @(sys, t) string(get_param(find_system(sys, 'SearchDepth', 1, 'BlockType', t), 'Name'))';
 ctl = [mdl '/Controller']; pl = [mdl '/Plant'];
@@ -58,14 +57,10 @@ allBlk = find_system(mdl, 'LookUnderMasks', 'none', 'Type', 'Block');
 bad = allBlk(~cellfun(@(n) ~isempty(regexp(n, '^[A-Za-z][A-Za-z0-9]*(_[A-Za-z0-9]+)*$', 'once')), get_param(allBlk, 'Name')));
 nFail = nFail + claim('every block name is code-generation safe', isempty(bad), sprintf('%d offending', numel(bad)));
 
-% ---- placeholder census -------------------------------------------------------------------------------------
-stub = find_system(mdl, 'Regexp', 'on', 'Name', '^(Gnd|Term).*_(P1|P1d|P2|M3)$');
-tags = regexprep(string(get_param(stub, 'Name')), '^.*_', '');
-fprintf('--- placeholders still to build: %d (%s) ---\n', numel(stub), strjoin(compose("%s %d", unique(tags), arrayfun(@(t) nnz(tags == t), unique(tags))), ', '));
 if nFail == 0
-    fprintf('ALL CLAIMS VERIFIED -- the shell matches the frozen interface and truth isolation holds.\n');
+    fprintf('All checks passed: the model matches its interface and truth isolation holds.\n');
 else
-    fprintf('*** %d CLAIM(S) FAILED ***\n', nFail);
+    fprintf('*** %d CHECK(S) FAILED ***\n', nFail);
 end
 end
 

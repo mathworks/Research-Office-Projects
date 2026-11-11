@@ -10,8 +10,7 @@ function fit = fit_zhu_finger_prb(N, springModel, opts)
 %   but they do publish the fingertip force at 29 combinations of pressure and bend angle. This function
 %   recovers the unknowns by matching that table.
 %
-%   Uses Optimization Toolbox (lsqnonlin, fsolve). Engineer decision 2026-10-23: keep the toolbox
-%   version; the product is listed as needed only to re-run the identification.
+%   Uses Optimization Toolbox (lsqnonlin, fsolve), needed only to re-run the identification.
 %
 %   Model, per joint i (links L/N long, joint at each link root):
 %       K*theta_i [+ K3*theta_i^3] = D*max(p - p0, 0) + Mz_i(F)   (torque balance; Mz_i < 0 resists)

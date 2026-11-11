@@ -8,6 +8,6 @@ function arm = params_softgripper_arm()
 %   supplies the velocity and acceleration Simscape needs. Units SI.
 
 arm.tauMotion = 0.02;               % s        EST: input-filter time constant. Must stay well below the
-                                    %          planned move durations (about 1 s, M3) so it only smooths steps
+                                    %          planned move durations (about 1 s) so it only smooths steps
 arm.qHome = [0 -pi/2 pi/2 -pi/2 -pi/2 0];   % rad  EST: tool pointing down, a common UR pick posture
 end

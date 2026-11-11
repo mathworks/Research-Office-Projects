@@ -1,12 +1,12 @@
 function R = check_softgripper_hold(ids, wallLimit, evalOnly, placement)
-% CHECK_SOFTGRIPPER_HOLD  Phase 2 integrated open-loop tests T-I2 and T-I3 on GripperBench.slx.
+% CHECK_SOFTGRIPPER_HOLD  Integrated open-loop tests T-I2 and T-I3 on GripperBench.slx.
 %
 %   R = CHECK_SOFTGRIPPER_HOLD()                 the five Table 4 fruits (cherry tomato, apple, tomato, pear, mango)
 %   R = CHECK_SOFTGRIPPER_HOLD([3 6], 1800)      a subset (objId), wall limit per case (s)
 %   R = CHECK_SOFTGRIPPER_HOLD(ids, [], true)    evaluate saved results only, never simulate
 %   R = CHECK_SOFTGRIPPER_HOLD(ids, [], false, "pick")  the fruit where the PICK grips it (palm at the planner's
-%       grasp height, so a gap above the fruit), not against the palm. Added 2026-10-24 after the first closed-loop
-%       apple pick slipped: the palm-contact hold pressures do not apply to the pick grasp. Files TI2p_<id>.mat.
+%       grasp height, so a gap above the fruit), not against the palm. The palm-contact hold pressures do not
+%       apply to the pick grasp. Files TI2p_<id>.mat.
 %
 %   T-I2  minimum hold pressure. One run per fruit instead of a bisection: grasp at p_GripMax, then apply the
 %         fruit's weight plus the transport acceleration, m*(g + a_Transport), as a constant downward force, and

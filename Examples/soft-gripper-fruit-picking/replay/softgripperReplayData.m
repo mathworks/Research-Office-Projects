@@ -28,8 +28,8 @@ pose = interp1(z.Time, zd(:, 5:10), t, 'linear', 'extrap');
 replay.tree = softgripperReplayTree(P);              % UR5e + palm only (serial)
 replay.cfg0 = qa(1, :);
 replay.cfg = timeseries(qa, t);
-% Fingers (revised 2026-10-26): the Simulation 3D Robot block mis-draws branching trees (one fingertip angle moved
-% the palm, so the wrist wobbled). Each finger is now its own serial robot (softgripperFingerTree) whose BASE is
+% Fingers: the Simulation 3D Robot block mis-draws branching trees (one fingertip angle moved
+% the palm, so the wrist wobbled). Each finger is its own serial robot (softgripperFingerTree) whose BASE is
 % placed every frame on its mount: T_base = T_tool0(q) * FlangeToGripper * Mount_k * C, the same chain as
 % SoftGripperPick/Plant/Gripper. C maps the display finger frame (hinge X, link Z) onto the simulation finger
 % frame (hinge z, link x). The robot block takes its base pose in the MATLAB frame of the arm drawing (no actor

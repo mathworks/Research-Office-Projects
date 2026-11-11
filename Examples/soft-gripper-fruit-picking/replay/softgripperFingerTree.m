@@ -3,7 +3,7 @@ function tree = softgripperFingerTree(P)
 %
 %   tree = SOFTGRIPPERFINGERTREE(P)      P from softgripperPickParams
 %
-%   2026-10-26: the Simulation 3D Robot block mis-draws BRANCHING trees (in the replay, one fingertip angle moved
+%   The Simulation 3D Robot block mis-draws BRANCHING trees (in the replay, one fingertip angle moved
 %   the palm and the wrist twisted back and forth). So the replay uses one serial robot for the UR5e + palm and one
 %   serial robot per finger, whose base is placed every frame at its mount on the palm (softgripperReplayData).
 %   Finger frame: base = the mount, [X Y Z] = [tangential, outward radial, finger direction]; hinge i about X, so a

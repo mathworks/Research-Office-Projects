@@ -1,5 +1,5 @@
 function R = check_softgripper_objects(ids)
-% CHECK_SOFTGRIPPER_OBJECTS  M2 object/contact validation on ObjectBench.slx (T-O1).
+% CHECK_SOFTGRIPPER_OBJECTS  Object/contact validation on ObjectBench.slx (T-O1).
 %
 %   R = CHECK_SOFTGRIPPER_OBJECTS()        all six objects
 %   R = CHECK_SOFTGRIPPER_OBJECTS([1 6])   a subset (objId)

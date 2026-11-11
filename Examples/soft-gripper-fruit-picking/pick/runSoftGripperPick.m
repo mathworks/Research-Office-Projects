@@ -21,7 +21,7 @@ end
 P = softgripperPickParams(objId);
 if ~isempty(vCrit), P.bench.vCrit = vCrit; end
 c = P.ctrl;
-% Stop 0.6 s after the planned release (was 1.5 s; 2026-10-26, speed): REQ_GRIP_018 asks for the object IN THE TRAY within T_PickMax; the arm's
+% Stop 0.6 s after the planned release: REQ_GRIP_018 asks for the object IN THE TRAY within T_PickMax; the arm's
 % retreat home is not part of it and costs about 2 s of simulated time (about 6 min wall).
 tPlan = c.tSettle + sum(P.plan.segT(1:5)) + c.tCloseRamp + c.nStall * c.Ts_Ctrl + c.tVent;
 tStop = min(c.T_PickMax + 1, tPlan + 0.6);       % 0.6 s after the planned release: the fruit has settled (T-O1 < 0.13 s)

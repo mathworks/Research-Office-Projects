@@ -7,7 +7,7 @@ function P = softgripperPickParams(objId)
 %   P.obj                                the selected object, with posInit (on the table, or hanging from the stem)
 %   P.bench                              gripper geometry and contact settings (shared with GripperBench)
 %   P.scene                              table, tray, stem
-%   P.plan                               the offline pick plan (planSoftGripperPick, Gate D candidate A)
+%   P.plan                               the offline pick plan (planSoftGripperPick)
 %   P.objPoseInit                        the camera estimate given to the controller (here: the true initial pose)
 
 objs = params_softgripper_objects();
@@ -15,7 +15,7 @@ o = objs(objId);
 fi = params_softgripper_finger; ga = params_softgripper_gas(fi);
 ctrl = params_softgripper_ctrl(ga);
 if ismember(objId, ctrl.stemSet)
-    zc = ctrl.layout.stemZ;                         % hanging from its stem / vine (R8)
+    zc = ctrl.layout.stemZ;                         % hanging from its stem / vine
 else
     zc = o.semiAxes(3);                             % resting on the table top (z = 0)
 end

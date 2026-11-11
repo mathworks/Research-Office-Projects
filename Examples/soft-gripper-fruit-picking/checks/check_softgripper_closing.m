@@ -1,11 +1,10 @@
 function R = check_softgripper_closing(ids, tRamps, wallLimit, evalOnly)
-% CHECK_SOFTGRIPPER_CLOSING  T-I7: closing-speed study on GripperBench.slx (engineer decision 2026-10-25).
+% CHECK_SOFTGRIPPER_CLOSING  T-I7: closing-speed study on GripperBench.slx.
 %
 %   R = CHECK_SOFTGRIPPER_CLOSING([4 5 1], [0.1 0.3 0.6 1.0])
 %
-%   The closed-loop picks closed the fingers with a 0.1 s pressure ramp (R2): the tomato saw an 18.7 N and the
-%   pear a 46.5 N one-sample contact spike at impact (bruise 11 / 40 N), and the raspberry was flicked 41 mm up
-%   and broke its stem. Here the gripper closes on the fruit, placed where the pick grips it, with gravity on and
+%   With a 0.1 s pressure ramp, the closed-loop pick gives the tomato an 18.7 N and the pear a 46.5 N one-sample
+%   contact spike at impact (bruise 11 / 40 N), and flicks the raspberry 41 mm up. Here the gripper closes on the fruit, placed where the pick grips it, with gravity on and
 %   a table-like support force, at pGrip(obj) with each ramp time, and holds 0.5 s. Reported per ramp:
 %     peak per-finger contact (sum over its 8 links) vs F_Bruise(obj)   (REQ_GRIP_016)
 %     peak fruit displacement during closing; for the stem fruit x kStem vs F_Detach (the flick)
