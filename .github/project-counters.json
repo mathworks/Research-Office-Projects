@@ -8,13 +8,13 @@
   "example-solar-power-app": 14,
   "example-spot-sim3D": 13,
   "example-vla-guided-mobile-manipulation": 7,
-  "package-event-camera-simulator": 15,
-  "package-floor-plan-to-3D": 14,
-  "package-fret-to-simulink": 15,
-  "package-matsuba": 11,
-  "package-mplicit-surface-meshing": 12,
-  "package-simulink-reachability-solvers": 13,
-  "package-video-framerate-upsampling": 13,
-  "package-virtual-lab-for-matlab": 20,
-  "package-xtosim": 43
+  "package-event-camera-simulator": 16,
+  "package-floor-plan-to-3D": 15,
+  "package-fret-to-simulink": 16,
+  "package-matsuba": 12,
+  "package-mplicit-surface-meshing": 13,
+  "package-simulink-reachability-solvers": 14,
+  "package-video-framerate-upsampling": 14,
+  "package-virtual-lab-for-matlab": 21,
+  "package-xtosim": 44
 }
