@@ -4,7 +4,7 @@
   "example-drone-show": 11,
   "example-finding-pi-with-marbles": 15,
   "example-shape-from-shading-asteroids": 13,
-  "example-soft-gripper-fruit-picking": 1,
+  "example-soft-gripper-fruit-picking": 2,
   "example-solar-power-app": 14,
   "example-spot-sim3D": 13,
   "example-vla-guided-mobile-manipulation": 7,
@@ -16,5 +16,5 @@
   "package-simulink-reachability-solvers": 13,
   "package-video-framerate-upsampling": 13,
   "package-virtual-lab-for-matlab": 20,
-  "package-xtosim": 41
+  "package-xtosim": 43
 }
