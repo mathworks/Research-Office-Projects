@@ -53,17 +53,18 @@ ctrl.pGripR3 = gripPressures(ctrl, gas);                               % Pa   si
 ctrl.pGrip    = [ 55e3    41.3e3  45e3    39.2e3  60e3    60e3];      % Pa   (raspberry EST, stem)
 ctrl.pickSet = [3 4 5];             % -        objIds picked: apple, tomato, pear. The mango is
                                     %          beyond the 60 kPa rating; the raspberry and cherry tomato are
-                                    %          too small for the 60 mm finger spacing, from the table or a stem
+                                    %          too small for fingers on a 60 mm radius, from the table or a stem
 ctrl.dBendContact = deg2rad(5);     % rad      contact threshold
 ctrl.stallRate = deg2rad(30);       % rad/s    stall detector
 ctrl.nStall = 10;                   % samples  stall window (50 ms)
 ctrl.tSettle = 0.3;                 % s
 ctrl.qTol = 5e-4;                   % rad      arm arrival tolerance
-ctrl.tCloseMax = 0.85;              % s        (ramp 0.3 + bend 0.06 + stall 0.05) x 2
+ctrl.tCloseMax = 0.85;              % s        about 2 x (ramp 0.3 + bend 0.06 + stall 0.05)
 ctrl.tVent = 0.2;                   % s
 ctrl.pDroopTol = 4e3;               % Pa       supply-droop flag
 ctrl.tDroop = 0.1;                  % s        supply-droop flag
-ctrl.hClear = 5e-3;                 % m        fingertip clearance over the table
+ctrl.hClear = 5e-3;                 % m        planner margin; with the 10 mm palm the straight fingertips end
+                                    %          15 mm above the table in the model (rationale.md)
 ctrl.bendFreeP = (10:10:60) * 1e3;                                     % Pa   free bend (T-F1)
 ctrl.bendFreeTh = deg2rad([0 38.0 64.6 81.1 93.5 103.7]);              % rad  free bend (T-F1)
 ctrl.bendValid = deg2rad([-10 200]);% rad      outside -> treated as no contact

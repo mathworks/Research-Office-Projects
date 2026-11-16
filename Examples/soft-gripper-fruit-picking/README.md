@@ -23,8 +23,8 @@ the physics.*
 
 - How to model a **soft actuator in Simscape Multibody&trade;**: an 8-hinge pseudo-rigid-body finger, coupled to
   a **Simscape gas network** through one Rotational Mechanical Converter per chamber.
-- How to **identify** the finger from a published force table and **validate** it against four independent
-  hardware tables.
+- How to **identify** the finger from a published force table and **check** it against the paper's other
+  measurements: free bend, grasp force and hold pressure.
 - How to close the loop with a **Stateflow&reg; pick controller** that checks the grasp using only the fingers'
   bend sensors.
 
@@ -143,13 +143,24 @@ own test bench; "integrated" checks run the whole gripper on a bench, without th
 |---|---|---|---|---|
 | Tip force, Zhu Table 1, 29 points (component) | RMS 0.050 N, max 0.127 N | measured | RMS ≤ 0.08 N | ✅ |
 | Free bend at 40 / 50 / 60 kPa (component) | 81 / 94 / 104° | 75 / 90 / 110° | ± 10° | ✅ |
-| Sealed finger obeys the gas law (component) | −0.008 % | adiabatic *pV*<sup>γ</sup> | 1 % | ✅ |
-| Fill time 0 → 95 % of 60 kPa (component) | 17.7 ms | 17.3 ms, nozzle prediction | ± 10 % | ✅ |
+| Sealed finger obeys the gas law, +10° bend (component) | 35.61 kPa | 35.62 kPa, adiabatic *pV*<sup>γ</sup> | 1 % | ✅ |
+| Fill time 0 → 95 % of 60 kPa (component) | 17.7 ms | 17.3 ms, nozzle prediction from the valve catalogue | ± 10 % | ✅ |
 | Enveloping grasp force, Zhu Table 3, 30–60 kPa (integrated) | 1.64 / 3.30 / 5.40 / 7.51 N | 2.28 / 3.47 / 4.68 / 5.80 N | ± 30 % | ✅ 4/4 |
 | Minimum hold pressure, Zhu Table 4 (integrated) | apple 34, tomato 34, pear 44, mango 60 kPa | 30 / 35 / 45 / 60 kPa | ± 10 kPa | ✅ 4/4 |
 
+How to read the table:
+
+- **Free bend.** The 75° and 90° are where Table 1's tip force reaches zero, so they are upper bounds, and they
+  are part of the fitted data. The model bends 6° and 4° past them; at 60 kPa it bends 104° against the 110° in
+  the paper's abstract.
+- **Gas law and fill time** check the Simscape build against theory and the valve catalogue, not against the
+  finger hardware.
+- **Hold pressure** holds each fruit where the pick grips it and loads it with its weight plus a 2 m/s²
+  transport acceleration, so it is a stricter test than a static hold.
+
 The Simscape finger reproduces the offline identification to 0.0000 N at all 29 points. The remaining gap to
-the data comes from the 8-hinge model form, not from the Simscape build. Full pass/fail per requirement:
+the data lies in the identified model itself (8 hinges, and an assumed gauge direction the paper does not
+state), not in the Simscape build. Full pass/fail per requirement:
 [`docs/soft-gripper-verification.md`](docs/soft-gripper-verification.md).
 
 ## One pick, step by step
@@ -162,11 +173,13 @@ because the fruit is in the way. During the carry, a drop detector watches for 2
 (15.6 N) stays well under the apple's 40 N bruise limit. Then the arm lifts, carries and lowers the apple, and
 venting releases it into the tray.
 
-| Fruit | Grip pressure | Released in tray | Attempts | Slip (≤ 5 mm) | Peak contact / bruise limit |
+| Fruit | Grip pressure | Release starts over the tray | Attempts | Slip in the grip (≤ 5 mm) | Peak contact / bruise limit |
 |---|---|---|---|---|---|
-| Apple 200.6 g | 45 kPa | 5.21 s | 1 | 2.1 mm | 15.6 / 40 N |
-| Tomato 282.9 g | 39.2 kPa | 5.21 s | 1 | 2.1 mm | 10.5 / 11 N |
-| Pear 389.1 g (lying) | 60 kPa, lift at 1 m/s&sup2; | 5.72 s | 1 | 3.1 mm | 26.3 / 40 N |
+| Apple 200.6 g | 45 kPa | 5.21 s | 1 | 0.9 mm | 15.6 / 40 N |
+| Tomato 282.9 g | 39.2 kPa | 5.21 s | 1 | 1.1 mm | 10.5 / 11 N |
+| Pear 389.1 g (lying) | 60 kPa, lift at 1 m/s&sup2; | 5.72 s | 1 | 1.3 mm | 26.3 / 40 N |
+
+Slip is the largest movement of the fruit relative to the gripper between lift-off and release.
 
 Every controller value (sample time, closing ramp, grasp-check thresholds, per-fruit pressure) is derived in
 [`docs/rationale.md`](docs/rationale.md).
@@ -174,8 +187,8 @@ Every controller value (sample time, closing ramp, grasp-check thresholds, per-f
 ## Limits of validity: read before reusing
 
 - **Pressure 30–60 kPa.** Below about 30 kPa the fingers do not reach the fruit: the identified pre-stretch
-  dead zone is 13 kPa, and the 60 mm finger spacing leaves a gap.
-- **Fruit about 70–110 mm across.** A raspberry or cherry tomato (20–30 mm) cannot be grasped at this spacing:
+  dead zone is 13 kPa, and the fingers stand on a 60 mm radius (120 mm between opposite fingers).
+- **Fruit about 70–110 mm across.** A raspberry or cherry tomato (20–30 mm) cannot be grasped with this mounting:
   the fingers sweep past it on a table, and when it hangs from a stem they push it up and break the stem.
 - **The mango (580 g) is beyond the 60 kPa finger rating while moving.** It is modelled but not picked.
 - **The arm is kinematic.** It follows its joint commands exactly; there are no arm dynamics or joint
@@ -207,8 +220,8 @@ Every controller value (sample time, closing ramp, grasp-check thresholds, per-f
 
 | To change | Edit | Then re-run |
 |---|---|---|
-| Your finger's force data | the table in `fit_zhu_finger_prb.m` → copy *L*, *D*, *K*, *K*<sub>3</sub>, *p*<sub>0</sub> into `params_softgripper_finger.m` | `check_softgripper_finger` (T-F1, T-F2, T-F3) |
-| Number of chambers / fingers, spacing | `finger.N_Joint`, `finger.n_Fingers`, `finger.r_Mount` | finger and grasp checks |
+| Your finger's force data | the table in `fit_zhu_finger_prb.m`, then `fit_zhu_finger_prb(8, "cubic")` → copy *L*, *D*, *K*, *K*<sub>3</sub>, *p*<sub>0</sub> into `params_softgripper_finger.m` | `check_softgripper_finger` (T-F1, T-F2, T-F3) |
+| Number of chambers / fingers, mounting radius | `finger.N_Joint`, `finger.n_Fingers`, `finger.r_Mount` | finger and grasp checks |
 | Regulator, tubing, volumes | `params_softgripper_gas.m` (catalogue flow `Q_ANR`, `p_GripMax`, `d_Tube`, `V0`) | `check_softgripper_gas` |
 | Objects: shape, mass, bruise limit, friction | `params_softgripper_objects.m` | `check_softgripper_objects`, `check_softgripper_hold` |
 | Grip pressure, timing, grasp check | `params_softgripper_ctrl.m`, with a row in `docs/rationale.md` | `runSoftGripperPick` |

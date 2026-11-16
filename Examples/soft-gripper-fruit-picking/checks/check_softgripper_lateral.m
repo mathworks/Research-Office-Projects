@@ -31,7 +31,7 @@ fprintf('\n=== T-I4 lateral capacity, %s at %.0f mm below the palm, weight + lat
 R = struct('p', {}, 'dir', {}, 'aCap', {}, 'status', {});
 for p = pList
     for d = dirDeg
-        f = fullfile(resDir, sprintf('TI4_%d_%02.0f_%02.0f%s.mat', objId, p/1e3, d, gTag));
+        f = fullfile(resDir, sprintf('TI4_%d_%g_%02.0f%s.mat', objId, p/1e3, d, gTag));   % e.g. _38.6_00
         if isfile(f), S = load(f); r = S.r;
         elseif evalOnly, fprintf('  %2.0f kPa, %2.0f deg: not run yet\n', p/1e3, d); continue
         else

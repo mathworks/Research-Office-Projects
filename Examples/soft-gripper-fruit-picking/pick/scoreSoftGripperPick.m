@@ -4,7 +4,8 @@ function R = scoreSoftGripperPick(out, P, tStop)
 %   R = SCORESOFTGRIPPERPICK(out, P, tStop)
 %   R.timeline (state@entry time), finalState ("Done" | "Failed" | "none"), tFinal, attempts, fMax (peak
 %   per-finger contact, N), objEnd (final object position), inTray, slip (max object displacement in the tool0
-%   frame between Lift entry and Release entry, m), tEnd. Used by runSoftGripperPick; callable on saved runs.
+%   frame between Lift entry and Release entry, m), tEnd. Used by runSoftGripperPick; callable on the full log
+%   that a pick run saves (the shipped results/pick_*.mat replay copies hold too few signals to re-score).
 
 objs = params_softgripper_objects(); o = objs(P.objId);
 R = scorePick(out, P, o, tStop);
@@ -35,14 +36,16 @@ R.fMax = max(fC, [], 'all');
 R.objEnd = pose(end, 1:3);
 sc = P.scene;
 R.inTray = all(abs(R.objEnd(1:2) - sc.trayXY) < sc.wTray/2) && R.objEnd(3) < sc.trayZ + 2*o.semiAxes(3) + 5e-3;
-% slip: object position in the tool0 frame between CheckGrasp exit (Lift entry) and Release entry
+% slip: object position in the tool0 frame between CheckGrasp exit (Lift entry) and Release entry, at every
+% logged sample. The tool pose comes from the continuous joint angles (UR5e/QMeasMux), not from the copy the
+% controller samples every Ts_Ctrl: at about 0.9 m/s tool speed a 5 ms sample lag would read as 4 mm of slip.
 R.slip = NaN;
 tA = tEnter(names == "Lift"); tB = tEnter(names == "Release");
 if ~isnan(tA) && ~isnan(tB)
     rb = loadrobot('universalUR5e', 'DataFormat', 'row');
-    q = logVal(ls, "qArmMeas");
+    q = jointAngles(ls);
     rel = @(t) relPos(rb, q, z.Time, pose, t);
-    tt = linspace(tA, tB, 25); r0 = rel(tA); d = zeros(size(tt));
+    tt = z.Time(z.Time >= tA & z.Time <= tB); r0 = rel(tA); d = zeros(size(tt));
     for i = 1:numel(tt), d(i) = norm(rel(tt(i)) - r0); end
     R.slip = max(d);
 end
@@ -50,9 +53,19 @@ R.tStop = tStop;
 end
 
 function v = logVal(ls, name)
-% First logged element with this name (qArmMeas is logged twice: the root line and its delayed copy).
+% First logged element with this name.
 e = ls.find('Name', char(name));
 if e.numElements == 0, v = []; else, v = e{1}.Values; end
+end
+
+function v = jointAngles(ls)
+% qArmMeas is logged twice: inside the arm (UR5e/QMeasMux, continuous) and at the plant output (sampled for the
+% controller). Use the continuous one.
+e = ls.find('Name', 'qArmMeas');
+v = e{1}.Values;
+for k = 1:e.numElements
+    if endsWith(e{k}.BlockPath.getBlock(1), 'UR5e/QMeasMux'), v = e{k}.Values; end
+end
 end
 
 function r = relPos(rb, q, tz, pose, t)

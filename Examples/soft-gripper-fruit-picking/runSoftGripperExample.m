@@ -4,13 +4,13 @@
 % Simscape), scores it against the requirements, and, if Simulink 3D Animation is installed, replays it in
 % Unreal through models/SoftGripperScene3D.slx.
 %
-% One pick takes about 23-30 minutes of computing (6-7 s simulated; REQ_GRIP_031 limit 35 min).
+% One pick takes about 22-32 minutes of computing (5.7-7.2 s simulated; REQ_GRIP_031 limit 35 min).
 % Nothing here changes a model file: parameters go in through Simulink.SimulationInput.
 %
 % Objects in the pick set (params_softgripper_ctrl: ctrl.pickSet):
 %   3 apple (200.6 g, 45 kPa)   4 tomato (282.9 g, 39.2 kPa)   5 pear (389.1 g, 60 kPa, lifted at 1 m/s^2)
 % Not picked (see README): 6 mango (beyond the 60 kPa finger rating), 1 raspberry and 2 cherry tomato (too
-% small for this finger spacing).
+% small for this finger mounting).
 
 objId = 3;              % 3 apple, 4 tomato, 5 pear
 doSimulate = true;      % false: skip the simulation and replay the saved run in results/pick_<objId>.mat

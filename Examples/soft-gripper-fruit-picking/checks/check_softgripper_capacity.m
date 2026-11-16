@@ -5,7 +5,7 @@ function R = check_softgripper_capacity(objId, pList, cases, wallLimit, evalOnly
 %
 %   T-I5 and T-I2 close at 60 kPa and then LOWER the pressure: the hard squeeze seats the fruit deeper, so they
 %   measure release, not grasp formation (apple carry: T-I5 says 34.8 kPa holds, the pick slips at 38.6). Here
-%   the gripper closes AT p (as the controller does) in the effective gravity g_eff
+%   the gripper closes AT p (as the controller does, here with a 0.1 s ramp; the picks use 0.3 s) in the effective gravity g_eff
 %   (fingers and fruit loaded, d'Alembert), the table-like support is released 0.5 -> 0.6 s, then an EXTRA force
 %   along g_eff ramps on the fruit: F = m*|g_eff|*s(t), s: 0 -> sMax over tRamp. Capacity ratio = 1 + s at 5 mm
 %   slip (1 = holds exactly its working load). A ratio below 1 means it slips as soon as it is released.
@@ -22,11 +22,12 @@ end
 objs = params_softgripper_objects(); o = objs(objId); g = 9.80665;
 fi = params_softgripper_finger; ctrl = params_softgripper_ctrl(params_softgripper_gas(fi)); a = ctrl.aTransportObj(objId);
 Pk = softgripperPickParams(objId); z = -(Pk.plan.zPalm - Pk.objPoseInit(3));
-tW0 = 0.5; tW1 = 0.6; tL = 0.7; sMax = 2; tRamp = 2; tEnd = tL + tRamp; sSlip = 5e-3; tClose = 0.1;
+sMax = 2; tRamp = 2; sSlip = 5e-3;
 resDir = fullfile(fileparts(fileparts(mfilename('fullpath'))), 'results');
 R = struct('p', {}, 'case', {}, 'ratio', {}, 'status', {});
 fprintf('\n=== T-I6 capacity of a grasp formed at p: %s (a = %.1f m/s^2) ===\n', o.name, a);
 for c = cases
+    tW0 = 0.5; tW1 = 0.6; tL = 0.7; tEnd = tL + tRamp; tClose = 0.1;   % per case (the stem case changes them)
     switch c
         case "lift",    gE = [0 0 -(g + a)];
         case "carry0",  gE = [a 0 -g];
@@ -39,7 +40,7 @@ for c = cases
         tW0 = tClose + 0.4; tW1 = tW0 + 0.1; tL = tW1 + 0.1; tEnd = tL + tRamp;
     end
     for p = pList
-        f = fullfile(resDir, sprintf('TI6_%d_%s_%02.0f.mat', objId, c, p/1e3));
+        f = fullfile(resDir, sprintf('TI6_%d_%s_%g.mat', objId, c, p/1e3));      % e.g. _38.6, _45
         if c == "stem", f = strrep(f, '.mat', sprintf('_z%.0f.mat', -z*1e3)); end   % placement-specific
         if isfile(f), S = load(f); r = S.r;
         elseif evalOnly, fprintf('  %-8s %4.1f kPa: not run yet\n', c, p/1e3); continue

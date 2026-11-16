@@ -31,7 +31,9 @@ finger.h_Link = 15e-3;              % m        EST cross-section thickness, alon
 finger.V0 = 10e-6;                  % m^3      EST dead volume per finger (5-15 mL); the fit identifies
                                     %          only the swept part, D*sum(theta) = 2.9 mL at full bend
 % Hinge damping, EST via an assumed damping ratio of the first bending mode (no dynamic data exists):
-% one-DOF equivalent: N springs in series K/N, inertia of a uniform rod about its base m*L^2/3.
+% one-DOF equivalent: N springs in series K/N, inertia of a rigid rod about its base m*L^2/3. A rough estimate:
+% uniform bending has a smaller inertia (m*L^2/20) and the cubic spring is stiffer at the working bend, and the
+% two effects roughly cancel (first-mode damping ratio about 0.3-0.4). The tomato's bruise margin depends on it.
 finger.zeta1 = 0.3;                 % -        EST
 Ieq = finger.m * finger.L^2 / 3;
 Keq = finger.K / finger.N_Joint;

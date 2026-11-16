@@ -4,8 +4,8 @@ function R = runSoftGripperPick(objId, wallLimit, vCrit)
 %   R = RUNSOFTGRIPPERPICK(objId)            objId 1..6; wall limit 3600 s
 %   R = RUNSOFTGRIPPERPICK(objId, wallLimit)
 %
-%   Builds P (softgripperPickParams), simulates with SimulationInput (finite StopTime = the planned duration
-%   + 2 s, never above T_PickMax + 1 s), saves results/pick_<objId>.mat and prints:
+%   Builds P (softgripperPickParams), simulates with SimulationInput (finite StopTime = the planned release
+%   + 0.6 s, never above T_PickMax + 1 s), saves results/pick_<objId>.mat and prints:
 %     final controller state and its time, attempts, whether the object rests in the tray, the peak per-finger
 %     contact force vs F_Bruise (016), the slip of the object relative to the palm while carried (017), and the
 %     pick time vs T_PickMax (018).
